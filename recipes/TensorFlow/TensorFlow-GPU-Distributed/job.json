@@ -1,0 +1,31 @@
+{
+    "properties": {
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+        "inputDirectories": [{
+            "id": "DATASET",
+            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/mnist_dataset"
+        }, {
+            "id": "SCRIPT",
+            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/tensorflow_samples"
+        }],
+        "outputDirectories": [{
+            "id": "MODEL",
+            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+            "pathSuffix": "Models"
+        }],
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "tensorflow/tensorflow:1.1.0-gpu"
+            }
+        },
+        "nodeCount": 2,
+        "tensorFlowSettings": {
+            "parameterServerCount": 1,
+            "workerCount": 2,
+            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/mnist_replica.py",
+            "masterCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET --output_dir=$AZ_BATCHAI_OUTPUT_MODEL",
+            "workerCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET --output_dir=$AZ_BATCHAI_OUTPUT_MODEL",
+            "parameterServerCommandLineArgs": "--job_name=ps --num_gpus=0 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET --output_dir=$AZ_BATCHAI_OUTPUT_MODEL"
+        }
+    }
+}

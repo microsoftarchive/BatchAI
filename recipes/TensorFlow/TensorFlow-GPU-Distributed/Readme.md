@@ -15,11 +15,11 @@ This example demonstrate how to run standard TensorFlow sample (https://github.c
 
 ### Python Jupyter Notebook
 
-You can find Jupyter Notebook for this sample in [TensorFlow-GPU-Distributed.ipynb](./TensorFlow-GPU-Distributed.ipynb).
+You can find Jupyter Notebook for this recipe in [TensorFlow-GPU-Distributed.ipynb](./TensorFlow-GPU-Distributed.ipynb).
 
 ### Azure CLI 2.0
 
-Under Construction...
+You can find Azure CLI 2.0 instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
 
 ## Help or Feedback
