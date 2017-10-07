@@ -4,7 +4,7 @@
 
  1. Azure subscription. This can be a free trial subscription, MSDN, or the one you use for other work.
  2. Azure Python SDK, if you like to run recipes using Python Jupyter notebook. See How to install [Azure SDK](https://docs.microsoft.com/en-us/python/azure/python-sdk-azure-install?view=azure-python)
- 3. Azure CLI 2.0, if you like to run recipes using Azure CLI - See [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-account?toc=%2fazure%2fstorage%2ffiles%2ftoc.json) for instructions.
+ 3. Azure CLI 2.0, if you like to run recipes using Azure CLI - See [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest#install-on-windows) for instructions.
  4. Azure Storage Account in East US (required for all recipes). See [How to create Azure storage accounts](https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-account?toc=%2fazure%2fstorage%2ffiles%2ftoc.json)
 
 ## Make a Local Copy of Repo
