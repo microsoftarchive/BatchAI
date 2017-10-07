@@ -1,0 +1,19 @@
+{
+    "properties": {
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+        "inputDirectories": [{
+            "id": "SCRIPT",
+            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/tensorflow_samples"
+        }],
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "tensorflow/tensorflow:1.1.0-gpu"
+            }
+        },
+        "nodeCount": 1,
+        "tensorFlowSettings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/convolutional.py",
+            "masterCommandLineArgs": "-p"
+        }
+    }
+}
