@@ -1,0 +1,13 @@
+{
+    "properties": {
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+        "inputDirectories": [{
+            "id": "SCRIPT",
+            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/keras_samples"
+        }],
+        "nodeCount": 1,
+        "customToolkitSettings": {
+            "commandLine": "KERAS_BACKEND=cntk python $AZ_BATCHAI_INPUT_SCRIPT/mnist_cnn.py"
+        }
+    }
+}

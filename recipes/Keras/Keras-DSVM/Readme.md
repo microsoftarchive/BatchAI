@@ -13,11 +13,11 @@ This recipe shows how to run Keras using Batch AI on DSVM. DSVM supports tensorf
 
 ### Python Jupyter Notebook
 
-You can find Jupyter Notebook for this sample in [Keras-DSVM.ipynb](./Keras-DSVM.ipynb).
+You can find Jupyter Notebook for this recipe in [Keras-DSVM.ipynb](./Keras-DSVM.ipynb).
 
 ### Azure CLI 2.0
 
-Under Construction...
+You can find Azure CLI 2.0 instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
 
 ## Help or Feedback
