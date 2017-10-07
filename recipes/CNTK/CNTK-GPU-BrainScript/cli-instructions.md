@@ -51,7 +51,7 @@ az batchai cluster create -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 1 --max 1 -
 
 ### Job
 
-The job creation parameters are in [job.json](/recipes/CNTK/BrainScript/CNTK-GPU-BrainScript/job.json):
+The job creation parameters are in [job.json](./job.json):
 
 - Two input directories with IDs `CONFIG` and `DATASET` to allow the job to find the sample config and MNIST Database via environment variables `$AZ_BATCHAI_INPUT_CONFIG` and `$AZ_BATCHAI_INPUT_DATASET`;
 - stdOutErrPathPrefix specifies that the job should use file share for standard output and input;
