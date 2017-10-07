@@ -17,7 +17,7 @@ You can find Jupyter Notebook for this sample in [CNTK-GPU-BrainScript.ipynb](./
 
 ### Azure CLI 2.0
 
-Under Construction...
+You can find Azure CLI instructions for this sample in [cli-instructions.md](./cli-instructions.md).
 
 
 ## Help or Feedback
