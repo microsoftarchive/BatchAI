@@ -47,8 +47,85 @@ jupyter notebook
 
 ## Run Recipes Using Azure CLI 2.0
 
-Under construction...
+### Install Azure CLI 2.0
 
+The easiest way to start using Azure CLI 2.0 is to launch Shell Console as described in these [instructions](https://docs.microsoft.com/en-us/cli/azure/get-started-with-azure-cli?view=azure-cli-latest).
+
+If you prefer to install Azure CLI 2.0 on your computer, please follow these [instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to install or update Azure CLI 2.0 to the latest version.
+
+### Login and Select Subscription
+
+If you are using Cloud Shell you are already logged in Azure. Otherwise, please execute ```az login``` command and follow instructions.
+
+If you have multiple subscriptions, select Batch AI enabled subscription as default one by running the following command:
+
+```sh
+az account set -s <your subscription>
+```
+
+### Configure Default Location
+
+Creation of Clusters, Jobs, File Servers and other resources requires you to specify location where they should be created, the location can be provided via ```--location``` parameter or can be added into default Azure CLI 2.0 configuration. To reduce the length of commands the recipes expect you to setup default location using the following command:
+
+```sh
+az configure --defaults location=eastus
+```
+
+### Create a Default Resource Group
+
+Clusters, Jobs and File Servers are created under a resource group. It's recommended to create a dedicated resource group for running recipes because it will simplify resource management for you.
+
+Create a resource group ```batchaitests``` (or choose your own resource name) and make it default for Azure CLI 2.0 using the following commands:
+
+```sh
+az group create --name batchaitests --location eastus
+az configure --defaults group=batchaitests
+```
+
+### Create and Configure Default Storage Account
+
+Each recipe requires you to have a storage account in a region where Batch AI enabled (currently, ```eastus```). Please you the following commands to create a new storage account and make it default for Azure CLI 2.0:
+
+For GNU/Linux users:
+
+```sh
+az storage account create --name <unique storage account name> --sku Standard_LRS
+export AZURE_STORAGE_ACCOUNT=mystorageaccount
+export AZURE_STORAGE_KEY=$(az storage account keys list --account-name <unique storage account name> -o tsv --query [0].value)
+export AZURE_BATCHAI_STORAGE_ACCOUNT=mystorageaccount
+export AZURE_BATCHAI_STORAGE_KEY=$(az storage account keys list --account-name <unique storage account name> -o tsv --query [0].value)
+```
+
+For Windows users:
+
+```sh
+az storage account create --name <unique storage account name> --sku Standard_LRS
+az storage account keys list --account-name mystorageaccount -o tsv --query [0].value > temp.txt
+set /p AZURE_STORAGE_KEY=< temp.txt
+set AZURE_BATCHAI_STORAGE_ACCOUNT=mystorageaccount
+set /p AZURE_BATCHAI_STORAGE_KEY=< temp.txt
+del temp.txt
+```
+
+### Generate Authentication Key for SSH (for Cloud Shell and GNU/Linux Users)
+
+During Cluster and File Server creation you will need to specify a name and authentication method for administrator account which will be created on each compute node (you can use this account to ssh to the node).
+
+You can provide a password and/or ssh public key as authentication method via --password (-p) and --ssh-public-key (-k) parameters.
+
+GNU/Linux users (including Cloud Shell users) can generate authentication key for ssh using ```ssh-keygen``` command.
+
+Note, GNU/Linux part of recipes expects you to have a public ssh key at ~/.ssh/id_rsa.pub, if you prefer to use different ssh key, please update -k parameter value.
+
+### Install unzip package (for GNU/Linux Users)
+
+Training data used in recipes is compressed in ```zip``` archives and requires ```unzip``` utility to be installed on the host, please install it using your distribution package manager.
+
+Cloud Shell has ```unzip``` already installed.
+
+### Run Recipes
+
+Each recipe contains ```cli-instructions.md``` file which describes input data, cluster and job configuration and provides instructions for cluster and job creation.
 
 ## Help or Feedback
 --------------------
