@@ -13,11 +13,11 @@ This example uses the MNIST dataset to demonstrate how to train a convolutional 
 
 ### Jupyter Notebook
 
-You can find Jupyter Notebook for this sample in [CNTK-GPU-BrainScript-Distributed.ipynb](./CNTK-GPU-BrainScript-Distributed.ipynb).
+You can find Jupyter Notebook for this recipe in [CNTK-GPU-BrainScript-Distributed.ipynb](./CNTK-GPU-BrainScript-Distributed.ipynb).
 
 ### Azure CLI 2.0
 
-Under Construction...
+You can find Azure CLI 2.0 instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
 ## Help or Feedback
 --------------------
