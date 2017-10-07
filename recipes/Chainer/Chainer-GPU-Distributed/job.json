@@ -1,0 +1,24 @@
+{
+    "properties": {
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+        "inputDirectories": [{
+            "id": "SCRIPT",
+            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/chainer_samples"
+        }],
+        "outputDirectories": [{
+            "id": "MODEL",
+            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+            "pathSuffix": "Models"
+        }],
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "batchaitraining/chainermn:openMPI"
+            }
+        },
+        "nodeCount": 2,
+        "chainerSettings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/train_mnist.py",
+            "masterCommandLineArgs": "-g -o $AZ_BATCHAI_OUTPUT_MODEL"
+        }
+    }
+}
