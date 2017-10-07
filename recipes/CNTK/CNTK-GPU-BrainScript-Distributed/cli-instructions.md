@@ -54,11 +54,13 @@ az batchai cluster create -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 -
 The job creation parameters are in [job.json](./job.json):
 
 - Two input directories with IDs `CONFIG` and `DATASET` to allow the job to find the sample config and MNIST Database via environment variables `$AZ_BATCHAI_INPUT_CONFIG` and `$AZ_BATCHAI_INPUT_DATASET`;
-- stdOutErrPathPrefix specifies that the job should use file share for standard output and input;
+- stdOutErrPathPrefix specifies that the job should use file share for standard output and error streams;
 - An output directory with ID `MODEL` to allow job to find the output directory for the model via `$AZ_BATCHAI_OUTPUT_MODEL` environment variable;
 - node_count defining how many nodes will be used for the job execution;
 - path and parameters for running DistributedConvNet_MNIST.cntk;
 - ```microsoft/cntk:2.1-gpu-python3.5-cuda8.0-cudnn6.0``` docker image will be used for job execution.
+
+Note, you can remove docker image information to run the job directly on DSVM.
 
 #### Job Creation Command
 
