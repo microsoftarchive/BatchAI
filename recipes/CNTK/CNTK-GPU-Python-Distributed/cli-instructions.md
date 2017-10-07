@@ -13,7 +13,7 @@ wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-G
 wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/CIFA-10_data_prepare.sh?token=AcZzrdr1tTQK_Gr7EdVXvg-sUarpWMqnks5Z4chYwA%3D%3D" -O CIFA-10_data_prepare.sh
 ```
 
-- Create an Azure File Share with `cntk_sample` folder and upload the scripts to into it:
+- Create an Azure File Share with `cntk_sample` folder and upload the scripts into it:
 
 ```sh
 az storage share create --name batchaisample
