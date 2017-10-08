@@ -11,20 +11,38 @@
 
 To start, please Clone or download this [repo](https://github.com/Azure/BatchAI)
 
-## Run Recipes Using Python Jupyter notebook
+## Recipe Instructions
+
+Use the following links for a quick navigation:
+
+1. [Run Recipes Using Python Jupyter notebook](#jupyternotebook)
+2. [Run Recipes Using Azure CLI 2.0](#azurecli)
+
+## <a name="jupyternotebook"></a> Run Recipes Using Python Jupyter notebook
 
 ### Create Configuration File for All Recipes 
 
 - Rename [configuration.json.template](/recipes/configuration.json.template) to configuration.json.
 - Populate it with your Batch AI credentials. Please see [this page](https://github.com/Azure/azure-sdk-for-python/wiki/Contributing-to-the-tests#getting-azure-credentials) on how to get your Azure AD credentials.
-- Leave as "base_url" filed as empty. 
+- Leave the "base_url" filed as empty. 
 - Our recipe will automatically create resource group if not exist. You need to specify the name of your resource group to create. 
 - Specify your Azure Storage account name and key, Please see [this page](https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-account?toc=%2fazure%2fstorage%2ffiles%2ftoc.json).
 - Batch AI creates administrator user account on every compute node and enables ssh. You need to specify user name and at least a password or ssh public key for this account.
  
+### Helper functions in utilities.py
+
+For your convenience, we provide a collection of helper functions in [utilities.py](./utilities.py) used for each recipes:
+
+- Read parameters from configuration file
+- Create python client object (BatchAIManagementClient) to access Azure Batch AI service
+- Create/Update resource group
+- Download file with given shared access signature (SAS)
+- Print Job/Cluster status
+- File Streaming 
+
 ### Install Jupyter Notebook
 
-If you are going to use Jupyter version of recipes, please install Jupyter Notebook from https://jupyter.org/ or run
+Please install Jupyter Notebook from https://jupyter.org/ or run
 
 ```sh
 python -m pip install jupyter
@@ -45,7 +63,7 @@ jupyter notebook
 - In the prompted brower brower, navigate into the recipe of interest, and start the *.ipynb file.
 
 
-## Run Recipes Using Azure CLI 2.0
+## <a name="azurecli"></a> Run Recipes Using Azure CLI 2.0
 
 ### Install Azure CLI 2.0
 
