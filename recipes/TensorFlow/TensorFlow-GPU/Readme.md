@@ -5,7 +5,7 @@ This example demonstrate how to run standard TensorFlow sample (https://github.c
 ## Details
 
 - For demonstration purposes, official convolutional.py will be deployed at Azure File Share;
-- Standard output of the job and the model will be stored on Azure File Share;
+- Standard output of the job will be stored on Azure File Share;
 
 
 ## Instructions to Run Recipe
