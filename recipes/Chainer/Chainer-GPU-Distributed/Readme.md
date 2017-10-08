@@ -19,6 +19,13 @@ You can find Jupyter Notebook for this recipe in [Chainer-GPU-Distributed.ipynb]
 
 You can find Azure CLI 2.0 instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
+## Dockerfile
+
+The `Dockerfile` for the Docker images used in this recipe can be found [here](./docker/dockerfile). The dockerfile is a modified version of ChainerMN example at https://github.com/chainer/chainermn/pull/71
+
+## License Notice
+
+Under construction...
 
 ## Help or Feedback
 --------------------
