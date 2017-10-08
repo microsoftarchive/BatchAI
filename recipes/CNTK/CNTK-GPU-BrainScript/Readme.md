@@ -1,4 +1,4 @@
-# brainscript CNTK GPU
+# BrainScript CNTK GPU
 
 This example uses the MNIST dataset to demonstrate how to train a convolutional neural network (CNN) on an Azure Batch AI cluster of one node.
 
@@ -13,11 +13,11 @@ This example uses the MNIST dataset to demonstrate how to train a convolutional 
 
 ### Jupyter Notebook
 
-You can find Jupyter Notebook for this sample in [CNTK-GPU-BrainScript.ipynb](./CNTK-GPU-BrainScript.ipynb).
+You can find Jupyter Notebook for this recipe in [CNTK-GPU-BrainScript.ipynb](./CNTK-GPU-BrainScript.ipynb).
 
 ### Azure CLI 2.0
 
-You can find Azure CLI instructions for this sample in [cli-instructions.md](./cli-instructions.md).
+You can find Azure CLI instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
 
 ## Help or Feedback
