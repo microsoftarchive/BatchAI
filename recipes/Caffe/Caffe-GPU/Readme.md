@@ -6,7 +6,7 @@ This example demonstrates how to run standard Caffe lenet_solver.prototxt exampl
 
 - For demonstration purposes, MNIST dataset and caffe configuration file will be deployed at Azure File Share;
 - Standard output of the job and the model will be stored on Azure File Share;
-- MNIST dataset has been preprocessed according to http://caffe.berkeleyvision.org/gathered/examples/mnist.html available [here](https://batchaisamples.blob.core.windows.net/samples/mnist_lmdb.zip?st=2017-10-06T00%3A15%3A00Z&se=2017-10-07T00%3A15%3A00Z&sp=rl&sv=2016-05-31&sr=b&sig=qafN9r%2B5cMCZWDb%2BUD4yuL0y8QaApEN7W5sSjEvKJ3o%3D).
+- MNIST dataset has been preprocessed according to http://caffe.berkeleyvision.org/gathered/examples/mnist.html available [here](https://batchaisamples.blob.core.windows.net/samples/mnist_lmdb.zip?st=2017-10-06T00%3A15%3A00Z&se=2100-01-01T00%3A00%3A00Z&sp=rl&sv=2016-05-31&sr=b&sig=jKlQA8x190lLGDXloeHrSe6jpOtUEYLD1DRoyWuiAdQ%3D).
 - The original Caffe solver and net prototxt files have been modified to take environment variables: AZ_BATCHAI_INPUT_SAMPLE and AZ_BATCHAI_OUTPUT_MODEL, and available here lenet_solver.prototxt and lenet_train_test.prototxt. 
 - Since prototxt files supports neither command line overloading nor environment variable, we use job preparation task preparation_script.sh to expand the environment varible specified in the files, providing more flexibility of the job setup.
 
