@@ -20,6 +20,10 @@ You can find Jupyter Notebook for this sample in [Caffe2-GPU-Distributed.ipynb](
 
 Under Construction...
 
+## License Notice
+
+Under construction...
+
 ## Help or Feedback
 --------------------
 If you have any problems or questions, you can reach the Batch AI team at [AzureBatchAITrainingPreview@service.microsoft.com](mailto:AzureBatchAITrainingPreview@service.microsoft.com) or you can create an issue on GitHub.

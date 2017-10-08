@@ -19,6 +19,9 @@ You can find Jupyter Notebook for this recipe in [CNTK-GPU-BrainScript.ipynb](./
 
 You can find Azure CLI instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
+## License Notice
+
+Under construction...
 
 ## Help or Feedback
 --------------------

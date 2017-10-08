@@ -18,6 +18,9 @@ You can find Jupyter Notebook for this recipe in [TensorFlow-GPU.ipynb](./Tensor
 
 You can find Azure CLI 2.0 instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
+## License Notice
+
+Under construction...
 
 ## Help or Feedback
 --------------------

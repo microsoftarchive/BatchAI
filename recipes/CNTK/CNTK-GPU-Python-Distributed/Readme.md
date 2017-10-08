@@ -20,6 +20,10 @@ You can find Jupyter Notebook for this recipe in [CNTK-GPU-Python-Distrbuted.ipy
 
 You can find Azure CLI 2.0 instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
+## License Notice
+
+Under construction...
+
 ## Help or Feedback
 --------------------
 If you have any problems or questions, you can reach the Batch AI team at [AzureBatchAITrainingPreview@service.microsoft.com](mailto:AzureBatchAITrainingPreview@service.microsoft.com) or you can create an issue on GitHub.
