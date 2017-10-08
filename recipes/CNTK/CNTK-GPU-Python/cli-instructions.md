@@ -12,7 +12,7 @@ wget "https://batchaisamples.blob.core.windows.net/samples/mnist_dataset.zip?st=
 unzip mnist_dataset.zip
 ```
 
-- Download ConvNet_MNIST.cntk config file into the current folder:
+- Download ConvNet_MNIST.py example script into the current folder:
 
 For GNU/Linux users:
 
@@ -20,7 +20,7 @@ For GNU/Linux users:
 wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python/ConvNet_MNIST.py?token=AcZzrejaokHC2Nj5ehsoMFe4t3LqFcThks5Z4bmEwA%3D%3D" -O ConvNet_MNIST.py
 ```
 
-- Create an Azure File Share with `nmist_database` and `cntk_sample` folders and upload MNIST database and BrainScript ConvNet_MNIST.py config file:
+- Create an Azure File Share with `nmist_database` and `cntk_sample` folders and upload MNIST database and ConvNet_MNIST.py script:
 
 ```sh
 az storage share create --name batchaisample
@@ -59,6 +59,8 @@ The job creation parameters are in [job.json](./job.json):
 - node_count defining how many nodes will be used for the job execution;
 - path and parameters for running ConvNet_MNIST.py;
 - ```microsoft/cntk:2.1-gpu-python3.5-cuda8.0-cudnn6.0``` docker image will be used for job execution.
+
+Note, you can remove docker image information to run the job directly on DSVM.
 
 #### Job Creation Command
 
