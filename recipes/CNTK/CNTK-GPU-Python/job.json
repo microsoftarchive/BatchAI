@@ -1,5 +1,10 @@
 {
     "properties": {
+        "nodeCount": 1,
+        "cntkSettings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/ConvNet_MNIST.py",
+            "commandLineArgs": "$AZ_BATCHAI_INPUT_DATASET $AZ_BATCHAI_OUTPUT_MODEL"
+        },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
         "inputDirectories": [{
             "id": "DATASET",
@@ -17,11 +22,6 @@
             "imageSourceRegistry": {
                 "image": "microsoft/cntk:2.1-gpu-python3.5-cuda8.0-cudnn6.0"
             }
-        },
-        "nodeCount": 1,
-        "cntkSettings": {
-            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/ConvNet_MNIST.py",
-            "commandLineArgs": "$AZ_BATCHAI_INPUT_DATASET $AZ_BATCHAI_OUTPUT_MODEL"
         }
     }
 }
