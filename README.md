@@ -2,9 +2,9 @@
 
 Welcome to our documenting page at https://docs.microsoft.com/azure/batch-ai
 
-## Update 
+## Updates 
 
-Azure BatchAI starts public preview on October 9th, 2017!
+10.09.2017 Azure BatchAI starts public preview on October 9th, 2017!
 
 ## Batch AI Recipes 
 
