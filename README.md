@@ -22,6 +22,8 @@ We have created [recipes](/recipes/) for popular AI frameworks to help you get s
 
 [Caffe2](/recipes/Caffe2/)
 
+[Horovod](/recipes/Horovod)
+
 [Custom Took Kit -- a Keras example](/recipes/Keras/)
 
 ## Contributing
