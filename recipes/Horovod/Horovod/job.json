@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "nodeCount": 2,
+    "jobPreparation": {
+      "commandLine": "apt update; apt install mpi-default-dev mpi-default-bin -y; pip install --user horovod"
+    },
+    "customToolkitSettings": {
+      "commandLine": "mpirun -mca btl_tcp_if_exclude docker0,lo --allow-run-as-root --hostfile $AZ_BATCHAI_MPI_HOST_FILE python $AZ_BATCHAI_INPUT_SCRIPTS/tensorflow_mnist.py"
+    },
+    "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+    "outputDirectories": [
+      {
+        "createNew": true,
+        "id": "MODEL",
+        "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+        "pathSuffix": "Models",
+        "type": "custom"
+      }
+    ],
+    "inputDirectories": [{
+        "id": "SCRIPTS",
+        "path": "$AZ_BATCHAI_MOUNT_ROOT/external/horovod_samples"
+      }
+    ],
+    "containerSettings": {
+      "imageSourceRegistry": {
+        "image": "tensorflow/tensorflow:1.1.0-gpu"
+      }
+    }
+  }
+}
