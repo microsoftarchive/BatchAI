@@ -55,3 +55,25 @@ az batchai job create -n distributed_chainer --cluster-name nc6 -c job.json
 ```
 
 Note, the job will start running when the cluster finished allocation and initialization of the node.
+
+### Get Help
+
+The Azure CLI has built-in help documentation, which you can run from the command line:
+
+```sh
+az [command-group [command]] -h
+```
+
+For example, to get information about all Azure Batch AI categories, use:
+
+```sh
+az batchai -h
+```
+
+To get help with the command to create a cluster, use:
+
+```sh
+az batchai cluster create -h
+```
+
+You can use [CLI Quickstart](https://docs.microsoft.com/en-us/azure/batch-ai/quickstart-cli) as end-to-end example of CLI usage.
