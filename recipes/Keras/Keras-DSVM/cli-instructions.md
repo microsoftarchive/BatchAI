@@ -11,7 +11,8 @@ For GNU/Linux users:
 wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/Keras/Keras-DSVM/mnist_cnn.py?token=AcZzrU1mri0vNMxtUKL6GW6hSezGK7qBks5Z4ewWwA%3D%3D" -O mnist_cnn.py
 ```
 
-- Create an Azure File Share with `keras_samples` folder and upload convolutional.py into it:
+- Create an Azure File Share with `keras_samples` folder and upload mnist_cnn.py
+into it:
 
 ```sh
 az storage share create --name batchaisample
