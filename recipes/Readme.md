@@ -3,19 +3,9 @@
 ## Prerequisites
 
  1. Azure subscription. This can be a free trial subscription, MSDN, or the one you use for other work.
- 2. Azure Python SDK and azure-mgmt-batchai, if you like to run recipes using Python Jupyter notebook. See How to install [Azure SDK](https://docs.microsoft.com/en-us/python/azure/python-sdk-azure-install?view=azure-python). Install Batch AI management client using the following command:
- 
- ```sh
- pip install azure-mgmt-batchai
- ```
+ 2. Azure Python SDK and azure-mgmt-batchai, if you like to run recipes using Python Jupyter notebook. See How to install [Azure SDK](https://docs.microsoft.com/en-us/python/azure/python-sdk-azure-install?view=azure-python). 
  3. Azure CLI 2.0, if you like to run recipes using Azure CLI - See [Install Azure CLI 2.0](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest#install-on-windows) for instructions.
  4. Azure Storage Account in East US (required for all recipes). See [How to create Azure storage accounts](https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-account?toc=%2fazure%2fstorage%2ffiles%2ftoc.json)
- 5. Register with Microsoft.BatchAI and Microsoft.Batch providers using Azure CLI 2.0 (you can use Cloud Shell):
- ```sh
- az provider register -n Microsoft.BatchAI
- az provider register -n Microsoft.Batch
- ```
- Note, a provider registration can take up to 15 minutes.
  
 ## Make a Local Copy of Repo
 
@@ -30,12 +20,40 @@ Use the following links for a quick navigation:
 
 ## <a name="jupyternotebook"></a> Run Recipes Using Python Jupyter notebook
 
+### Create and Get your Azure Active Directory (AAD) application
+1.	Log in to your Azure Account through the [Azure portal](https://portal.azure.com/).
+2.	Select *Azure Active Directory*.
+3.	To get the AAD tenant ID, select *Properties* and copy the *Directory ID*.  This value is your **AAD tenant ID**.
+4.	Go back to *Azure Active Directory* and select *App registrations*.
+5.	Select *New application registration*.
+6.	Provide a name and URL for the application. After setting the values, select *Create*.
+7.	From *App registrations* in *Azure Active Directory*, select your application.
+8.	Copy the *Application ID* and this is your **AAD Client ID**. 
+9.	To generate an authentication key, select *Keys*.
+10.	Provide a description and a duration for the key. When done, select *Save*. After saving the key, the value of the key is displayed. Copy this value because you are not able to retrieve the key later. This is your **ADD Secret**.
+11.	To assign the just created application, select the subscription you are going to use for Azure Batch AI. (You can find it from *More Services* -> *Subscriptions*)
+12.	Select *Acess control (IAM)*
+13.	Select *Add*
+14.	Select *Contributor* as the *role*
+15.	Search for your application and select it.
+16.	Select *Save* to finish assigning the role. You see your application in the list of users assigned to a role for that scope.
+
+For a more detailed walk-through, please see [this link](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal).
+
+### Register BatchAI Resource Providers
+1.	Log in to your Azure Account through the [Azure portal](https://portal.azure.com/).
+2.	Select the subscription you are going to use for Azure Batch AI. (You can find it from *More Services* -> *Subscriptions*)
+3.  Select *Resource providers*
+4.  Register with **Microsoft.BatchAI** and **Microsoft.Batch providers**. 
+  
+Note, a provider registration can take up to 15 minutes.
+
 ### Create Configuration File for All Recipes 
 
 - Rename [configuration.json.template](/recipes/configuration.json.template) to configuration.json.
-- Populate it with your Batch AI credentials. Please see [this page](https://github.com/Azure/azure-sdk-for-python/wiki/Contributing-to-the-tests#getting-azure-credentials) on how to get your Azure AD credentials.
+- Fill in your subscription Id and your AAD application information as obtained in the above step. 
 - Leave the "base_url" filed as empty. 
-- Our recipe will automatically create resource group if not exist. You need to specify the name of your resource group to create. 
+- You need to specify the name of your resource group. Our recipe will automatically create resource group if it does not exist.  
 - Specify your Azure Storage account name and key, Please see [this page](https://docs.microsoft.com/en-us/azure/storage/common/storage-create-storage-account?toc=%2fazure%2fstorage%2ffiles%2ftoc.json).
 - Batch AI creates administrator user account on every compute node and enables ssh. You need to specify user name and at least a password or ssh public key for this account.
  
@@ -49,6 +67,21 @@ For your convenience, we provide a collection of helper functions in [utilities.
 - Download file with given shared access signature (SAS)
 - Print Job/Cluster status
 - File Streaming 
+
+### Install Azure Batch AI Management Client
+
+Install Batch AI management client using the following command:
+ 
+ ```sh
+ pip install azure-mgmt-batchai
+ ```
+
+### Install Azure Python SDK
+
+Since all recipes utlize APIs from other Azure products (e.g, Azure storage, credentials), it is also required to install the full package of Azure Python SDK:
+ ```sh
+ pip install azure
+ ```
 
 ### Install Jupyter Notebook
 
@@ -90,6 +123,15 @@ If you have multiple subscriptions, select Batch AI enabled subscription as defa
 ```sh
 az account set -s <your subscription>
 ```
+
+### Register BatchAI Resource Providers 
+
+Register with Microsoft.BatchAI and Microsoft.Batch providers use Azure CLI 2.0 (you can also use Cloud Shell):
+ ```sh
+ az provider register -n Microsoft.BatchAI
+ az provider register -n Microsoft.Batch
+ ```
+ Note, a provider registration can take up to 15 minutes.
 
 ### Configure Default Location
 
