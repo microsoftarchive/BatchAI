@@ -21,9 +21,8 @@ az storage file upload --share-name batchaisample --source tensorflow_mnist.py -
 
 ### Cluster
 
-For this recipe we will use a GPU cluster with two nodes (`min node = max node = 2`) of `Standard_NC6` size (one GPU) 
-with Ubuntu DSVM (```UbuntuDSVM```) image and Azure File share `batchaisample` mounted at 
-`$AZ_BATCHAI_MOUNT_ROOT/external`.
+For this recipe we will use a GPU cluster with two nodes (`min node = max node = 2`) of `Standard_NC6` size (one GPU)
+with Ubuntu DSVM (```UbuntuDSVM```) image and Azure File share `batchaisample` mounted at `$AZ_BATCHAI_MOUNT_ROOT/external`.
 
 #### Cluster Creation Command
 
@@ -47,9 +46,11 @@ The job creation parameters are in [job.json](./job.json):
 - stdOutErrPathPrefix specifies that the job should use file share for standard output and error streams;
 - nodeCount defines how many nodes will be used for the job execution;
 - ```tensorflow/tensorflow:1.1.0-gpu``` standard tensorflow container will be used and ```Horovod``` will be installed by job preparation command line.
-Note, you can build your own docker image containing tensorflow and Horovod instead;
-- The ```tensorflow_mnist.py``` example will be executed with custom toolkit. Note, Batch AI will create a hostfile for 
-the job, it can be found via ```$AZ_BATCHAI_MPI_HOST_FILE``` environment variable.
+You can build and publish your own docker image containing tensorflow and Horovod instead;
+- The ```tensorflow_mnist.py``` example will be executed with custom toolkit.
+- To run mpi task we will use hostfile generated but Batch AI and available via ```$AZ_BATCHAI_MPI_HOST_FILE``` environment variable.
+
+Note, you can delete ```containerSettings``` from the job definition to run the same job directly on the host DSVM.
 
 #### Job Creation Command
 

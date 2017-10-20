@@ -9,7 +9,8 @@ Currently Batch AI has no native support for Horovod framework, but it's easy to
 
 - Standard Horovod [tensorflow_mnist.py](https://github.com/uber/horovod/blob/v0.9.10/examples/tensorflow_mnist.py) example will be used;
 - tensorflow_mnist.py downloads training data on its own during execution;
-- The job will be run on standard tensorflow container ```tensorflow/tensorflow:1.1.0-gpu```;
+- The job will be run on standard tensorflow container ```tensorflow/tensorflow:1.1.0-gpu```. You can run the same job directly on GPU nodes by choosing Ubuntu DSVM as an image and removing
+container settings from the job definition.;
 - Horovod framework will be installed in the container using job preparation command line. Note, you can build your own docker image containing tensorflow and horovod instead.
 - Standard output of the job will be stored on Azure File Share.
 
