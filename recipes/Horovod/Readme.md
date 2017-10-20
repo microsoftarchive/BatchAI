@@ -7,13 +7,7 @@ See official [Horovod GitHub page](https://github.com/uber/horovod).
 
 #### [Horovod](./Horovod)
 
-This Horovod recipe contains information on how to run Horovod training job on a GPU cluster with Batch AI using containers.
-
-#### Horovod-DSVM
-
-It's possible to run Horovod training jobs directly on DSVM (Data Science Virtual Machine) for Linux as well.
-
-The recipe is coming soon.
+This Horovod recipe contains information on how to run Horovod training job on a GPU cluster with Batch AI. 
 
 
 ## Help or Feedback
