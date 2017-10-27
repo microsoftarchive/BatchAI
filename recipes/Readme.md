@@ -20,7 +20,30 @@ Use the following links for a quick navigation:
 
 ## <a name="jupyternotebook"></a> Run Recipes Using Python Jupyter notebook
 
-### Create and Get your Azure Active Directory (AAD) application
+### Create Credentials for Service Principal Authentication
+
+Jupyter notebook recipes require you to use service principal authentication rather than providing your account credentials.
+There are several ways to create a Service Principal as described in following sections:
+
+#### Using Azure CLI2.0
+1. Log in into Azure CLI 2.0
+2. Execute the following command
+```sh
+$ az ad sp create-for-rbac
+```
+Example output:
+```
+{
+  "appId": "...",
+  "displayName": "azure-cli-2017-10-27-18-45-51",
+  "name": "http://azure-cli-2017-10-27-18-45-51",
+  "password": "...",
+  "tenant": "..."
+}
+```
+Use appId value as aad_client_id, password as aad_secret and tenant as aad_tenant during configuration file creation later.
+
+#### Using Portal
 1.	Log in to your Azure Account through the [Azure portal](https://portal.azure.com/).
 2.	Select *Azure Active Directory*.
 3.	To get the AAD tenant ID, select *Properties* and copy the *Directory ID*.  This value is your **AAD tenant ID**.
