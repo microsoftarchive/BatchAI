@@ -4,6 +4,10 @@ Welcome to our documenting page at https://docs.microsoft.com/azure/batch-ai
 
 ## Updates 
 
+11.15.2017 Java SDK is [available](https://mvnrepository.com/artifact/com.microsoft.azure/azure-mgmt-batchai)
+
+11.08.2017 Node.js SDK is [available](https://www.npmjs.com/package/azure-arm-batchai)
+
 10.11.2017 C# nuget package Microsoft.Azure.Management.BatchAI is available on nuget.org.
 
 10.09.2017 Azure BatchAI starts public preview on October 9th, 2017!
