@@ -10,7 +10,7 @@ This document covers Azure CLI 2.0 setup and usage.
 [Quickstart for Bash in Azure Cloud Shell tutorial](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart).
 
 - Azure Data Science VM has Azure CLI 2.0 pre-installed but you may need to update it using [these instructions]
-(https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to get get access to the latest
+(https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to get access to the latest
 features.
 
 - If you prefer to setup Azure CLI 2.0 on your computer, please follow [these instructions]
@@ -112,34 +112,36 @@ $ az batchai cluster create -h
 
 ### Simple Use-Cases
 
-In most cases it's possible to create a new cluster using command line arguments without configuration file.
+In most cases, it's possible to create a new cluster using command line arguments without configuration file.
 
 To create a cluster, you need to provide a cluster name, location, resource group name, VM size, cluster scaling
 parameters, image to be used for cluster nodes and administrator account to be created on each cluster node. Optionally,
-you can configure cluster to mount Azure File Share, Azure Storage Container and single node NFS to be mounted on each
-node.
+you can configure cluster to mount Azure File Share, Azure Storage Container and single node NFS on each compute node.
 
-The following commands will create a new resource group 'demoGroup' and single node GPU cluster 'demoCluster' with
-Ubuntu LTS image in EastUS region. Batch AI will create 'demoUser' admin account on each node with 'DemoPassword':
+The following commands will create a new resource group `demoGroup` and single node GPU cluster `demoCluster` with
+Ubuntu LTS image in EastUS region. Batch AI will create `demoUser` admin account on each node with `DemoPassword`:
 
 ```bash
 $ az group create -l eastus -n demoGroup
 $ az batchai cluster create -l eastus -g demoGroup -n demoCluster -s Standard_NC6 -i UbuntuLTS --min 1 --max 1 -u demoUser -p demoPassword
 ```
 
-Note, you can avoid typing location and group name by setting up default values for Azure CLI 2.0:
+Note, you can avoid typing location and group name during clusters and jobs creation by setting up their default values
+for Azure CLI 2.0:
 ```bash
 $ az configure -d location=eastus
-$ az configure -d group=eastus
+$ az configure -d group=demoGroup
 ```
 
 #### Admin User Account
 BatchAI creates an admin user account on each compute node allowing you to perform SSH access to the nodes. You need to
 specify account name (using `-u` option), password and/or ssh public key for this account using `-p` and `-k` options.
 
+Note, you cannot use `admin` as an account name because Batch AI nodes already has a group with that name.
+
 It's highly recommended to use ssh public key option instead of password. GNU/Linux users can generate a private and
 public ssh keys using `ssh-keygen` command line utility, Windows users can generate keys using different 3rd party
-solutions (e.g. PuTTYgen included into a popular PuTTY client, cygwin, etc). `-k` value msy contain either public key
+solutions (e.g. PuTTYgen included into a popular PuTTY client, cygwin, etc). `-k` value may contain either public key
 value directly or a path to the file containing public ssh key.
 
 GNU/Linux users can provide admin user name and key as `-u $USER -k ~/.ssh/id_rsa.pub` to allow password-less SSH to GPU
@@ -147,14 +149,15 @@ nodes.
 
 #### Manual Scale Cluster
 If --min and --max arguments have the same value, `az` will create a cluster in manual scale mode - requested number of
-nodes will be allocated immediately after cluster creation and will remain until you manually resize or delete cluster.
+nodes will be allocated immediately after cluster creation and will remain until the cluster is manually resized or 
+deleted.
 
 #### Auto-Scale Cluster
 You can specify different values for --min and --max arguments. In this case, `Batch AI` will scale up/down cluster
 automatically depending on number of queued and running jobs. This option allows you to save money by releasing unused
 compute resources.
 
-e.g.
+For example,
 
 ```bash
 $ az batchai cluster create -l eastus -g demoGroup -n demoCluster -s Standard_NC6 -i UbuntuLTS --min 0 --max 1 -u demoUser -p demoPassword
@@ -164,16 +167,17 @@ will create a cluster with 0 nodes. The cluster will be scaled up when you submi
 there are no jobs to execute.
 
 #### Mounting Azure File Share and Storage Container
-You can configure a cluster to automatically mount Azure File Share and/or Storage Container during cluster creation.
-This allows you to access training data stored on Azure Storage from the jobs and store job's output (logs and models)
+You can configure a cluster to automatically mount Azure File Share and/or Storage Container on each node during cluster
+creation. This allows jobs to access training data stored on Azure Storage and to store its output (logs and models)
 on Azure Storage.
 
-To use this option you need to create a storage account and file share and/or container and provide their information
+To use this option you need to create a storage account, file share and/or container and provide their information
 during cluster creation.
 
 For example, the following commands will create a new resource group `demoGroup`, new storage account `demobatchaicli`,
-file share with name `demoafs` and container with name `democontainer` in EastUS and will create a cluster with file
-share mounted at $AZ_BATHAI_MOUNT_ROOT/azurefileshare and container mounted at $AZ_BATHAI_MOUNT_ROOT/azurecontainer:
+file share with name `demoafs` and container with name `democontainer` in EastUS and will create a cluster with Azure
+File Share mounted at $AZ_BATCHAI_MOUNT_ROOT/azurefileshare and the container mounted at 
+$AZ_BATCHAI_MOUNT_ROOT/azurecontainer:
 
 ```bash
 $ az group create -l eastus -n demoGroup
@@ -183,17 +187,24 @@ $ az storage container create -n democontainer --account-name batchaiclidemo
 $ az batchai cluster create -l eastus -g demoGroup -n demoCluster --storage-account-name demobatchaicli --afs-name demoafs --afs-mount-path azurefileshare --container-name democontainer --container-mount-path azurecontainer -s Standard_NC6 -i UbuntuLTS --min 1 --max 1 -u demoUser -p demoPassword 
 ```
 
-Note, storage account name must have an unique value, otherwise storage account creation command will return 
-`The storage account named demobatchaicli is already taken.` error.
+Note, storage account name must have an unique value, otherwise storage account creation command will fail with 
+`The storage account named demobatchaicli is already taken.` error message.
 
-Note, $AZ_BATHAI_MOUNT_ROOT is an environment variable set by Batch AI for each job, it's value depends on the image
-used for nodes creation, e.g. on Ubuntu based images, it's equal to `/mnt/batch/tasks/shared/LS_root/mounts`.
+$AZ_BATCHAI_MOUNT_ROOT is an environment variable set by Batch AI for each job, it's value depends on the image
+used for nodes creation. For example, on Ubuntu based images it's equal to `/mnt/batch/tasks/shared/LS_root/mounts`.
 
 If you want to use Azure File Share or Azure Container belonging to a storage account created in a different subscription,
-you need to provide `--storage-account-key` argument containing a key for that storage account.
+provide `--storage-account-key` argument containing a key for that storage account.
 
-You can provide only one Azure File Share and/or Azure Container via command line arguments, if you need to mount more
-than one external file system, please use Cluster Configuration File as described below.
+You can provide only one Azure File Share and/or Azure Container via command line arguments. Please use Cluster
+Configuration File if you need to mount more file systems.
+
+Note, Azure Container specified with `--container-name` argument will be mounted with the following mount options:
+```bash
+--use-https=true -o big_writes -o max_read=131072 -o max_write=131072 -o attr_timeout=240 -o fsname=blobfuse -o kernel_cache -o entry_timeout=240 -o negative_timeout=120 -o allow_other
+```
+
+You need to use Cluster Configuration File (described below) to use different mount options.
 
 #### Mounting NFS
 Azure File Shares and Azure Containers provide a convenient and cheap way to store data used or generated by training
@@ -203,16 +214,21 @@ a better performance in some situations (depending on data access patterns).
 To use this option you need to create a single node NFS using `az batchai file-server create` command as described in
 *Single Node NFS* section below and provide it's name via `--nfs` command line argument during cluster creation.
 
-For example, the following code will create a single node NFS `demoNFS` with 2 disks (10Gb each) and a single node GPU cluster with
-NFS mounted at $AZ_BATHAI_MOUNT_ROOT/azurecontainer:
+For example, the following code will create a single node NFS `demoNFS` with 2 disks (10Gb each) and a single node GPU 
+cluster `demoCluster` with NFS mounted at `$AZ_BATCHAI_MOUNT_ROOT/nfs`:
 
 ```bash
 $ az batchai file-server create -l eastus -g demoGroup -n demoNFS --disk-count 2 --disk-size 10 -s Standard_D1 -u demoUser -p demoPassword
 $ az batchai cluster create -l eastus -g demoGroup -n demoCluster --nfs demoNFS --nfs-mount-path nfs -s Standard_NC6 -i UbuntuLTS --min 1 --max 1 -u demoUser -p demoPassword
 ```
 
-If NFS was created in a different resource group than a cluster, you need to provide that group name via 
-`--nfs-resource-group` command line argument.
+You can use different resource group name for the NFS and cluster, in this case you need to provide NFS's resource group
+via `--nfs-resource-group` command line argument. For example,
+
+```bash
+$ az batchai file-server create -l eastus -g demoNFSGroup -n demoNFS --disk-count 2 --disk-size 10 -s Standard_D1 -u demoUser -p demoPassword
+$ az batchai cluster create -l eastus -g demoGroup -n demoCluster --nfs demoNFS --nfs-resource-group demoNFSGroup --nfs-mount-path nfs -s Standard_NC6 -i UbuntuLTS --min 1 --max 1 -u demoUser -p demoPassword
+```
 
 ### Using Cluster Configuration File
 There are several scenarios (described below) which require you to use Cluster Configuration File for cluster creation.
@@ -220,16 +236,16 @@ There are several scenarios (described below) which require you to use Cluster C
 Cluster Configuration File is a json file containing ClusterCreateParameters object as defined by swagger specification
 available at [Azure/azure-rest-api-specs github](https://github.com/Azure/azure-rest-api-specs/blob/current/specification/batchai/resource-manager/Microsoft.BatchAI/2017-09-01-preview/BatchAI.json#L1560).
 
-Note, you don't need to read the specification to create a configuration file, just use the following sections instead.
-
 To create a cluster using using Cluster Configuration File use `az batchai cluster create` command with `-c` option.
 Note, the command line arguments provided on command line (e.g. VM size, image, scaling options and admin account) will
 overwrite the corresponding options defined in the configuration file.
 
+The following sessions describe how to use Cluster Configuration File for different scenarios.
+
 #### Running Custom Steps During Cluster Creation  
-It's possible to make customizations (e.g. install additional packages or download data used by multiple jobs) into each
-cluster node by providing `setupTask`. `setupTask` is a command line which will be executed immediately after a node has
-been allocated or rebooted. To provide `setupTask` create a cluster.json file like this:
+It's possible to make customizations (e.g. install additional packages or download data used by multiple jobs) to each
+cluster node by providing `setupTask`. `setupTask` is a command line which will be executed on a node immediately after
+the node has been allocated or rebooted. To provide `setupTask` create a cluster.json file like this:
 
 ```json
 {
@@ -252,9 +268,10 @@ been allocated or rebooted. To provide `setupTask` create a cluster.json file li
     }
 }        
 ```
+
 This configuration file specifies that `echo Hello` command line needs to be run on each node under `root` account, its
-standard and error output should be stored on file system mounted at `$AZ_BATCHAI_MOUNT_ROOT/afs` and that given
-environment variables needs to be setup for this command line.
+standard and error output should be stored on file system mounted at `$AZ_BATCHAI_MOUNT_ROOT/afs` and specifies two
+environment variables which should be setup before the command line execution.
 
 You will be able to find standard and error output of setup task for each node in a folder 
 `/{subscription id}/{resource group}/clusters/{cluster name}` in files `stdout-{node id}.txt` and `stderr-{node id}.txt`.
@@ -282,7 +299,7 @@ az batchai cluster create -l eastus -g demoGroup -n demoCluster -s Standard_NC6 
 
 #### Mounting Multiple Filesystems
 If you need to use multiple Azure File Shares, Azure Containers or NFS, create a cluster.json file containing
-`nodeSetup.mountVolumes` object like this (defines 2 Azure File Share, 2 Azure Containers and 2 NFSes):
+`nodeSetup.mountVolumes` object like this:
 
 ```json
 {
@@ -352,6 +369,8 @@ If you need to use multiple Azure File Shares, Azure Containers or NFS, create a
     }
 }
 ```
+This configuration file specifies two Azure File Shares, two Azure Containers and two NFSes which should be mounted on
+compute nodes.
 
 You can provide values for `accountName` and `accountKey` directly in the file, or use `<AZURE_BATCHAI_STORAGE_ACCOUNT>`
 and `<AZURE_BATCHAI_STORAGE_KEY>` placeholders which will be replaced by `az` with storage account information provided 
@@ -371,10 +390,10 @@ Note, if you are mounting several NFSes into a cluster, all of them must be in t
 
 #### Mounting Unmanaged Filesystems
 BatchAI allows you to mount your own NFS, cifs or GlusterFS clusters using configuration file. It's recommended to create
-GPU and storage clusters in the same vnet subnet and use private IPs during mounting.
+GPU and storage clusters in the same vnet subnet and use private IP addresses for mounting storage clusters.
 
 For example, you can create a [GlusterFS using Batch Shipyard](https://github.com/Azure/batch-shipyard/tree/master/recipes/RemoteFS-GlusterFS)
-and mount it by creating the a cluster.json file like this:
+and mount it on Batch AI nodes by creating a cluster.json file like this:
 
 ```json
 {
@@ -390,16 +409,16 @@ and mount it by creating the a cluster.json file like this:
             }
         },
         "subnet": {
-            "id": "/subscriptions/96e24697-db1e-4277-9237-68a1eee5738e/resourceGroups/gluster/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/my-server-subnet"
+            "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/gluster/providers/Microsoft.Network/virtualNetworks/myvnet/subnets/my-server-subnet"
         }
     }
 }
 ```
 
 where `10.0.0.4` is a private IP of any GlusterFS node, `gv0` is the default volume name used by Batch Shipyard and
-`subnet.id` is an ID of vnet subnet created by shipyard.
+`subnet.id` is an ID of vnet subnet created by Batch Shipyard during GlusterFS creation.
 
-Note, all NFSes and Unmanaged File Systems must be in the same vnet subnet if private IPs are used for mounting.
+Note, all NFSes and Unmanaged File Systems mounted to a cluster using private IP addresses must be in the same vnet subnet.
    
 ## Monitoring Clusters
 You can get a list of all BatchAI clusters under your subscription using the following command:
@@ -408,7 +427,7 @@ You can get a list of all BatchAI clusters under your subscription using the fol
 $ az batchai cluster list -o table -g ''
 ```
 
-Example output is:
+Example output:
 ```
 Name           Resource Group    VM Size       State      Idle    Running    Preparing    Leaving    Unusable
 -------------  ----------------  ------------  -------  ------  ---------  -----------  ---------  ----------
@@ -416,18 +435,18 @@ dsvm           demo              STANDARD_D1   steady        1          0       
 democluster    demogroup         STANDARD_NC6  steady        0          0            1          0           0
 ```
 
-where:
+, where:
 - State - current state of the cluster: steady, resizing, deleting;
 - Idle - number of idling nodes ready to execute jobs;
 - Running - number of nodes currently executing jobs;
-- Preparing - number of recently allocated nodes which perform preparation tasks (e.g installing drivers, mounting
+- Preparing - number of recently allocated nodes which perform preparation tasks (e.g drivers installation, mounting
 file system, running startup task);
 - Leaving - number of nodes which are leaving the cluster because of scale down or resizing command;
-- Unusable - number of nodes in unusable state (e.g. which failed preparation or startup tasks).
+- Unusable - number of nodes in unusable state (e.g. nodes which failed preparation or startup tasks).
 
-Note, `-g ''` option tells to show cluster in all resource groups even if default resource group was configured (via 
-`az configure -d group=<group name>` command). Without this option, the command will show only clusters created in the
-default resource group.
+Note, `-g ''` option tells `az` to show cluster in all resource groups even if default resource group was configured
+(via `az configure -d group=<group name>` command). Without this option, the command will show only clusters created in
+the default resource group.
 
 You can list cluster belonging to a particular resource group by giving its name in `-g` option:
 
@@ -435,7 +454,7 @@ You can list cluster belonging to a particular resource group by giving its name
 $ az batchai cluster list -o table -g demogroup
 ```
 
-Example output is:
+Example output:
 ```
 Name           Resource Group    VM Size       State      Idle    Running    Preparing    Leaving    Unusable
 -------------  ----------------  ------------  -------  ------  ---------  -----------  ---------  ----------
@@ -456,13 +475,11 @@ Name           Resource Group    VM Size       State      Idle    Running    Pre
 democluster    demogroup         STANDARD_NC6   steady        0          0            1          0           0
 ```
 
-To get detailed information about a cluster use `az batchai cluster show` command like:
+To get detailed information about a cluster use `az batchai cluster show` command. For example:
 
 ```bash
 $ az batchai cluster show -n democluster -g demogroup
 ```
-
-Note, you can omit `-g` option if default resource group is configured.
   
 Sample output:
 ```
@@ -545,9 +562,10 @@ Sample output:
 }
 ```
 
+Note, you can omit `-g` option if default resource group is configured.
+
 ## SSH to Cluster Nodes
-You can get information about the nodes belonging to the cluster using 
-`az batchai cluster list-nodes` command:
+You can get information about the nodes belonging to the cluster using `az batchai cluster list-nodes` command:
 
 ```bash
 $ az batchai cluster list-nodes -n democluster -g demoGroup -o table
@@ -560,12 +578,13 @@ ID                                 IP               Port
 tvm-1783593343_1-20171127t163917z  52.168.39.226   50000
 ```
 
-,where:
-- ID - node id (used as suffix in file names for standard and error output of setup task);
+, where:
+- ID - node id (used as suffix in file names for standard and error output of setup tasks);
 - IP - public IP of the node;
 - Port - SSH port of the node.
 
 GNU/Linux users can ssh to the node using the following command:
+
 ```bash
 $ ssh 52.168.39.226 -p 50000
 ```
@@ -573,13 +592,15 @@ $ ssh 52.168.39.226 -p 50000
 ## Resizing Clusters
 You can resize a cluster at any time using `az batchai cluster resize` command.
 For example, the following command will resize `demoCluster` to have no nodes:
+
 ```bash
 $ az batchai cluster resize -n democluster -g demoGroup -t 0
 ```
 
 You can also switch a cluster into auto-scale mode using `az batchai cluster auto-scale`
-command. E.g. the following command will setup auto-scale mode for `demoCluster` and Batch AI
-will scale the cluster from 0 to 10 nodes depending on the number of running and pending jobs:
+command. For example, the following command will setup auto-scale mode for `demoCluster` and Batch AI
+will scale the cluster automatically between 0 and 10 nodes depending on the number of running and pending jobs:
+
 ```bash
 $ az batchai cluster auto-scale -n democluster -g demoGroup --min 0 --max 10
 ```
@@ -590,14 +611,12 @@ You can delete the cluster using `az batchai cluster delete` command, e.g.
 $ az batchai cluster delete -n democluster -g demoGroup
 ```
 
-Note, the command will ask you for confirmation and may take significant time,
-you can provide `-y` option to skip confirmation (e.g. if running as part of non-interactive
-script) and you can provide `--no-wait` to skip waiting for the deletion completion (useful if
-you need to delete multiple resources and want to make it simultaneously).
+Note, the command will ask you for confirmation and may take a significant time to complete. You can provide `-y` option
+to skip the confirmation (e.g. this command is a part of non-interactive script). You can provide `--no-wait` option to
+skip waiting for the deletion completion (useful if you need to delete multiple resources simultaneously).
 
 # Jobs Management
-Azure CLI 2.0 allows you to submit, terminate, delete and get information about BatchAI training
-jobs.
+Azure CLI 2.0 allows you to submit, terminate, delete and get information about BatchAI training jobs.
 
 Please use take look at integrated help to get familiar with jobs related commands:
 
@@ -661,7 +680,7 @@ Global Arguments
 ```
 
 To create a job you need to specify location, resource group name (you can use the same resource group as you used for
-the cluster), job name, cluster to run the job and provide a configuration file.
+the cluster), job name, cluster to run the job and provide a job configuration file.
 
 For example,
 
@@ -672,18 +691,24 @@ $ az batchai job create -l eastus -n demoJob -g demoGroup -r demoCluster -c job.
 will submit a new job `demoJob` to be run on `demoCluster` cluster in `demoGroup` resource group, the job configuration
 will be read from job.json file.
 
+You can use different resource groups for clusters and jobs, in this case you need to specify cluster's resource group
+using `--cluster-resource-group` argument. For example, the following command will create a job in `demoGroup` resource
+group to be run on `demoCluster` cluster created in `demoClusterGroup` resource group:
+
+```bash
+$ az batchai job create -l eastus -n demoJob -g demoGroup -r demoCluster --cluster-resource-group demoClusterGroup -c job.json 
+```
+
 Job submission is a long running operation which usually takes a dozen of seconds to complete. You can skip waiting by
 providing `--no-wait` argument (can be useful if you need to submit multiple jobs at once). 
 
 ### Job Configuration File
-Job's configuration file is a json file containing `JobCreateParameters` object as defined by swagger spec available at
+Job configuration file is a json file containing `JobCreateParameters` object as defined by swagger spec available at
 [Azure/azure-rest-api-specs github](https://github.com/Azure/azure-rest-api-specs/blob/current/specification/batchai/resource-manager/Microsoft.BatchAI/2017-09-01-preview/BatchAI.json#L1847).
 
 Job configuration file defines framework specific parameters, number of nodes required for job execution, description of
 input and output directories, docker container to run the job and job preparation steps. The following sections
-describes all those parameters in details.
-
-Here is an example of a job configuration file to run CNTK ConvNet MNIST training job:
+describes all those parameters in details. Here is a job configuration file which we will use as reference:
 
 ```json
 {
@@ -692,6 +717,9 @@ Here is an example of a job configuration file to run CNTK ConvNet MNIST trainin
         "cntkSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/ConvNet_MNIST.py",
             "commandLineArgs": "$AZ_BATCHAI_INPUT_DATASET $AZ_BATCHAI_OUTPUT_MODEL"
+        },
+        "jobPreparation": {
+            "commandLine": "echo This is a job preparation task"
         },
         "environmentVariables": [
             {
@@ -717,77 +745,94 @@ Here is an example of a job configuration file to run CNTK ConvNet MNIST trainin
             "imageSourceRegistry": {
                 "image": "microsoft/cntk:2.1-gpu-python3.5-cuda8.0-cudnn6.0"
             }
-        },
-        "jobPreparation": {
-            "commandLine": "echo This is a job preparation task"
         }
     }
 }
 ```
 
-We will use this configuration file as a reference in the below sections.
-
-### Supported Frameworks
-Batch AI supports multiple frameworks (CNTK, Caffe, Caffe2, TensorFlow, etc). The best way to get familiar with framework
-specific arguments required for running single node and distributed training jobs is to explore recipes available on
-[Azure/BatchAI github](https://github.com/Azure/BatchAI/tree/master/recipes). Each recipe contains Jupyter notebook and
-CLI instructions which you can use as a base for your jobs.
-
-For example, the job configuration file given above specifies to use CNTK framework and tells BatchAI to run
-`ConvNet_MNIST.py` python script from configured input directory `DATASET` (see Input Directories section for
-description) and provide two command line arguments to this script. The first one is configured input directory `DATASET`
-containing MNIST database and the second one is the configured output directory (see Output Directories section for 
-details) to store a model.
-
 ### Number of Nodes to Run the Job
 You need to specify number of nodes required to run your job using `nodeCount` attribute. Batch AI will take care of
-setting up required environment to run a distributed job if this value greater than 1.  
+setting up required environment to run a distributed job if this value greater than 1.
+
+The job will start execution when required number of compute nodes become available in the cluster.
+
+### Framework Specific Settings
+Batch AI supports multiple frameworks (CNTK, Caffe, Caffe2, TensorFlow, etc). The best way to get familiar with framework
+specific arguments required for running single GPU and distributed training jobs is to explore recipes available on
+[Azure/BatchAI github](https://github.com/Azure/BatchAI/tree/master/recipes). You can use job's configuration described 
+in those recipes as a starting point for your job configuration.
+
+For example, the job configuration file given above describes a job which uses CNTK framework with `ConvNet_MNIST.py` 
+python script and requires two command line arguments.
+
+### Job Preparation Task
+You can configure special preparation steps which needs to be run before job execution using job preparation task. This
+functionality can be used to downloading and prepare training data as done in
+[this recipe](https://github.com/Azure/BatchAI/blob/master/recipes/CNTK/CNTK-GPU-Python-Distributed/job.json) or to
+install additional dependencies like in 
+[this recipe](https://github.com/Azure/BatchAI/blob/master/recipes/Horovod/Horovod/job.json).
+
+Job preparation task is executed directly on the node or in the same container as the job depending on presence of
+`containerSettings` configuration section. 
+
+For example, the configuration file given above specifies that `echo This is a job preparation task` should be executed
+in each container before starting CNTK job.
+
+Note, if job preparation task fails, the job will fail as well.
+
+### User Defined Environment Variables
+You can define environment variable which will be setup by Batch AI for your job using `environmentVariables` array as
+in example above. The environment variable will be available both for the job and for the job preparation task. 
 
 ### Standard and Error Output 
-Batch AI will store job's standard output (stdout and stderr) in a folder combined from `stdOutErrPathPrefix`, your 
-subscription id, resource group name, job name and job's unique identifier (used to distinguish output from jobs
-submitted with the same name).
+Batch AI will store job and job preparation task standard output (stdout and stderr) in a folder 
+`{stdOutErrPathPrefix}/{subscription id}/{resource group}/jobs/{job name}/{job uuid}/`, where `job uuid` is an unique ID
+of a job, it's used to distinguish output of the job from output of deleted jobs which had the same job name.
 
-It's recommended to make stdOutErrPathPrefix equal to Azure File Share mount point if you want to monitor job execution
-by observing its standard/error output via via Azure Portal, Storage Explorer, jupyter notebook or CLI.
+It's recommended to make stdOutErrPathPrefix to be located on Azure File Share mount point if you want to monitor job
+output during job execution via Azure Portal, Storage Explorer, Jupyter notebook or CLI.
 
-You can configure `stdOutErrPathPrefix` to match Azure Container as well, but client side caching of blob fuse will make
-job's output/error available only when job is completed (succeeded or failed).
+You can configure `stdOutErrPathPrefix` to be located on Azure Container as well, but client side caching of blob fuse
+makes job's output/error available only when job is completed.
 
-You can use $AZ_BATCHAI_JOB_TEMP_DIR as `stdOutErrPathPrefix` if you don't want to store job's output in external
-storage and use SSH to monitor the job directly on the node. Note, the content of $AZ_BATCHAI_JOB_TEMP_DIR is deleted
-when a new job is going to be executed by a node.
+You can configure `stdOutErrPathPrefix` to be equal to `$AZ_BATCHAI_JOB_TEMP_DIR` (a temporary folder created on node's
+ssd drive) if you don't want to store job's output in external storage. Batch AI doesn't provide API to access this
+folder, so you will to ssh to the compute node to access job's standard and error outputs. Note, the content of
+`$AZ_BATCHAI_JOB_TEMP_DIR` is deleted when a new job is going to be executed by a node.
 
 ### Input Directories
-Input directories is a way to setup an alias for a directory located on a mounted external file system. For example, 
-the job configuration file given before defines two input directories: `DATASET` with path 
+Input directories is a way to setup an alias for a directories containing training data. For example, 
+the job configuration file given above defines two input directories: `DATASET` with path 
 `$AZ_BATCHAI_MOUNT_ROOT/external/mnist_database` and `SCRIPT` with path `$AZ_BATCHAI_MOUNT_ROOT/external/cntk_samples`.
-
 The job can access those directories using environment variables `$AZ_BATCHAI_INPUT_DATASET` and 
-`$AZ_BATCHAI_INPUT_SCRIPT`. So, it's possible to write a training job script file which depends on those environment
-variables instead of paths and reuse it for different cluster and jobs configurations (e.g. it's possible to move
-training data to a different location without changing the training script).
+`$AZ_BATCHAI_INPUT_SCRIPT`.
 
-An additional benefit of using input directories instead of paths or environment variables is an additional functionality
-provided by various tools to work with them (e.g. AI plugin for Visual Studio and Azure Portal support input directories).
+Defining input directories allows you to create training job scripts which depend on aliases instead of paths, so you
+can change data location without changing the script.
+
+Another benefit of using input directories is an additional functionality provided by various tools to work with them (
+e.g. AI plugin for Visual Studio and Azure Portal provide a simple access to content of the input directories).
  
 ### Output Directories
 Output directories is a way to specify where job should store its output. Output directory is configured by specifying an
-unique in scope of the job configuration file directory ID, path prefix and suffix. For each output directory Batch AI
-will create a folder with a path `{prefix}/{subscription id}/{resource group}/jobs/{job name}/{job uuid}/outputs/{suffix}`
-and setup an environment variable `$AZ_BATCHIA_OUTPUT_{directory ID}`. Where `job uuid` is an unique ID of a job to
-avoid conflicts between job's output and output of a deleted jobs which had the same name.
+unique (in job's scope) directory ID, path prefix and suffix. For each output directory Batch AI will create a folder
+with a path `{prefix}/{subscription id}/{resource group}/jobs/{job name}/{job uuid}/outputs/{suffix}` and will setup an 
+environment variable `$AZ_BATCHIA_OUTPUT_{directory ID}`. Here `job uuid` is an unique ID of a job, it's used to avoid
+conflicts  between job's output and output of a deleted jobs which had the same job name.
 
 Azure CLI 2.0, Azure Portal and AI plugin for Visual Studio provide access to output files stored in configured output 
 directories.
 
 ### Docker Container
-Batch AI can run training jobs in docker containers or directly on node (if it has all required dependency installed).
-To run the the job in a docker container you need to provide `containerSettings` in your jobs configuration file (see an
-example above). Batch AI allows to use custom image repository by providing `serverUrl` attribute and private images by
-providing user name and password or KeyVaultSecret reference.
+Batch AI can run training jobs in docker containers or directly on the compute nodes. To run the the job in a docker
+container you need to provide `containerSettings` in your jobs configuration file. For example, the configuration file
+given above tells Batch AI to run CNTK job in a container with `microsoft/cntk:2.1-gpu-python3.5-cuda8.0-cudnn6.0`
+docker image.
 
-Here is a full featured example of specifying `containerSetting` using private registry:
+Batch AI allows to use custom image repository by providing `serverUrl` attribute. You can use private images by
+providing user name and password or KeyVaultSecret reference as well.
+
+Here is a full featured example of specifying `containerSetting` using private image from a custom registry:
 
 ```json
 {
@@ -809,23 +854,6 @@ Here is a full featured example of specifying `containerSetting` using private r
 
 Note, you need to use fully-qualified image name if you are using custom image repository.
 
-### Job Preparation Task
-You can configure special preparation task which needs to be run before job execution. Job preparation task can be useful
-for downloading training data to the node (as in
-[this recipe](https://github.com/Azure/BatchAI/blob/master/recipes/CNTK/CNTK-GPU-Python-Distributed/job.json)) or to
-install additional dependencies like in 
-[this recipe](https://github.com/Azure/BatchAI/blob/master/recipes/Horovod/Horovod/job.json).
-
-Job preparation task is executed directly on the node or in the same container as the job depending on presence of
-`containerSettings` section. Note, if job preparation task fails, the job will fail as well.
-
-To define job preparation task, add the `jobPreparation` object into your job configuration like in job configuration
-example above.
-
-### User Defined Environment Variables
-You can define environment variable which will be setup by Batch AI for your job using `environmentVariables` array as
-in example before. The environment variable will be available both for the job and for the job preparation task. 
-
 ## Monitoring Jobs
 You can list all jobs under your subscription using the following command:
 
@@ -835,11 +863,11 @@ $ az batchai job list -o table -g ''
 
 Example output:
 ```
-Name                 Resource Group    Cluster       Cluster RG    Tool      Nodes  State        Exit code
--------------------  ----------------  ------------  ------------  ------  -------  ---------  -----------
-job1                 demo              demoCluster   demo          custom        1  succeeded            0
-job2                 demoGroup         demoCluster   demoGroup     cntk          1  failed             127
-job3                 demoGroup         demoCluster   demoGroup     caffe         1  queued               
+Name    Resource Group    Cluster       Cluster RG    Tool      Nodes  State        Exit code
+------  ----------------  ------------  ------------  ------  -------  ---------  -----------
+job1    demo              demoCluster   demo          custom        1  succeeded            0
+job2    demoGroup         demoCluster   demoGroup     cntk          1  failed             127
+job3    demoGroup         demoCluster   demoGroup     caffe         1  queued               
 
 ```
 
@@ -934,7 +962,6 @@ In this output you can find information about the job (toolkit, container, input
 failure reason, execution time and other information.
 
 ## Access Files in Output Directories
-
 You can enumerate files in job's output directories by using `az batchai job list-files` command. For example, the
 following command will list files in standard `stdouterr` directory containing job and job preparation stdout and stderr
 files for the job `job2`:
@@ -974,20 +1001,41 @@ You can stream (similar to GNU/Linux `tail -f` command) the job's output using `
 $ az batchai job stream-file -j job2 -g demoGroup -d stdouterr -n stdout.txt 
 ```
 
-this command will periodically check stdout.txt file and print its update on the screen. You need to press `Ctrl-C` to 
+this command will periodically check stdout.txt file and print its updates on the screen. You need to press `Ctrl-C` to 
 interrupt the output.
 
 Note, `az` does not know which files your job will generate, so it accepts any file name and waits for this file to 
 become available.
 
 Note, if Azure Container is configured as an output directory, the file will become available for streaming only when job
-closes the file (e.g. completed).
+closes the file.
+
+## SSH to Job Nodes
+You can find information about nodes executed a job using `az batchai job list-nodes` command. For example,
+
+```bash
+$ az batchai job list-nodes -n democJob -g demoGroup -o table
+```
+
+Example output:
+```
+ID                                 IP               Port
+---------------------------------  -------------  ------
+tvm-1783593343_1-20171127t163917z  52.168.39.226   50000
+```
+
+Use returned IP address and port to ssh to the node, e.g.
+
+```bash
+$ ssh -p 50000 52.168.39.226
+```
 
 ## Jobs Termination and Deletion
 
 You can terminate and delete jobs using `az batchai job terminate` and `az batchai job delete` commands. Both commands
 require you to confirm the action, so if you are going to use this commands from non-interactive scripts, please provide
-`-y` parameter. Job deletion may take a long time, it you don't want to wait for job deletion provide `--no-wait` argument.
+`-y` parameter. Job deletion may take a long time, specify `--no-wait` to skip waiting if you need to submit multiple
+requests simultaneously.
 
 For example,
 
@@ -995,7 +1043,7 @@ For example,
 $ az batchai job delete -n job3 -g demoGroup -y --no-wait
 ``` 
 
-will submit `job3` deletion request without any confirmation and return execution immediately without waiting for the
+will submit `job3` deletion request without confirmation and return execution immediately without waiting for the
 job to be actually deleted.
 
 # Single node NFS
@@ -1085,7 +1133,7 @@ demoNfs   demoGroup         STANDARD_D2  1 x 10 Gb  40.76.81.214  10.0.0.4      
 
 ## SSH to NFS node
 To ssh to NFS node use the public IP returned by `az batchai file-server list` or `az batchai file-server show` command
-and standard ssh port 22 (you don't need to provide it).
+and standard ssh port 22 (you don't need to provide it in ssh command).
  
 ## Deletion
 Use `az batchai file-server delete` command to delete NFS.
