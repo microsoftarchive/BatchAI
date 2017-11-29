@@ -98,7 +98,7 @@ $ az account set -s "Visual Studio Enterprise"
 $ az provider register -n Microsoft.Batch
 $ az provider register -n Microsoft.BatchAI
 ```
-
+ 
 # Clusters Management
 Azure CLI 2.0 allows you to create, resize, delete and get information about clusters.
 
@@ -194,7 +194,9 @@ $AZ_BATCHAI_MOUNT_ROOT is an environment variable set by Batch AI for each job, 
 used for nodes creation. For example, on Ubuntu based images it's equal to `/mnt/batch/tasks/shared/LS_root/mounts`.
 
 If you want to use Azure File Share or Azure Container belonging to a storage account created in a different subscription,
-provide `--storage-account-key` argument containing a key for that storage account.
+provide `--storage-account-key` argument containing a key for that storage account. Optionally, you can setup 
+`AZURE_BATCHAI_STORAGE_ACCOUNT` and `AZURE_BATCHAI_STORAGE_KEY` on you computer to not provide `--storage-account-name`
+and `--storage-account-key`.
 
 You can provide only one Azure File Share and/or Azure Container via command line arguments. Please use Cluster
 Configuration File if you need to mount more file systems.
@@ -387,6 +389,9 @@ You can find more information about the recommended options at
 [Azure/azure-storage-fuse](https://github.com/Azure/azure-storage-fuse) github page.
 
 Note, if you are mounting several NFSes into a cluster, all of them must be in the same vnet subnet.
+
+Instead of providing storage account key via environment variables or in the config file, you may prefer to share it
+with Batch AI using KeyVault as described in `Using KeyVault for Storing Secrets` section.
 
 #### Mounting Unmanaged Filesystems
 BatchAI allows you to mount your own NFS, cifs or GlusterFS clusters using configuration file. It's recommended to create
@@ -854,6 +859,32 @@ Here is a full featured example of specifying `containerSetting` using private i
 
 Note, you need to use fully-qualified image name if you are using custom image repository.
 
+Instead of providing the password in the config file, you can use KeyVault to share it with Batch AI (see `Using
+KeyVault for Storing Secrets` section for more instructions):
+
+```json
+{
+    "properties": {
+        ...
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "serverUrl": "demo.azurecr.io",
+                "image": "demo.azurecr.io/myimage",
+                "credentials": {
+                    "username": "demo",
+                    "passwordSecretReference": {
+                        "sourceVault": {
+                            "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batchaisecrets/providers/Microsoft.KeyVault/vaults/demokeyvault"
+                        },
+                        "secretUrl": "https://demokeyvault.vault.azure.net/secrets/nameofsecter"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+ 
 ## Monitoring Jobs
 You can list all jobs under your subscription using the following command:
 
@@ -1137,3 +1168,97 @@ and standard ssh port 22 (you don't need to provide it in ssh command).
  
 ## Deletion
 Use `az batchai file-server delete` command to delete NFS.
+
+# Using KeyVault for Storing Secrets
+There are currently two types of secrets you may need to provide to Batch AI service - storage account keys and docker
+images private repositories credentials. You can either provide this information via configuration files or use KeyVault
+to share secrets with Batch AI.
+
+This section describes how to create KeyVault and share secrets with Batch AI.
+
+1. Create a resource group for new KeyVault (it's recommended to have a dedicated resource group for it). For example:
+```bash
+$ az group create -l eastus -n batchaisecrets
+```
+
+2. Create a key vault with a globally unique name in new resource group:
+ 
+```bash
+$ az keyvault create -l eastus -g batchaisecrets -n <keyvault name>
+```
+
+, where <keyvault name> is an unique name (GNU/Linux users can use `pwgen` utility to generate an unique name
+ for KeyVault - ```pwgen 24 1```).
+ 
+Example output:
+```json
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batchaisecrets/providers/Microsoft.KeyVault/vaults/demokeyvault",
+  "location": "eastus",
+  "name": "demokeyvault",
+  "vaultUri": "https://demokeyvault.vault.azure.net/",
+  ...   
+  "resourceGroup": "batchaisecrets",
+  "tags": {},
+  "type": "Microsoft.KeyVault/vaults"
+}
+```
+
+3. Give Batch AI 'get' permission on this KeyVault:
+```bash
+$ az keyvault set-policy --spn 9fcb3732-5f52-4135-8c08-9d4bbaf203ea -n <keyvault name> -g batchaisecrets --secret-permissions get list
+```
+, here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft BatchAI.
+
+4. Add new secret containing the private repo password:
+```bash
+az keyvault secret set --vault-name <keyvault name> --name nameofsecret --value secretvalue
+```
+, here `nameofsecret` is a name of the secret (e.g. demoStorageKey) and `secretvalue` is the secret itself (e.g. a value
+of the storage key).
+
+Example output:
+
+```json
+{
+  "attributes": {
+    "created": "2017-11-28T23:14:56+00:00",
+    "enabled": true,
+    "expires": null,
+    "notBefore": null,
+    "recoveryLevel": "Purgeable",
+    "updated": "2017-11-28T23:14:56+00:00"
+  },
+  "contentType": null,
+  "id": "https://demokeyvault.vault.azure.net/secrets/nameofsecter/769fef65a64f476d9b3924a96fe73c57",
+  "kid": null,
+  "managed": null,
+  "tags": {
+    "file-encoding": "utf-8"
+  },
+  "value": "secretvalue"
+}
+```
+
+Now, for example, instead of providing a storage key in Cluster Configuration File, you can provide 
+`accountKeySecretReference` like this:
+
+```json
+{
+    "azureFileShares": [
+        {
+            "accountName": "demoStorage",
+            "azureFileUrl": "https://demoStorage.file.core.windows.net/demoShare",
+            "credentials": {
+                "accountKeySecretReference": {
+                    "sourceVault": {
+                        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batchaisecrets/providers/Microsoft.KeyVault/vaults/demokeyvault"
+                    },
+                    "secretUrl": "https://demokeyvault.vault.azure.net/secrets/nameofsecter"
+                }
+            },
+            "relativeMountPath": "afs"
+        }
+    ]
+}
+```
