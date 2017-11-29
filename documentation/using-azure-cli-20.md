@@ -214,7 +214,7 @@ jobs. Another storage option supported by Batch AI is a single node NFS. This so
 a better performance in some situations (depending on data access patterns).
 
 To use this option you need to create a single node NFS using `az batchai file-server create` command as described in
-*Single Node NFS* section below and provide it's name via `--nfs` command line argument during cluster creation.
+[Single Node NFS](#single-node-nfs) section below and provide it's name via `--nfs` command line argument during cluster creation.
 
 For example, the following code will create a single node NFS `demoNFS` with 2 disks (10Gb each) and a single node GPU 
 cluster `demoCluster` with NFS mounted at `$AZ_BATCHAI_MOUNT_ROOT/nfs`:
@@ -391,7 +391,7 @@ You can find more information about the recommended options at
 Note, if you are mounting several NFSes into a cluster, all of them must be in the same vnet subnet.
 
 Instead of providing storage account key via environment variables or in the config file, you may prefer to share it
-with Batch AI using KeyVault as described in `Using KeyVault for Storing Secrets` section.
+with Batch AI using KeyVault as described in [Using KeyVault for Storing Secrets](#using-keyvault-for-storing-secrets) section.
 
 #### Mounting Unmanaged Filesystems
 BatchAI allows you to mount your own NFS, cifs or GlusterFS clusters using configuration file. It's recommended to create
@@ -859,8 +859,7 @@ Here is a full featured example of specifying `containerSetting` using private i
 
 Note, you need to use fully-qualified image name if you are using custom image repository.
 
-Instead of providing the password in the config file, you can use KeyVault to share it with Batch AI (see `Using
-KeyVault for Storing Secrets` section for more instructions):
+Instead of providing the password in the config file, you can use KeyVault to share it with Batch AI (see [Using KeyVault for Storing Secrets](#using-keyvault-for-storing-secrets) section for more information):
 
 ```json
 {
@@ -1245,6 +1244,7 @@ Now, for example, instead of providing a storage key in Cluster Configuration Fi
 
 ```json
 {
+    ...
     "azureFileShares": [
         {
             "accountName": "demoStorage",
