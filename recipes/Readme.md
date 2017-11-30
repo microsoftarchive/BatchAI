@@ -21,7 +21,6 @@ Use the following links for a quick navigation:
 ## <a name="jupyternotebook"></a> Run Recipes Using Python Jupyter notebook
 
 ### Create Credentials for Service Principal Authentication
-
 Jupyter notebook recipes require you to use service principal authentication rather than providing your account credentials.
 There are several ways to create a Service Principal as described in following sections:
 
@@ -74,7 +73,7 @@ Note, a provider registration can take up to 15 minutes.
 ### Grand Batch AI Network Contributor Role on Your Subscription
 You can use two different approaches:
 
-#### Azing Azure CLI 2.0
+#### Uzing Azure CLI 2.0
 ```sh
 az role assignment create --scope /subscriptions/<your subscription id> --role "Network Contributor" --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea
 ```
