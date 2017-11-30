@@ -71,6 +71,23 @@ For a more detailed walk-through, please see [this link](https://docs.microsoft.
   
 Note, a provider registration can take up to 15 minutes.
 
+### Grand Batch AI Network Contributor Role on Your Subscription
+You can use two different approaches:
+
+#### Azing Azure CLI 2.0
+```sh
+az role assignment create --scope /subscriptions/<your subscription id> --role "Network Contributor" --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea
+```
+, here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft Azure BatchAI.
+
+#### Using Portal
+1.	Select the subscription you are going to use for Azure Batch AI. (You can find it from *More Services* -> *Subscriptions*)
+2.	Select *Acess control (IAM)*
+3.	Select *Add*
+4.	Select *Network Contributor* as the *role*
+5.	Search for 'Microsoft Azure BatchAI' application and select it.
+6.	Select *Save* to finish assigning the role.
+
 ### Create Configuration File for All Recipes 
 
 - Rename [configuration.json.template](/recipes/configuration.json.template) to configuration.json.
@@ -155,6 +172,13 @@ Register with Microsoft.BatchAI and Microsoft.Batch providers use Azure CLI 2.0 
  az provider register -n Microsoft.Batch
  ```
  Note, a provider registration can take up to 15 minutes.
+ 
+### Grant Batch AI Network Contributor Role on Your Subscription
+
+```sh
+az role assignment create --scope /subscriptions/<your subscription id> --role "Network Contributor" --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea
+```
+, here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft Azure BatchAI.
 
 ### Configure Default Location
 
