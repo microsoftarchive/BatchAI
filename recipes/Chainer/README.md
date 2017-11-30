@@ -4,7 +4,7 @@ Chainer is a Python-based deep learning framework aiming at flexibility. It prov
 
 ChainerMN is an additional package for Chainer, a flexible deep learning framework. ChainerMN enables multi-node distributed deep learning.
 
-See official GitHub pages for Chainer (https://github.com/chainer/chainer) and ChianerMN (https://github.com/chainer/chainermn)
+See official GitHub pages for Chainer (https://github.com/chainer/chainer) and ChainerMN (https://github.com/chainer/chainermn)
 
 #### [Chainer-GPU-Distributed](./Chainer-GPU-Distributed)
 This Chainer-GPU-Distributed recipe contains information on how to run distributed Chainer training job across multiple GPU nodes with BatchAI.
