@@ -1203,13 +1203,20 @@ Example output:
 }
 ```
 
-3. Give Batch AI 'get' permission on this KeyVault:
+3. Give Batch AI Reader role for KeyVault resource:
+
+```bash
+az role assignment create --scope /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batchaisecrets/providers/Microsoft.KeyVault/vaults/demokeyvault --role Reader --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea -g ''
+```
+, here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft BatchAI.
+
+4. Give Batch AI 'get' permission on this KeyVault:
 ```bash
 $ az keyvault set-policy --spn 9fcb3732-5f52-4135-8c08-9d4bbaf203ea -n <keyvault name> -g batchaisecrets --secret-permissions get list
 ```
 , here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft BatchAI.
 
-4. Add new secret containing the private repo password:
+5. Add new secret containing the private repo password:
 ```bash
 az keyvault secret set --vault-name <keyvault name> --name nameofsecret --value secretvalue
 ```
