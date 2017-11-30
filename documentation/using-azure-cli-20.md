@@ -98,6 +98,12 @@ $ az account set -s "Visual Studio Enterprise"
 $ az provider register -n Microsoft.Batch
 $ az provider register -n Microsoft.BatchAI
 ```
+
+- Give Batch AI AD Network Contributor role on your subscription
+```bash
+$az role assignment create --scope /subscriptions/<your subscription id> --role "Network Contributor" --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea
+```
+, here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft Azure BatchAI.
  
 # Clusters Management
 Azure CLI 2.0 allows you to create, resize, delete and get information about clusters.
