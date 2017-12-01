@@ -10,10 +10,10 @@ az group create -n batchaitests -l eastus
 
 ### Create a Storage Account
 
-Create a storage account with unique name in the same region where you are going to use Batch AI:
+Create a storage account with an unique name in the same region where you are going to use Batch AI:
 
 ```sh
-az storage account create -n storage_account --sku Standard_LRS -l eastus -g batchaitests
+az storage account create -n <storage account name> --sku Standard_LRS -l eastus -g batchaitests
 ```
 
 ### Data Deployment
@@ -38,7 +38,7 @@ wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-G
 - Create an Azure File Share with `nmist_database` and `cntk_sample` folders and upload MNIST database and ConvNet_MNIST.py script:
 
 ```sh
-az storage share create --name batchaisample --account-name storage_account
+az storage share create --name batchaisample --account-name <storage account name>
 az storage directory create --share-name batchaisample --name mnist_database
 az storage file upload --share-name batchaisample --source Train-28x28_cntk_text.txt --path mnist_database
 az storage file upload --share-name batchaisample --source Test-28x28_cntk_text.txt --path mnist_database
@@ -55,13 +55,13 @@ For this recipe we need one node GPU cluster (`min node = max node = 1`) of `Sta
 For GNU/Linux users:
 
 ```sh
-az batchai cluster create -l eastus -g batchaitests --storage-account-name storage_account -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 1 --max 1 --afs-name batchaisample --afs-mount-path external -u $USER -k ~/.ssh/id_rsa.pub
+az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 1 --max 1 --afs-name batchaisample --afs-mount-path external -u $USER -k ~/.ssh/id_rsa.pub
 ```
 
 For Windows users:
 
 ```sh
-az batchai cluster create -l eastus -g batchaitests --storage-account-name storage_account -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 1 --max 1 --afs-name batchaisample --afs-mount-path external -u <user_name> -p <password>
+az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 1 --max 1 --afs-name batchaisample --afs-mount-path external -u <user_name> -p <password>
 ```
 
 ### Job

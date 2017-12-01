@@ -11,10 +11,10 @@ az group create -n batchaitests -l eastus
 
 ### Create a Storage Account
 
-Create a storage account with unique name in the same region where you are going to use Batch AI:
+Create a storage account with an unique name in the same region where you are going to use Batch AI:
 
 ```sh
-az storage account create -n storage_account --sku Standard_LRS -l eastus -g batchaitests
+az storage account create -n <storage account name> --sku Standard_LRS -l eastus -g batchaitests
 ```
 
 ### Data Deployment
@@ -30,7 +30,7 @@ wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/Chainer/Cha
 - Create an Azure File Share with `chainer_samples` folder and upload train_mnist.py into it:
 
 ```sh
-az storage share create --name batchaisample --account-name storage_account
+az storage share create --name batchaisample --account-name <storage account name>
 az storage directory create --share-name batchaisample --name chainer_samples
 az storage file upload --share-name batchaisample --source train_mnist.py --path chainer_samples
 ```
@@ -44,13 +44,13 @@ For this recipe we need two nodes GPU cluster (`min node = max node = 2`) of `St
 For GNU/Linux users:
 
 ```sh
-az batchai cluster create -l eastus -g batchaitests --storage-account-name storage_account -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u $USER -k ~/.ssh/id_rsa.pub
+az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u $USER -k ~/.ssh/id_rsa.pub
 ```
 
 For Windows users:
 
 ```sh
-az batchai cluster create -l eastus -g batchaitests --storage-account-name storage_account -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u <user_name> -p <password>
+az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u <user_name> -p <password>
 ```
 
 ### Job

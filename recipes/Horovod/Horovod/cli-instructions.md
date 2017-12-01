@@ -10,10 +10,10 @@ az group create -n batchaitests -l eastus
 
 ### Create a Storage Account
 
-Create a storage account with unique name in the same region where you are going to use Batch AI:
+Create a storage account with an unique name in the same region where you are going to use Batch AI:
 
 ```sh
-az storage account create -n storage_account --sku Standard_LRS -l eastus -g batchaitests
+az storage account create -n <storage account name> --sku Standard_LRS -l eastus -g batchaitests
 ```
 
 ### Data Deployment
@@ -29,7 +29,7 @@ wget https://raw.githubusercontent.com/uber/horovod/v0.9.10/examples/tensorflow_
 - Create an Azure File Share with `horovod_samples` folder and upload tensorflow_mnist.py into it:
 
 ```sh
-az storage share create --name batchaisample --account-name storage_account
+az storage share create --name batchaisample --account-name <storage account name>
 az storage directory create --share-name batchaisample --name horovod_samples
 az storage file upload --share-name batchaisample --source tensorflow_mnist.py --path horovod_samples
 ```
@@ -44,13 +44,13 @@ with Ubuntu DSVM (```UbuntuDSVM```) image and Azure File share `batchaisample` m
 For GNU/Linux users:
 
 ```sh
-az batchai cluster create -l eastus -g batchaitests --storage-account-name storage_account -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u $USER -k ~/.ssh/id_rsa.pub
+az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u $USER -k ~/.ssh/id_rsa.pub
 ```
 
 For Windows users:
 
 ```sh
-az batchai cluster create -l eastus -g batchaitests --storage-account-name storage_account -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u <user_name> -p <password>
+az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u <user_name> -p <password>
 ```
 
 ### Job
@@ -70,7 +70,7 @@ Note, you can delete ```containerSettings``` from the job definition to run the 
 #### Job Creation Command
 
 ```sh
-az batchai job create -l eastus -g batchaitests --storage-account-name storage_account -n horovod --cluster-name nc6 -c job.json
+az batchai job create -l eastus -g batchaitests --storage-account-name <storage account name> -n horovod --cluster-name nc6 -c job.json
 ```
 
 Note, the job will start running when the cluster finished allocation and initialization of the nodes.
