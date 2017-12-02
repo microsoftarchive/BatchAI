@@ -69,7 +69,7 @@ The job creation parameters are in [job.json](./job.json):
 #### Job Creation Command
 
 ```sh
-az batchai job create -l eastus -g batchaitests -n keras --cluster-name nc6 -c job.json
+az batchai job create -l eastus -g batchaitests -n keras -r nc6 -c job.json
 ```
 
 Note, the job will start running when the cluster finished allocation and initialization of the node.

@@ -79,7 +79,7 @@ Note, you can remove docker image information to run the job directly on DSVM.
 #### Job Creation Command
 
 ```sh
-az batchai job create -l eastus -g batchaitests -n cntk --cluster-name nc6 -c job.json
+az batchai job create -l eastus -g batchaitests -n cntk -r nc6 -c job.json
 ```
 
 Note, the job will start running when the cluster finished allocation and initialization of the node.

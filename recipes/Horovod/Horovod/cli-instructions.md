@@ -70,7 +70,7 @@ Note, you can delete ```containerSettings``` from the job definition to run the 
 #### Job Creation Command
 
 ```sh
-az batchai job create -l eastus -g batchaitests --storage-account-name <storage account name> -n horovod --cluster-name nc6 -c job.json
+az batchai job create -l eastus -g batchaitests --storage-account-name <storage account name> -n horovod -r nc6 -c job.json
 ```
 
 Note, the job will start running when the cluster finished allocation and initialization of the nodes.

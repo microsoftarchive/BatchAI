@@ -68,7 +68,7 @@ Note, you can delete the docker image information to run the job directly on DSV
 #### Job Creation Command
 
 ```sh
-az batchai job create -l eastus -g batchaitests -n tensorflow --cluster-name nc6 -c job.json
+az batchai job create -l eastus -g batchaitests -n tensorflow -r nc6 -c job.json
 ```
 
 Note, the job will start running when the cluster finished allocation and initialization of the node.
