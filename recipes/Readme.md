@@ -147,81 +147,10 @@ jupyter notebook
 
 ## <a name="azurecli"></a> Run Recipes Using Azure CLI 2.0
 
-### Install Azure CLI 2.0
+### Install Azure CLI 2.0 and Configure Azure CLI 2.0
 
-The easiest way to start using Azure CLI 2.0 is to launch Shell Console as described in these [instructions](https://docs.microsoft.com/en-us/cli/azure/get-started-with-azure-cli?view=azure-cli-latest).
-
-If you prefer to install Azure CLI 2.0 on your computer, please follow these [instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to install or update Azure CLI 2.0 to the latest version.
-
-### Login and Select Subscription
-
-If you are using Cloud Shell you are already logged in Azure. Otherwise, please execute ```az login``` command and follow instructions.
-
-If you have multiple subscriptions, select Batch AI enabled subscription as default one by running the following command:
-
-```sh
-az account set -s <your subscription>
-```
-
-### Register BatchAI Resource Providers 
-
-Register with Microsoft.BatchAI and Microsoft.Batch providers use Azure CLI 2.0 (you can also use Cloud Shell):
- ```sh
- az provider register -n Microsoft.BatchAI
- az provider register -n Microsoft.Batch
- ```
- Note, a provider registration can take up to 15 minutes.
- 
-### Grant Batch AI Network Contributor Role on Your Subscription
-
-```sh
-az role assignment create --scope /subscriptions/<your subscription id> --role "Network Contributor" --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea
-```
-, here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft Azure BatchAI.
-
-### Configure Default Location
-
-Creation of Clusters, Jobs, File Servers and other resources requires you to specify location where they should be created, the location can be provided via ```--location``` parameter or can be added into default Azure CLI 2.0 configuration. To reduce the length of commands the recipes expect you to setup default location using the following command:
-
-```sh
-az configure --defaults location=eastus
-```
-
-### Create a Default Resource Group
-
-Clusters, Jobs and File Servers are created under a resource group. It's recommended to create a dedicated resource group for running recipes because it will simplify resource management for you.
-
-Create a resource group ```batchaitests``` (or choose your own resource name) and make it default for Azure CLI 2.0 using the following commands:
-
-```sh
-az group create --name batchaitests --location eastus
-az configure --defaults group=batchaitests
-```
-
-### Create and Configure Default Storage Account
-
-Each recipe requires you to have a storage account in a region where Batch AI enabled (currently, ```eastus```). Please you the following commands to create a new storage account and make it default for Azure CLI 2.0:
-
-For GNU/Linux users:
-
-```sh
-az storage account create --name <unique storage account name> --sku Standard_LRS
-export AZURE_STORAGE_ACCOUNT=mystorageaccount
-export AZURE_STORAGE_KEY=$(az storage account keys list --account-name <unique storage account name> -o tsv --query [0].value)
-export AZURE_BATCHAI_STORAGE_ACCOUNT=mystorageaccount
-export AZURE_BATCHAI_STORAGE_KEY=$(az storage account keys list --account-name <unique storage account name> -o tsv --query [0].value)
-```
-
-For Windows users:
-
-```sh
-az storage account create --name <unique storage account name> --sku Standard_LRS
-az storage account keys list --account-name mystorageaccount -o tsv --query [0].value > temp.txt
-set /p AZURE_STORAGE_KEY=< temp.txt
-set AZURE_BATCHAI_STORAGE_ACCOUNT=mystorageaccount
-set /p AZURE_BATCHAI_STORAGE_KEY=< temp.txt
-del temp.txt
-```
+Please follow Azure CLI 2.0 Batch AI specific [documentation](/documentation/using-azure-cli-20.md) to install and
+configure Azure CLI 2.0 for using with Batch AI.
 
 ### Generate Authentication Key for SSH (for Cloud Shell and GNU/Linux Users)
 
