@@ -70,7 +70,7 @@ For a more detailed walk-through, please see [this link](https://docs.microsoft.
   
 Note, a provider registration can take up to 15 minutes.
 
-### Grand Batch AI Network Contributor Role on Your Subscription
+### Grant Batch AI Network Contributor Role on Your Subscription
 You can use two different approaches:
 
 #### Uzing Azure CLI 2.0
