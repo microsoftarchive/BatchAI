@@ -20,7 +20,7 @@ Currently Batch AI has no native support for Horovod framework, but it's easy to
 
 ### Python Jupyter Notebook
 
-You can find Jupyter Notebook for this recipe in [Horovod-Infiniband-Benchmark.ipynb](./Horovod-Infiniband-Benchmark.ipynb).
+You can find Jupyter Notebook for this recipe in [Horovod-Infiniband-Benchmark.ipynb](./Horovod-Infiniband-benchmark.ipynb).
 
 ### Azure CLI 2.0
 
