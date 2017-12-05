@@ -5,7 +5,7 @@
       "commandLine": "bash $AZ_BATCHAI_INPUT_SCRIPTS/jobprep_benchmark.sh"
     },
     "customToolkitSettings": {
-      "commandLine": "source /opt/intel/compilers_and_libraries_2017.4.196/linux/mpi/intel64/bin/mpivars.sh; cd $AZ_BATCHAI_JOB_TEMP/benchmarks/; mpirun -n 8 -ppn 4 -env I_MPI_FABRICS=tcp python scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py --model resnet101 --batch_size 64 --variable_update horovod"
+      "commandLine": "source /opt/intel/compilers_and_libraries_2017.4.196/linux/mpi/intel64/bin/mpivars.sh; cd $AZ_BATCHAI_JOB_TEMP/benchmarks/; mpirun -n 8 -ppn 4 -env I_MPI_FABRICS=dapl -env I_MPI_DAPL_PROVIDER=ofa-v2-ib0 -env I_MPI_DYNAMIC_CONNECTION=0 python scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py --model resnet101 --batch_size 64 --variable_update horovod"
     },
     "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
     "inputDirectories": [{
