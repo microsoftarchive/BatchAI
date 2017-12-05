@@ -9,6 +9,10 @@ See official [Horovod GitHub page](https://github.com/uber/horovod).
 
 This Horovod recipe contains information on how to run Horovod training job on a GPU cluster with Batch AI. 
 
+#### [Horovod-Infiniband-Benchmark](./Horovod-Infiniband-Benchmark)
+
+This Horovod-Infiniband-Benchmark recipe contains information on how to reproduce [Horovod distributed training benchmarks](https://github.com/uber/horovod/blob/master/docs/benchmarks.md) with infiniband support using Batch AI. 
+
 
 ## Help or Feedback
 --------------------
