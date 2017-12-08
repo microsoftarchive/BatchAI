@@ -435,7 +435,7 @@ Note, all NFSes and Unmanaged File Systems mounted to a cluster using private IP
 You can get a list of all BatchAI clusters under your subscription using the following command:
 
 ```bash
-$ az batchai cluster list -o table -g ''
+$ az batchai cluster list -o table -g ""
 ```
 
 Example output:
@@ -1156,7 +1156,7 @@ Similar to clusters, you can list NFSes and get information about particular NFS
 For example, 
 
 ```bash
-az batchai file-server list -o table -g ''
+az batchai file-server list -o table -g ""
 ```
 
 example output:
@@ -1212,7 +1212,7 @@ Example output:
 3. Give Batch AI Reader role for KeyVault resource:
 
 ```bash
-az role assignment create --scope /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batchaisecrets/providers/Microsoft.KeyVault/vaults/demokeyvault --role Reader --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea -g ''
+az role assignment create --scope /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batchaisecrets/providers/Microsoft.KeyVault/vaults/demokeyvault --role Reader --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea -g ""
 ```
 , here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft BatchAI.
 
