@@ -10,6 +10,9 @@ This CNTK-GPU-Python recipe contains information on how to run Python CNTK learn
 #### [CNTK-GPU-Python-Distributed](./CNTK-GPU-Python-Distributed)
 This CNTK-GPU-Python-Distributed] recipe contains information on how to run Python CNTK learning job on GPU VMs, including execution across multiple compute nodes and multiple GPUs.
 
+#### [CNTK-GPU-Python-Distrbuted-Infiniband](./CNTK-GPU-Python-Distrbuted-Infiniband)
+This CNTK-GPU-Python-Distributed] recipe contains information on how to run Python CNTK learning job on GPU VMs, including execution across multiple compute nodes and multiple GPUs connected by Infiniband networks.
+
 #### [CNTK-GPU-BrainScript](./CNTK-GPU-BrainScript)
 This CNTK-GPU-BrainScript recipe contains information on how to run CNTK learning job on a GPU VM with BrainScript configuration file.
 

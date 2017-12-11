@@ -1,0 +1,28 @@
+{
+    "properties": {
+        "nodeCount": 2,
+        "cntkSettings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/TrainResNet_CIFAR10_Distributed.py",
+            "commandLineArgs": "--datadir $AZ_BATCHAI_JOB_TEMP -outputdir $AZ_BATCHAI_OUTPUT_MODEL -n resnet110 -e 5",
+            "process_count": 8
+        },
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+        "inputDirectories": [{
+            "id": "SCRIPT",
+            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/cntk_samples"
+        }],
+        "outputDirectories": [{
+            "id": "MODEL",
+            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+            "pathSuffix": ""
+        }],
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "batchaitraining/cntk:2.1-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi"
+            }
+        },
+        "jobPreparation": {
+            "commandLine": "bash $AZ_BATCHAI_INPUT_SCRIPT/jobprep_cntk_distributed_ib.sh"
+        }
+    }
+}
