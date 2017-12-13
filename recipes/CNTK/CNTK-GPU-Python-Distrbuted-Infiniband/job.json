@@ -4,7 +4,7 @@
         "cntkSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/TrainResNet_CIFAR10_Distributed.py",
             "commandLineArgs": "--datadir $AZ_BATCHAI_JOB_TEMP -outputdir $AZ_BATCHAI_OUTPUT_MODEL -n resnet110 -e 5",
-            "process_count": 8
+            "processCount": 8
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
         "inputDirectories": [{
