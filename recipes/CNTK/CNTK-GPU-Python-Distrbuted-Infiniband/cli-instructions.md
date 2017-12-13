@@ -61,7 +61,7 @@ The job creation parameters are in [job.json](./job.json):
 - Will use job preparation task to execute job prreparation script (jobprep_cntk_distributed_ib.sh). The CIFA-10 dataset will be downloaded and processed on compute nodes locally (under ```$AZ_BATCHAI_JOB_TEMP``` directory);
 - Will use configured previously input and output directories;
 - Will run TrainResNet_CIFAR10_Distributed.py providing CIFAR-10 Dataset path as the first parameter and desired mode output as the second one. 
-- Will set ```process_count``` to 8, so that all 8 GPUs from 2 NC24r nodes will be used;
+- Will set ```processCount``` to 8, so that all 8 GPUs from 2 NC24r nodes will be used;
 - An input directory with IDs `SCRIPT` to allow the job to find the sample scripts via environment variable `$AZ_BATCHAI_INPUT_SCRIPT`;
 - stdOutErrPathPrefix specifies that the job should use file share for standard output and input;
 - An output directory with ID `MODEL` to allow job to find the output directory for the model via `$AZ_BATCHAI_OUTPUT_MODEL` environment variable;

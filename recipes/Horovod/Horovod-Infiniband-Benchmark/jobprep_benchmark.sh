@@ -23,4 +23,4 @@ echo "source /opt/intel/compilers_and_libraries_2017.4.196/linux/mpi/intel64/bin
 
 # install horovod
 source /opt/intel/compilers_and_libraries_2017.4.196/linux/mpi/intel64/bin/mpivars.sh
-pip install tensorpack horovod
+pip install horovod

@@ -4,7 +4,7 @@
         "cntkSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/ConvNet_CIFAR10_DataAug_Distributed.py",
             "commandLineArgs": "--datadir $AZ_BATCHAI_JOB_TEMP -outputdir $AZ_BATCHAI_OUTPUT_MODEL -n 5",
-            "process_count": 2
+            "processCount": 2
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
         "inputDirectories": [{
