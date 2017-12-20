@@ -8,9 +8,9 @@ Please follow [instructions](/recipes/Readme.md) to install Azure CLI 2.0, confi
 For GNU/Linux users:
 
 ```sh
-wget "https://raw.githubusercontent.com/Microsoft/CNTK/v2.1/Examples/Image/Classification/ResNet/Python/resnet_models.py" -O resnet_models.py
-wget "https://raw.githubusercontent.com/Microsoft/CNTK/v2.1/Examples/Image/Classification/ResNet/Python/TrainResNet_CIFAR10_Distributed.py" -O TrainResNet_CIFAR10_Distributed.py
-wget "https://raw.githubusercontent.com/Microsoft/CNTK/v2.1/Examples/Image/Classification/ResNet/Python/TrainResNet_CIFAR10.py" -O TrainResNet_CIFAR10.py
+wget "https://raw.githubusercontent.com/Microsoft/CNTK/v2.3/Examples/Image/Classification/ResNet/Python/resnet_models.py" -O resnet_models.py
+wget "https://raw.githubusercontent.com/Microsoft/CNTK/v2.3/Examples/Image/Classification/ResNet/Python/TrainResNet_CIFAR10_Distributed.py" -O TrainResNet_CIFAR10_Distributed.py
+wget "https://raw.githubusercontent.com/Microsoft/CNTK/v2.3/Examples/Image/Classification/ResNet/Python/TrainResNet_CIFAR10.py" -O TrainResNet_CIFAR10.py
 ```
 
 Create an Azure File Share with `cntk_sample` folder and upload the scripts into it:
@@ -57,7 +57,7 @@ az batchai cluster create -n nc24r -s Standard_NC24r --min 2 --max 2 --afs-name 
 
 The job creation parameters are in [job.json](./job.json):
 
-- The job will use `batchaitraining/cntk:2.1-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi` container that is built based on [dockerfile](./dockerfile)
+- The job will use `batchaitraining/cntk:2.3-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi` container that is built based on [dockerfile](./dockerfile)
 - Will use job preparation task to execute job prreparation script (jobprep_cntk_distributed_ib.sh). The CIFA-10 dataset will be downloaded and processed on compute nodes locally (under ```$AZ_BATCHAI_JOB_TEMP``` directory);
 - Will use configured previously input and output directories;
 - Will run TrainResNet_CIFAR10_Distributed.py providing CIFAR-10 Dataset path as the first parameter and desired mode output as the second one. 

@@ -6,7 +6,7 @@ This example uses the CIFAR-10 dataset to demonstrate how to train a Residual ne
 
 - The official CNTK ResNet for CIFAR10 [example](https://github.com/Microsoft/CNTK/tree/master/Examples/Image/Classification/ResNet/Python) is used.
 - CIFAR-10 dataset(http://www.cs.toronto.edu/~kriz/cifar.html) has been preprocessed available at the [Azure storage](https://batchaisamples.blob.core.windows.net/samples/CIFAR-10_dataset.tar?st=2017-09-29T18%3A29%3A00Z&se=2099-12-31T08%3A00%3A00Z&sp=rl&sv=2016-05-31&sr=b&sig=nFXsAp0Eq%2BoS5%2BKAEPnfyEGlCkBcKIadDvCPA%2BcX6lU%3D), and will be downloaded to GPU local SSD. 
-- The job will be run on a prebuild CNTK container ```batchaitraining/cntk:2.1-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi``` based on [dockerfile](./dockerfile). Intel MPI package will be installed in the container using job preparation command line.
+- The job will be run on a prebuild CNTK container ```batchaitraining/cntk:2.3-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi``` based on [dockerfile](./dockerfile). Intel MPI package will be installed in the container using job preparation command line.
 - For demonstration purposes, CIFAR-10 data preparation script and CNTK job scripts will be deployed at Azure File Share.
 - Standard output of the job and the model will be stored on Azure File Share.
 - This sample needs to use at lesat two STANDARD_NC24r nodes, please be sure you have enough quota

@@ -18,7 +18,7 @@
         }],
         "containerSettings": {
             "imageSourceRegistry": {
-                "image": "batchaitraining/cntk:2.1-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi"
+                "image": "batchaitraining/cntk:2.3-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi"
             }
         },
         "jobPreparation": {
