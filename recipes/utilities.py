@@ -47,6 +47,22 @@ class Configuration:
             self.admin_ssh_key = conf['admin_user'].get('ssh_public_key', None)
             if self.admin_ssh_key:
                 self.admin_ssh_key = encode(self.admin_ssh_key)
+            self.container_registry_user = None
+            self.container_registry_password = None
+            self.container_registry_secret_url = None
+            if 'container_registry' in conf:
+                self.container_registry_user = conf['container_registry'].get('user', None)
+                self.container_registry_password = conf['container_registry'].get('password', None)
+                self.container_registry_secret_url = conf['container_registry'].get('secret_url', None)
+            if self.container_registry_user:
+                self.container_registry_user = encode(self.container_registry_user)
+            if self.container_registry_password:
+                self.container_registry_password = encode(self.container_registry_password)
+            if self.container_registry_secret_url:
+                self.container_registry_secret_url = encode(self.container_registry_secret_url)
+            self.keyvault_id = conf.get('keyvault_id', None)
+            if self.keyvault_id:
+                self.keyvault_id = encode(self.keyvault_id)
             if not self.admin_password and not self.admin_ssh_key:
                 raise AttributeError(
                     'Please provide admin user password or public ssh key')
