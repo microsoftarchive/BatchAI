@@ -4,6 +4,8 @@ Welcome to our documenting page at https://docs.microsoft.com/azure/batch-ai
 
 ## Updates 
 
+01.12.2018 Published [NVIDIA DGX Container Registry usage instructions](/documentation/using-nvidia-dgx-container-registry.md)
+
 11.15.2017 Java SDK is [available](https://mvnrepository.com/artifact/com.microsoft.azure/azure-mgmt-batchai)
 
 11.08.2017 Node.js SDK is [available](https://www.npmjs.com/package/azure-arm-batchai)
