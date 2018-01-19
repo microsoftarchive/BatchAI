@@ -31,7 +31,7 @@ wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/TensorFlow/
 
 ```sh
 az storage share create --name batchaisample --account-name <storage account name>
-az storage directory create --share-name batchaisample --name tensorflow_samples
+az storage directory create --share-name batchaisample --name tensorflow_samples --account-name <storage account name>
 az storage file upload --share-name batchaisample --source convolutional.py --path tensorflow_samples
 ```
 
