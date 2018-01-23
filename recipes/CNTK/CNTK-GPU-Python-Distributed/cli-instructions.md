@@ -25,7 +25,7 @@ For GNU/Linux users:
 ```sh
 wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/ConvNet_CIFAR10_DataAug_Distributed.py?token=AcZzrbN1I34RrKn8MPnn5_dfy86I-XEIks5Z4cfswA%3D%3D" -O ConvNet_CIFAR10_DataAug_Distributed.py
 wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/ConvNet_CIFAR10_DataAug.py?token=AcZzrWAAVqoQXUtPR0JxBF7m4pXbUACzks5Z4cguwA%3D%3D" -O ConvNet_CIFAR10_DataAug.py
-wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/CIFA-10_data_prepare.sh?token=AcZzrdr1tTQK_Gr7EdVXvg-sUarpWMqnks5Z4chYwA%3D%3D" -O CIFA-10_data_prepare.sh
+wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/CIFAR-10_data_prepare.sh?token=AcZzrdr1tTQK_Gr7EdVXvg-sUarpWMqnks5Z4chYwA%3D%3D" -O CIFA-10_data_prepare.sh
 ```
 
 - Create an Azure File Share with `cntk_sample` folder and upload the scripts into it:
@@ -35,7 +35,7 @@ az storage share create --name batchaisample --account-name <storage account nam
 az storage directory create --share-name batchaisample --name cntk_samples
 az storage file upload --share-name batchaisample --source ConvNet_CIFAR10_DataAug_Distributed.py --path cntk_samples
 az storage file upload --share-name batchaisample --source ConvNet_CIFAR10_DataAug.py --path cntk_samples
-az storage file upload --share-name batchaisample --source CIFA-10_data_prepare.sh --path cntk_samples
+az storage file upload --share-name batchaisample --source CIFAR-10_data_prepare.sh --path cntk_samples
 ```
 
 ### Cluster

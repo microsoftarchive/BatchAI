@@ -198,7 +198,7 @@ if __name__=='__main__':
     args = vars(parser.parse_args())
 
     if args['outputdir'] is not None:
-        model_path = args['outputdir'] + "/models"
+        model_path = args['outputdir']
     if args['logdir'] is not None:
         log_dir = args['logdir']
     if args['device'] is not None:

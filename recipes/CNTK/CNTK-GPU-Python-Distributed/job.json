@@ -3,7 +3,7 @@
         "nodeCount": 2,
         "cntkSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/ConvNet_CIFAR10_DataAug_Distributed.py",
-            "commandLineArgs": "--datadir $AZ_BATCHAI_JOB_TEMP -outputdir $AZ_BATCHAI_OUTPUT_MODEL -n 5",
+            "commandLineArgs": "--datadir $AZ_BATCHAI_JOB_TEMP --outputdir $AZ_BATCHAI_OUTPUT_MODEL -n 5",
             "processCount": 2
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
@@ -22,7 +22,7 @@
             }
         },
         "jobPreparation": {
-            "commandLine": "bash $AZ_BATCHAI_INPUT_SCRIPT/CIFA-10_data_prepare.sh"
+            "commandLine": "bash $AZ_BATCHAI_INPUT_SCRIPT/CIFAR-10_data_prepare.sh"
         }
     }
 }
