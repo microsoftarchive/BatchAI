@@ -9,15 +9,12 @@ This document covers Azure CLI 2.0 setup and usage.
 - The easiest way to start using Azure CLI 2.0 is to launch it from Shell Console in Azure Portal as described in
 [Quickstart for Bash in Azure Cloud Shell tutorial](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart).
 
-- Azure Data Science VM has Azure CLI 2.0 pre-installed but you may need to update it using [these instructions]
-(https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to get access to the latest
+- Azure Data Science VM has Azure CLI 2.0 pre-installed but you may need to update it using [these instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to get access to the latest
 features.
 
-- If you prefer to setup Azure CLI 2.0 on your computer, please follow [these instructions]
-(https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).
+- If you prefer to setup Azure CLI 2.0 on your computer, please follow [these instructions](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).
 
-- You can get access to the latest not published version of Azure CLI 2.0 by following [these instructions]
-(https://github.com/Azure/azure-cli#edge-builds).
+- You can get access to the latest not published version of Azure CLI 2.0 by following [these instructions](https://github.com/Azure/azure-cli#edge-builds).
 
 # Get Started
 
