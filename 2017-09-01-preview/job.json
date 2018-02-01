@@ -1,21 +1,27 @@
 {
-  "title": "Microsoft.BatchAI",
+  "title": "Job's schema validation.",
   "type": "object",
   "properties": {
     "properties": {
       "type": "object",
+      "description": "Defines job parameters. Please choose one of cntkSettings, tensorFlowSettings, caffeSettings, caffe2Settings, chainerSettings or customToolkitSettings toolkit settings.",
       "properties": {
         "experimentName": {
           "type": "string",
-          "description": "Describe the experiment information of the job"
+          "description": "Describe the experiment information of the job."
         },
         "priority": {
           "type": "integer",
           "default": "0",
           "description": "Priority associated with the job. Priority values can range from -1000 to 1000, with -1000 being the lowest priority and 1000 being the highest priority. The default value is 0."
         },
+        "location": {
+          "type": "string",
+          "description": "Job's location. Usually you would like to define it via Azure CLI command line parameters."
+        },
         "cluster": {
-          "$ref": "#/definitions/ResourceId"
+          "$ref": "#/definitions/ResourceId",
+          "description": "Cluster resource Id. Usually you would like to define if via Azure CLI command line parameters"
         },
         "nodeCount": {
           "type": "integer",
@@ -75,14 +81,7 @@
           "$ref": "#/definitions/CustomToolkitSettings"
         }
       },
-      "oneOf": [
-        {"required": ["nodeCount", "cntkSettings"]},
-        {"required": ["nodeCount", "tensorFlowSettings"]},
-        {"required": ["nodeCount", "caffeSettings"]},
-        {"required": ["nodeCount", "caffe2Settings"]},
-        {"required": ["nodeCount", "chainerSettings"]},
-        {"required": ["nodeCount", "customToolkitSettings"]}
-      ],
+      "required": ["nodeCount"],
       "additionalProperties": false
     }
   },
