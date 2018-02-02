@@ -1,0 +1,488 @@
+{
+  "title": "Job's schema validation.",
+  "type": "object",
+  "properties": {
+    "properties": {
+      "type": "object",
+      "description": "Defines job parameters. Please choose one of cntkSettings, tensorFlowSettings, caffeSettings, caffe2Settings, chainerSettings or customToolkitSettings toolkit settings.",
+      "properties": {
+        "experimentName": {
+          "type": "string",
+          "description": "Describe the experiment information of the job."
+        },
+        "priority": {
+          "type": "integer",
+          "default": "0",
+          "description": "Priority associated with the job. Priority values can range from -1000 to 1000, with -1000 being the lowest priority and 1000 being the highest priority. The default value is 0."
+        },
+        "location": {
+          "type": "string",
+          "description": "Job's location. Usually you would like to define it via Azure CLI command line parameters."
+        },
+        "cluster": {
+          "$ref": "#/definitions/ResourceId",
+          "description": "Cluster resource Id. Usually you would like to define if via Azure CLI command line parameters."
+        },
+        "nodeCount": {
+          "type": "integer",
+          "description": "The job will be gang scheduled on that many compute nodes."
+        },
+        "containerSettings": {
+          "$ref": "#/definitions/ContainerSettings",
+          "description": "If not provided, the job will run on the VM."
+        },
+        "jobPreparation": {
+          "$ref": "#/definitions/JobPreparation",
+          "description": "The specified actions will run on all the nodes that are part of the job."
+        },
+        "stdOutErrPathPrefix": {
+          "type": "string",
+          "description": "The path where the Batch AI service will upload stdout and stderror of the job."
+        },
+        "inputDirectories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/InputDirectory"
+          }
+        },
+        "outputDirectories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OutputDirectory"
+          }
+        },
+        "environmentVariables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EnvironmentSetting"
+          },
+          "description": "Batch AI service sets the following environment variables for all jobs: AZ_BATCHAI_INPUT_id, AZ_BATCHAI_OUTPUT_id, AZ_BATCHAI_NUM_GPUS_PER_NODE. For distributed TensorFlow jobs, following additional environment variables are set by the Batch AI Service: AZ_BATCHAI_PS_HOSTS, AZ_BATCHAI_WORKER_HOSTS"
+        },
+        "constraints": {
+          "$ref": "#/definitions/JobBaseProperties_constraints",
+          "description": "Constraints associated with the Job."
+        },
+        "cntkSettings": {
+          "$ref": "#/definitions/CNTKsettings"
+        },
+        "tensorFlowSettings": {
+          "$ref": "#/definitions/TensorFlowSettings"
+        },
+        "caffeSettings": {
+          "$ref": "#/definitions/CaffeSettings"
+        },
+        "caffe2Settings": {
+          "$ref": "#/definitions/Caffe2Settings"
+        },
+        "chainerSettings": {
+          "$ref": "#/definitions/ChainerSettings"
+        },
+        "customToolkitSettings": {
+          "$ref": "#/definitions/CustomToolkitSettings"
+        }
+      },
+      "required": ["nodeCount"],
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "Caffe2Settings": {
+      "type": "object",
+      "properties": {
+        "pythonScriptFilePath": {
+          "type": "string"
+        },
+        "pythonInterpreterPath": {
+          "type": "string"
+        },
+        "commandLineArgs": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pythonScriptFilePath"
+      ],
+      "description": "Specifies the settings for Caffe2 job."
+    },
+    "CaffeSettings": {
+      "type": "object",
+      "properties": {
+        "configFilePath": {
+          "type": "string",
+          "description": "This property cannot be specified if pythonScriptFilePath is specified."
+        },
+        "pythonScriptFilePath": {
+          "type": "string",
+          "description": "This property cannot be specified if configFilePath is specified."
+        },
+        "pythonInterpreterPath": {
+          "type": "string",
+          "description": "This property can be specified only if the pythonScriptFilePath is specified."
+        },
+        "commandLineArgs": {
+          "type": "string"
+        },
+        "processCount": {
+          "type": "integer",
+          "description": "The default value for this property is equal to nodeCount property"
+        }
+      },
+      "description": "Specifies the settings for Caffe job."
+    },
+    "ChainerSettings": {
+      "type": "object",
+      "properties": {
+        "pythonScriptFilePath": {
+          "type": "string"
+        },
+        "pythonInterpreterPath": {
+          "type": "string"
+        },
+        "commandLineArgs": {
+          "type": "string"
+        },
+        "processCount": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ],
+          "description": "The default value for this property is equal to nodeCount property"
+        }
+      },
+      "required": [
+        "pythonScriptFilePath"
+      ],
+      "description": "Specifies the settings for Chainer job."
+    },
+    "CNTKsettings": {
+      "type": "object",
+      "properties": {
+        "languageType": {
+          "type": "string",
+          "description": "Valid values are 'BrainScript' or 'Python'."
+        },
+        "configFilePath": {
+          "type": "string",
+          "description": "This property can be specified only if the languageType is 'BrainScript'."
+        },
+        "pythonScriptFilePath": {
+          "type": "string",
+          "description": "This property can be specified only if the languageType is 'Python'."
+        },
+        "pythonInterpreterPath": {
+          "type": "string",
+          "description": "This property can be specified only if the languageType is 'Python'."
+        },
+        "commandLineArgs": {
+          "type": "string"
+        },
+        "processCount": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ],
+          "description": "The default value for this property is equal to nodeCount property"
+        }
+      },
+      "description": "Specifies the settings for CNTK (aka Microsoft Cognitive Toolkit) job."
+    },
+    "ContainerSettings": {
+      "type": "object",
+      "properties": {
+        "imageSourceRegistry": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/ImageSourceRegistry"
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ]
+        }
+      },
+      "required": [
+        "imageSourceRegistry"
+      ],
+      "description": "Settings for the container to be downloaded."
+    },
+    "CustomToolkitSettings": {
+      "type": "object",
+      "properties": {
+        "commandLine": {
+          "type": "string"
+        }
+      },
+      "required": ["commandLine"],
+      "description": "Specifies the settings for a custom tool kit job."
+    },
+    "EnvironmentSetting": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "description": "An environment variable to set."
+    },
+    "ImageReference": {
+      "type": "object",
+      "properties": {
+        "publisher": {
+          "type": "string"
+        },
+        "offer": {
+          "type": "string"
+        },
+        "sku": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "publisher",
+        "offer",
+        "sku"
+      ],
+      "description": "The image reference."
+    },
+    "ImageSourceRegistry": {
+      "type": "object",
+      "properties": {
+        "serverUrl": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "credentials": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/PrivateRegistryCredentials"
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ]
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "description": "Details of the container image such as name, URL and credentials."
+    },
+    "InputDirectory": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "It will be available for the job as an environment variable under AZ_BATCHAI_INPUT_id. The service will also provide the following  environment variable: AZ_BATCHAI_PREV_OUTPUT_Name. The value of the variable will be populated if the job is being retried after a previous failure, otherwise it will be set to nothing."
+        },
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path"
+      ],
+      "description": "Input directory for the job."
+    },
+    "JobBaseProperties_constraints": {
+      "type": "object",
+      "properties": {
+        "maxWallClockTime": {
+          "type": "string",
+          "default": "7.00:00:00",
+          "format": "duration",
+          "description": "Default Value = 1 week."
+        }
+      },
+      "description": "Constraints associated with the Job."
+    },
+    "JobPreparation": {
+      "type": "object",
+      "properties": {
+        "commandLine": {
+          "type": "string",
+          "description": "If containerSettings is specified on the job, this commandLine will be executed in the same container as job. Otherwise it will be executed on the node."
+        }
+      },
+      "required": [
+        "commandLine"
+      ],
+      "description": "Specifies the settings for job preparation."
+    },
+    "KeyVaultSecretReference": {
+      "type": "object",
+      "properties": {
+        "sourceVault": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/ResourceId"
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ]
+        },
+        "secretUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceVault",
+        "secretUrl"
+      ],
+      "description": "Describes a reference to Key Vault Secret."
+    },
+    "OutputDirectory": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "It will be available for the job as an environment variable under AZ_BATCHAI_OUTPUT_id."
+        },
+        "pathPrefix": {
+          "type": "string",
+          "description": "NOTE: This is an absolute path to prefix. E.g. $AZ_BATCHAI_MOUNT_ROOT/MyNFS/MyLogs."
+        },
+        "pathSuffix": {
+          "type": "string",
+          "description": "The suffix path where the output directory will be created."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "model",
+            "logs",
+            "summary",
+            "custom"
+          ],
+          "description": "Default value is Custom. The possible values are Model, Logs, Summary, and Custom. Users can use multiple enums for a single directory. Eg. outPutType='Model,Logs, Summary'."
+        },
+        "createNew": {
+          "oneOf": [
+            {
+              "type": "boolean",
+              "default": true
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ],
+          "description": "Default is true. If false, then the directory is not created and can be any directory path that the user specifies."
+        }
+      },
+      "required": [
+        "id",
+        "pathPrefix"
+      ],
+      "description": "Output directory for the job."
+    },
+    "PrivateRegistryCredentials": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string",
+          "description": "One of password or passwordSecretReference must be specified."
+        },
+        "passwordSecretReference": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/KeyVaultSecretReference"
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ],
+          "description": "Users can store their secrets in Azure KeyVault and pass it to the Batch AI Service to integrate with KeyVault. One of password or passwordSecretReference must be specified."
+        }
+      },
+      "required": [
+        "username"
+      ],
+      "description": "Credentials to access a container image in a private repository."
+    },
+    "ResourceId": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The ID of the resource"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "description": "Represents a resource ID. For example, for a subnet, it is the resource URL for the subnet."
+    },
+    "TensorFlowSettings": {
+      "type": "object",
+      "properties": {
+        "pythonScriptFilePath": {
+          "type": "string"
+        },
+        "pythonInterpreterPath": {
+          "type": "string"
+        },
+        "masterCommandLineArgs": {
+          "type": "string"
+        },
+        "workerCommandLineArgs": {
+          "type": "string",
+          "description": "This property is optional for single machine training."
+        },
+        "parameterServerCommandLineArgs": {
+          "type": "string",
+          "description": "This property is optional for single machine training."
+        },
+        "workerCount": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ],
+          "description": "If specified, the value must be less than or equal to (nodeCount * numberOfGPUs per VM). If not specified, the default value is equal to nodeCount. This property can be specified only for distributed TensorFlow training"
+        },
+        "parameterServerCount": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "$ref": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#/definitions/expression"
+            }
+          ],
+          "description": "If specified, the value must be less than or equal to nodeCount. If not specified, the default value is equal to 1 for distributed TensorFlow training (This property is not applicable for single machine training). This property can be specified only for distributed TensorFlow training."
+        }
+      },
+      "required": [
+        "pythonScriptFilePath",
+        "masterCommandLineArgs"
+      ],
+      "description": "Specifies the settings for TensorFlow job."
+    }
+  }
+}
