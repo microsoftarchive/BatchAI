@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",
   "properties": {
     "nodeCount": 2,
     "jobPreparation": {
@@ -10,11 +11,9 @@
     "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
     "outputDirectories": [
       {
-        "createNew": true,
         "id": "MODEL",
         "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
-        "pathSuffix": "Models",
-        "type": "custom"
+        "pathSuffix": "Models"
       }
     ],
     "inputDirectories": [{

@@ -2,7 +2,9 @@
 
 Welcome to our documenting page at https://docs.microsoft.com/azure/batch-ai
 
-## Updates 
+## Updates
+
+02.02.2018 Published a [schema](https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json) for job configuration file validation.  
 
 01.12.2018 Published [NVIDIA DGX Container Registry usage instructions](/documentation/using-nvidia-dgx-container-registry.md)
 

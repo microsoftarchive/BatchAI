@@ -716,10 +716,11 @@ Job configuration file is a json file containing `JobCreateParameters` object as
 
 Job configuration file defines framework specific parameters, number of nodes required for job execution, description of
 input and output directories, docker container to run the job and job preparation steps. The following sections
-describes all those parameters in details. Here is a job configuration file which we will use as reference:
+describes all those parameters in details. Here is a job configuration file which we will use as a reference:
 
 ```json
 {
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",
     "properties": {
         "nodeCount": 1,
         "cntkSettings": {
@@ -757,6 +758,11 @@ describes all those parameters in details. Here is a job configuration file whic
     }
 }
 ```
+
+### Suport for Autocompletion and Validation of Job Configuration File
+Please add ```"$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",``` into your job configuration file as shown above to enable autocompletion (IntelliSense) and validation in your editor.
+
+Note. Visual Studio Code has a perfect support for json validation and autocompletion enabled by default, other editors may require you to enable this feature or install additional modules.
 
 ### Number of Nodes to Run the Job
 You need to specify number of nodes required to run your job using `nodeCount` attribute. Batch AI will take care of

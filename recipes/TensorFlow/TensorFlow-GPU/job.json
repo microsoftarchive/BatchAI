@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",
     "properties": {
         "nodeCount": 1,
         "tensorFlowSettings": {
