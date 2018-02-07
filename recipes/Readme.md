@@ -50,9 +50,9 @@ Use appId value as aad_client_id, password as aad_secret and tenant as aad_tenan
 5.	Select *New application registration*.
 6.	Provide a name and URL for the application. After setting the values, select *Create*.
 7.	From *App registrations* in *Azure Active Directory*, select your application.
-8.	Copy the *Application ID* and this is your **AAD Client ID**. 
-9.	To generate an authentication key, select *Keys*.
-10.	Provide a description and a duration for the key. When done, select *Save*. After saving the key, the value of the key is displayed. Copy this value because you are not able to retrieve the key later. This is your **ADD Secret**.
+8.	Copy the *Application ID* and this is your **AAD Client ID**.
+9.	To generate an authentication key, select you application, go to *Settings* and select *Keys*.
+10.	Provide a description and a duration for the key. When done, select *Save*. After saving the key, the value of the key is displayed. Copy this value because you are not able to retrieve the key later. This is your **AAD Secret**.
 11.	To assign the just created application, select the subscription you are going to use for Azure Batch AI. (You can find it from *More Services* -> *Subscriptions*)
 12.	Select *Acess control (IAM)*
 13.	Select *Add*
