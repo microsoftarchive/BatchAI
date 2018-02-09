@@ -15,19 +15,35 @@ import cntk.io.transforms as xforms
 from cntk.train.training_session import *
 from cntk.logging import *
 from cntk.debugging import *
+from cntk.layers import Convolution2D, MaxPooling, AveragePooling, Dropout, BatchNormalization, Dense, default_options, identity, Sequential, For
+from cntk import cross_entropy_with_softmax, classification_error, relu
 
 # default Paths relative to current python file.
 abs_path   = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(abs_path)
-model_path = os.path.join(abs_path, "Models")
-
-from ConvNet_CIFAR10_DataAug import create_convnet_cifar10_model
 
 # model dimensions
 image_height = 32
 image_width  = 32
 num_channels = 3  # RGB
 num_classes  = 10
+
+
+# Create model.
+def create_convnet_cifar10_model(num_classes):
+    with default_options(activation=relu, pad=True):
+        return Sequential([
+            For(range(2), lambda : [
+                Convolution2D((3,3), 64),
+                Convolution2D((3,3), 64),
+                MaxPooling((3,3), strides=2)
+            ]),
+            For(range(2), lambda i: [
+                Dense([256,128][i]),
+                Dropout(0.5)
+            ]),
+            Dense(num_classes, activation=None)
+        ])
+
 
 # Create a minibatch source.
 def create_image_mb_source(map_file, mean_file, train, total_number_of_samples):
@@ -50,7 +66,7 @@ def create_image_mb_source(map_file, mean_file, train, total_number_of_samples):
     # deserializer
     return C.io.MinibatchSource(
         C.io.ImageDeserializer(
-            map_file, 
+            map_file,
             C.io.StreamDefs(features=C.io.StreamDef(field='image', transforms=transforms), # 1st col in mapfile referred to as 'image'
                             labels=C.io.StreamDef(field='label', shape=num_classes))),   # and second as 'label'
         randomize=train,
@@ -102,15 +118,15 @@ def create_trainer(network, epoch_size, num_quantization_bits, block_size, warm_
     if block_size != None:
         parameter_learner = C.train.distributed.block_momentum_distributed_learner(local_learner, block_size=block_size)
     else:
-        parameter_learner = C.train.distributed.data_parallel_distributed_learner(local_learner, 
-                                                                                  num_quantization_bits=num_quantization_bits, 
+        parameter_learner = C.train.distributed.data_parallel_distributed_learner(local_learner,
+                                                                                  num_quantization_bits=num_quantization_bits,
                                                                                   distributed_after=warm_up)
 
     # Create trainer
     return C.Trainer(network['output'], (network['ce'], network['pe']), parameter_learner, progress_writers)
 
 # Train and test
-def train_and_test(network, trainer, train_source, test_source, minibatch_size, epoch_size, restore, profiling=False):
+def train_and_test(network, trainer, train_source, test_source, minibatch_size, epoch_size, restore, profiling=False, model_path="."):
 
     # define mapping from intput streams to network inputs
     input_map = {
@@ -124,7 +140,7 @@ def train_and_test(network, trainer, train_source, test_source, minibatch_size, 
 
     training_session(
         trainer=trainer, mb_source = train_source,
-        model_inputs_to_streams = input_map, 
+        model_inputs_to_streams = input_map,
         mb_size = minibatch_size,
         progress_frequency=epoch_size,
         checkpoint_config = CheckpointConfig(frequency = epoch_size,
@@ -138,8 +154,8 @@ def train_and_test(network, trainer, train_source, test_source, minibatch_size, 
 
 # Train and evaluate the network.
 def convnet_cifar10_dataaug(train_data, test_data, mean_data, minibatch_size=64, epoch_size=50000, num_quantization_bits=32,
-                            block_size=3200, warm_up=0, max_epochs=2, restore=False, log_to_file=None, 
-                            num_mbs_per_log=None, gen_heartbeat=False, profiling=False, tensorboard_logdir=None):
+                            block_size=3200, warm_up=0, max_epochs=2, restore=False, log_to_file=None,
+                            num_mbs_per_log=None, gen_heartbeat=False, profiling=False, tensorboard_logdir=None, model_path="."):
     _cntk_py.set_computation_network_trace_level(0)
 
     network = create_conv_network()
@@ -167,38 +183,37 @@ def convnet_cifar10_dataaug(train_data, test_data, mean_data, minibatch_size=64,
     trainer = create_trainer(network, epoch_size, num_quantization_bits, block_size, warm_up, progress_writers)
     train_source = create_image_mb_source(train_data, mean_data, train=True, total_number_of_samples=max_epochs * epoch_size)
     test_source = create_image_mb_source(test_data, mean_data, train=False, total_number_of_samples=C.io.FULL_DATA_SWEEP)
-    train_and_test(network, trainer, train_source, test_source, minibatch_size, epoch_size, restore, profiling)
+    train_and_test(network, trainer, train_source, test_source, minibatch_size, epoch_size, restore, profiling, model_path)
 
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser()
     data_path  = os.path.join(abs_path, "..", "..", "..", "DataSets", "CIFAR-10")
 
-    parser.add_argument('-datadir', '--datadir', help='Data directory where the CIFAR dataset is located', 
-                        required=False, default=data_path)
-    parser.add_argument('-outputdir', '--outputdir', help='Output directory for checkpoints and models', required=False, default=None)
-    parser.add_argument('-logdir', '--logdir', help='Log file', required=False, default=None)
-    parser.add_argument('-tensorboard_logdir', '--tensorboard_logdir', help='Directory where TensorBoard logs should be created', 
+    parser.add_argument('-d', '--datadir', help='Data directory where the CIFAR dataset is located',
+                        required=True, default=data_path)
+    parser.add_argument('-o', '--outputdir', help='Output directory for checkpoints and models', required=False, default=None)
+    parser.add_argument('-l', '--logdir', help='Log file', required=True, default=None)
+    parser.add_argument('-t', '--tensorboard_logdir', help='Directory where TensorBoard logs should be created',
                         required=False, default=None)
     parser.add_argument('-n', '--num_epochs', help='Total number of epochs to train', type=int, required=False, default='160')
     parser.add_argument('-m', '--minibatch_size', help='Minibatch size', type=int, required=False, default='64')
     parser.add_argument('-e', '--epoch_size', help='Epoch size', type=int, required=False, default='50000')
-    parser.add_argument('-q', '--quantized_bits', help='Number of quantized bits used for gradient aggregation', type=int, 
+    parser.add_argument('-q', '--quantized_bits', help='Number of quantized bits used for gradient aggregation', type=int,
                         required=False, default='32')
-    parser.add_argument('-a', '--distributed_after', help='Number of samples to train with before running distributed', type=int, 
+    parser.add_argument('-a', '--distributed_after', help='Number of samples to train with before running distributed', type=int,
                         required=False, default='0')
-    parser.add_argument('-b', '--block_samples', type=int, help="Number of samples per block for block momentum (BM) distributed learner (if 0 BM learner is not used)", 
+    parser.add_argument('-b', '--block_samples', type=int, help="Number of samples per block for block momentum (BM) distributed learner (if 0 BM learner is not used)",
                         required=False, default=None)
-    parser.add_argument('-r', '--restart', help='Indicating whether to restart from scratch (instead of restart from checkpoint file by default)', 
+    parser.add_argument('-r', '--restart', help='Indicating whether to restart from scratch (instead of restart from checkpoint file by default)',
                         action='store_true')
-    parser.add_argument('-device', '--device', type=int, help="Force to run the script on a specified device", 
+    parser.add_argument('-device', '--device', type=int, help="Force to run the script on a specified device",
                         required=False, default=None)
     parser.add_argument('-profile', '--profile', help="Turn on profiling", action='store_true', default=False)
 
     args = vars(parser.parse_args())
 
-    if args['outputdir'] is not None:
-        model_path = args['outputdir']
+    model_path = args['outputdir']
     if args['logdir'] is not None:
         log_dir = args['logdir']
     if args['device'] is not None:
@@ -225,7 +240,7 @@ if __name__=='__main__':
                             num_mbs_per_log=100,
                             gen_heartbeat=True,
                             profiling=args['profile'],
-                            tensorboard_logdir=args['tensorboard_logdir'])
+                            tensorboard_logdir=args['tensorboard_logdir'],
+                            model_path=model_path)
     # Must call MPI finalize when process exit without exceptions
     C.train.distributed.Communicator.finalize()
-

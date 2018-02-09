@@ -18,13 +18,12 @@ az storage account create -n <storage account name> --sku Standard_LRS -l eastus
 
 ### Data Deployment
 
-- Download ConvNet_CIFAR10_DataAug_Distributed.py, ConvNet_CIFAR10_DataAug.py and CIFA-10_data_prepare.sh into the current folder:
+- Download ConvNet_CIFAR10_DataAug_Distributed.py and CIFA-10_data_prepare.sh into the current folder:
 
 For GNU/Linux users:
 
 ```sh
 wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/ConvNet_CIFAR10_DataAug_Distributed.py?token=AcZzrbN1I34RrKn8MPnn5_dfy86I-XEIks5Z4cfswA%3D%3D" -O ConvNet_CIFAR10_DataAug_Distributed.py
-wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/ConvNet_CIFAR10_DataAug.py?token=AcZzrWAAVqoQXUtPR0JxBF7m4pXbUACzks5Z4cguwA%3D%3D" -O ConvNet_CIFAR10_DataAug.py
 wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/CIFAR-10_data_prepare.sh?token=AcZzrdr1tTQK_Gr7EdVXvg-sUarpWMqnks5Z4chYwA%3D%3D" -O CIFA-10_data_prepare.sh
 ```
 
@@ -34,7 +33,6 @@ wget "https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-G
 az storage share create --name batchaisample --account-name <storage account name>
 az storage directory create --share-name batchaisample --name cntk_samples
 az storage file upload --share-name batchaisample --source ConvNet_CIFAR10_DataAug_Distributed.py --path cntk_samples
-az storage file upload --share-name batchaisample --source ConvNet_CIFAR10_DataAug.py --path cntk_samples
 az storage file upload --share-name batchaisample --source CIFAR-10_data_prepare.sh --path cntk_samples
 ```
 
