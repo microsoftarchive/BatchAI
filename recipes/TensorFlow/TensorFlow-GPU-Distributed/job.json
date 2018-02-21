@@ -10,17 +10,17 @@
             "workerCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET --output_dir=$AZ_BATCHAI_OUTPUT_MODEL",
             "parameterServerCommandLineArgs": "--job_name=ps --num_gpus=0 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET --output_dir=$AZ_BATCHAI_OUTPUT_MODEL"
         },
-        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/scriptsandoutputs/outputs",
         "inputDirectories": [{
             "id": "DATASET",
-            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/mnist_dataset"
+            "path": "$AZ_BATCHAI_MOUNT_ROOT/data/mnist_database"
         }, {
             "id": "SCRIPT",
-            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/tensorflow_samples"
+            "path": "$AZ_BATCHAI_MOUNT_ROOT/scriptsandoutputs/bai_distributed_tensorflow_example"
         }],
         "outputDirectories": [{
             "id": "MODEL",
-            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/scriptsandoutputs/outputs",
             "pathSuffix": "Models"
         }],
         "containerSettings": {
