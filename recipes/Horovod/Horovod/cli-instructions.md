@@ -30,8 +30,8 @@ wget https://raw.githubusercontent.com/uber/horovod/v0.9.10/examples/tensorflow_
 
 ```sh
 az storage share create --name batchaisample --account-name <storage account name>
-az storage directory create --share-name batchaisample --name horovod_samples
-az storage file upload --share-name batchaisample --source tensorflow_mnist.py --path horovod_samples
+az storage directory create --share-name batchaisample --name horovod_samples --account-name <storage account name>
+az storage file upload --share-name batchaisample --source tensorflow_mnist.py --path horovod_samples --account-name <storage account name>
 ```
 
 ### Cluster
@@ -70,7 +70,7 @@ Note, you can delete ```containerSettings``` from the job definition to run the 
 #### Job Creation Command
 
 ```sh
-az batchai job create -l eastus -g batchaitests --storage-account-name <storage account name> -n horovod -r nc6 -c job.json
+az batchai job create -l eastus -g batchaitests -n horovod -r nc6 -c job.json
 ```
 
 Note, the job will start running when the cluster finished allocation and initialization of the nodes.
