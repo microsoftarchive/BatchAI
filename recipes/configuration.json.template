@@ -14,7 +14,7 @@
         "name": "",
         "password": "",
         "ssh_public_key": ""
-    }
+    },
     "keyvault_id": "",
     "container_registry" : {
         "user": "",
