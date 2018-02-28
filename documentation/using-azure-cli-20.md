@@ -315,7 +315,7 @@ If you need to use multiple Azure File Shares, Azure Containers or NFS, create a
                     {
                         "accountName": "<AZURE_BATCHAI_STORAGE_ACCOUNT>",
                         "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/dataset1",
-                        "credentialsInfo": {
+                        "credentials": {
                             "accountKey": "<AZURE_BATCHAI_STORAGE_KEY>"
                         },
                         "directoryMode": "0777",
@@ -325,7 +325,7 @@ If you need to use multiple Azure File Shares, Azure Containers or NFS, create a
                     {
                         "accountName": "<AZURE_BATCHAI_STORAGE_ACCOUNT>",
                         "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/dataset2",
-                        "credentialsInfo": {
+                        "credentials": {
                             "accountKey": "<AZURE_BATCHAI_STORAGE_KEY>"
                         },
                         "directoryMode": "0777",
