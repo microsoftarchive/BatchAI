@@ -193,7 +193,7 @@ if __name__=='__main__':
     parser.add_argument('-d', '--datadir', help='Data directory where the CIFAR dataset is located',
                         required=True, default=data_path)
     parser.add_argument('-o', '--outputdir', help='Output directory for checkpoints and models', required=False, default=None)
-    parser.add_argument('-l', '--logdir', help='Log file', required=True, default=None)
+    parser.add_argument('-l', '--logdir', help='Log file', required=False, default=None)
     parser.add_argument('-t', '--tensorboard_logdir', help='Directory where TensorBoard logs should be created',
                         required=False, default=None)
     parser.add_argument('-n', '--num_epochs', help='Total number of epochs to train', type=int, required=False, default='160')

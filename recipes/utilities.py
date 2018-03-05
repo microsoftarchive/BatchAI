@@ -3,6 +3,7 @@ from __future__ import print_function
 import json
 import os
 import time
+import zipfile
 
 import azure.mgmt.batchai as training
 import azure.mgmt.batchai.models as models
@@ -34,7 +35,7 @@ class Configuration:
             self.subscription_id = encode(conf['subscription_id'])
             self.aad_client_id = encode(conf['aad_client_id'])
             self.aad_secret_key = encode(conf['aad_secret'])
-            self.aad_token_uri = 'https://login.microsoftonline.com/{0}/oauth2/token'.format(encode(conf['aad_tenant']))
+            self.aad_token_uri = 'https://login.windows-ppe.net/{0}/oauth2/token'.format(encode(conf['aad_tenant']))
             self.location = encode(conf['location'])
             self.url = encode(conf['base_url'])
             self.resource_group = encode(conf['resource_group'])
@@ -211,3 +212,35 @@ def wait_for_job_completion(client, resource_group, job_name, cluster_name,
         time.sleep(1)
     streamer.tail()
     print_job_status(job)
+
+    
+def download_and_upload_mnist_dataset_to_blob(blob_service, azure_blob_container_name, 
+                                              mnist_dataset_directory):
+    """
+    Download and Extract MNIST Dataset, then upload to given Azure Blob Container
+    """
+    mnist_dataset_url = 'https://batchaisamples.blob.core.windows.net/samples/mnist_dataset_full.zip?st=2018-03-04T00%3A21%3A00Z&se=2099-12-31T23%3A59%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=rrBgTFeIv3bjsyAfh87RoW5i0ay4mMyMEIh2RI45s%2B0%3D'
+    
+    mnist_files = ['t10k-images-idx3-ubyte.gz', 't10k-labels-idx1-ubyte.gz',
+                   'train-images-idx3-ubyte.gz', 'train-labels-idx1-ubyte.gz',
+                   'Train-28x28_cntk_text.txt', 'Test-28x28_cntk_text.txt',
+                   os.path.join('mnist_train_lmdb','data.mdb'), 
+                   os.path.join('mnist_test_lmdb','data.mdb'),
+                   os.path.join('mnist_train_lmdb','lock.mdb'), 
+                   os.path.join('mnist_test_lmdb','lock.mdb')]
+    
+    local_dir = 'mnist_dataset_full'
+
+    if any(not os.path.exists(os.path.join(local_dir, f)) for f in mnist_files):
+        download_file(mnist_dataset_url, 'mnist_dataset_full.zip')
+        print('Extracting MNIST dataset...')
+        with zipfile.ZipFile('mnist_dataset_full.zip', 'r') as z:
+            z.extractall(local_dir)
+    
+    print('Uploading MNIST dataset...')
+    for f in mnist_files:
+        blob_service.create_blob_from_path(azure_blob_container_name, 
+                                           mnist_dataset_directory+'/'+f, os.path.join(local_dir, f))
+
+    print('Done')
+    
