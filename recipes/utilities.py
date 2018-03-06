@@ -35,7 +35,7 @@ class Configuration:
             self.subscription_id = encode(conf['subscription_id'])
             self.aad_client_id = encode(conf['aad_client_id'])
             self.aad_secret_key = encode(conf['aad_secret'])
-            self.aad_token_uri = 'https://login.windows-ppe.net/{0}/oauth2/token'.format(encode(conf['aad_tenant']))
+            self.aad_token_uri = 'https://login.microsoftonline.com/{0}/oauth2/token'.format(encode(conf['aad_tenant']))
             self.location = encode(conf['location'])
             self.url = encode(conf['base_url'])
             self.resource_group = encode(conf['resource_group'])
