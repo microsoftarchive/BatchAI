@@ -815,7 +815,7 @@ folder, so you will to ssh to the compute node to access job's standard and erro
 `$AZ_BATCHAI_JOB_TEMP_DIR` is deleted when a new job is going to be executed by a node.
 
 ### Input Directories
-Input directories is a way to setup an alias for a directories containing training data. For example, 
+Input directories is a way to setup aliases for directories containing training data. For example, 
 the job configuration file given above defines two input directories: `DATASET` with path 
 `$AZ_BATCHAI_MOUNT_ROOT/external/mnist_database` and `SCRIPT` with path `$AZ_BATCHAI_MOUNT_ROOT/external/cntk_samples`.
 The job can access those directories using environment variables `$AZ_BATCHAI_INPUT_DATASET` and 
