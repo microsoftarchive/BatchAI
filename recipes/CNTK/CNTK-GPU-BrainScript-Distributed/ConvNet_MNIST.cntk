@@ -7,7 +7,7 @@ precision = "float"; traceLevel = 1 ; deviceId = "auto"
 rootDir = "../../.." ; dataDir = "$rootDir$/DataSets/MNIST" ;
 outputDir = "./Output" ;
 
-modelPath = "$outputDir$/Models/ConvNet_MNIST"
+modelPath = "$outputDir$/ConvNet_MNIST"
 #stderr = "$outputDir$/ConvNet_MNIST_bs_out"
 
 maxEpochs = 40
