@@ -9,7 +9,7 @@ import azure.mgmt.batchai as training
 import azure.mgmt.batchai.models as models
 import requests
 from azure.common.credentials import ServicePrincipalCredentials
-from azure.mgmt.resource import ResourceManagementClient 
+from azure.mgmt.resource import ResourceManagementClient
 
 POLLING_INTERVAL_SEC = 5
 
@@ -94,8 +94,7 @@ class OutputStreamer:
         if not self.url:
             files = self.client.jobs.list_output_files(
                 self.resource_group, self.job_name,
-                models.JobsListOutputFilesOptions(
-                    self.output_directory_id))
+                models.JobsListOutputFilesOptions(outputdirectoryid=self.output_directory_id))
             if not files:
                 return
             else:
@@ -112,19 +111,24 @@ class OutputStreamer:
 
 def create_batchai_client(configuration):
     client = training.BatchAIManagementClient(
-			credentials = ServicePrincipalCredentials(client_id=configuration.aad_client_id, secret=configuration.aad_secret_key, token_uri=configuration.aad_token_uri),
-			subscription_id = configuration.subscription_id,
-			base_url = configuration.url)
+        credentials=ServicePrincipalCredentials(client_id=configuration.aad_client_id,
+                                                secret=configuration.aad_secret_key,
+                                                token_uri=configuration.aad_token_uri),
+        subscription_id=configuration.subscription_id,
+        base_url=configuration.url)
     return client
 
 
 def create_resource_group(configuration):
-	client = ResourceManagementClient(
-		credentials = ServicePrincipalCredentials(client_id=configuration.aad_client_id, secret=configuration.aad_secret_key, token_uri=configuration.aad_token_uri), 
-		subscription_id = configuration.subscription_id, base_url = configuration.url)
-	resource = client.resource_groups.create_or_update(configuration.resource_group, {'location': configuration.location})
+    client = ResourceManagementClient(
+        credentials=ServicePrincipalCredentials(client_id=configuration.aad_client_id,
+                                                secret=configuration.aad_secret_key,
+                                                token_uri=configuration.aad_token_uri),
+        subscription_id=configuration.subscription_id, base_url=configuration.url)
+    client.resource_groups.create_or_update(configuration.resource_group,
+                                            {'location': configuration.location})
 
-	
+
 def download_file(sas, destination):
     dir_name = os.path.dirname(destination)
     if dir_name:
@@ -147,9 +151,7 @@ def print_job_status(job):
     if job.execution_state == models.ExecutionState.failed:
         for error in job.execution_info.errors:
             failure_message = \
-                '\nErrorCode:{0}\nErrorMessage:{1}\n'. \
-                format(error.code,
-                       error.message)
+                '\nErrorCode:{0}\nErrorMessage:{1}\n'.format(error.code, error.message)
             if error.details is not None:
                 failure_message += 'Details:\n'
                 for detail in error.details:
@@ -172,7 +174,7 @@ def print_cluster_status(cluster):
             cluster.node_state_counts.unusable_node_count,
             cluster.node_state_counts.running_node_count,
             cluster.node_state_counts.preparing_node_count,
-			cluster.node_state_counts.leaving_node_count))
+            cluster.node_state_counts.leaving_node_count))
     if not cluster.errors:
         return
     for error in cluster.errors:
@@ -207,28 +209,28 @@ def wait_for_job_completion(client, resource_group, job_name, cluster_name,
     while True:
         streamer.tail()
         job = client.jobs.get(resource_group, job_name)
-        if job.execution_state == models.ExecutionState.succeeded or job.execution_state == models.ExecutionState.failed:
+        if job.execution_state in (models.ExecutionState.succeeded, models.ExecutionState.failed):
             break
         time.sleep(1)
     streamer.tail()
     print_job_status(job)
 
-    
-def download_and_upload_mnist_dataset_to_blob(blob_service, azure_blob_container_name, 
+
+def download_and_upload_mnist_dataset_to_blob(blob_service, azure_blob_container_name,
                                               mnist_dataset_directory):
     """
     Download and Extract MNIST Dataset, then upload to given Azure Blob Container
     """
     mnist_dataset_url = 'https://batchaisamples.blob.core.windows.net/samples/mnist_dataset_full.zip?st=2018-03-04T00%3A21%3A00Z&se=2099-12-31T23%3A59%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=rrBgTFeIv3bjsyAfh87RoW5i0ay4mMyMEIh2RI45s%2B0%3D'
-    
+
     mnist_files = ['t10k-images-idx3-ubyte.gz', 't10k-labels-idx1-ubyte.gz',
                    'train-images-idx3-ubyte.gz', 'train-labels-idx1-ubyte.gz',
                    'Train-28x28_cntk_text.txt', 'Test-28x28_cntk_text.txt',
-                   os.path.join('mnist_train_lmdb','data.mdb'), 
-                   os.path.join('mnist_test_lmdb','data.mdb'),
-                   os.path.join('mnist_train_lmdb','lock.mdb'), 
-                   os.path.join('mnist_test_lmdb','lock.mdb')]
-    
+                   os.path.join('mnist_train_lmdb', 'data.mdb'),
+                   os.path.join('mnist_test_lmdb', 'data.mdb'),
+                   os.path.join('mnist_train_lmdb', 'lock.mdb'),
+                   os.path.join('mnist_test_lmdb', 'lock.mdb')]
+
     local_dir = 'mnist_dataset_full'
 
     if any(not os.path.exists(os.path.join(local_dir, f)) for f in mnist_files):
@@ -236,11 +238,10 @@ def download_and_upload_mnist_dataset_to_blob(blob_service, azure_blob_container
         print('Extracting MNIST dataset...')
         with zipfile.ZipFile('mnist_dataset_full.zip', 'r') as z:
             z.extractall(local_dir)
-    
+
     print('Uploading MNIST dataset...')
     for f in mnist_files:
-        blob_service.create_blob_from_path(azure_blob_container_name, 
-                                           mnist_dataset_directory+'/'+f, os.path.join(local_dir, f))
+        blob_service.create_blob_from_path(azure_blob_container_name,
+                                           mnist_dataset_directory + '/' + f, os.path.join(local_dir, f))
 
     print('Done')
-    
