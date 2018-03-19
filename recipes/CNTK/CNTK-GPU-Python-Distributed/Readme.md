@@ -14,7 +14,7 @@ This example uses the CIFAR-10 dataset to demonstrate how to train a convolution
 
 ### Python Jupyter Notebook
 
-You can find Jupyter Notebook for this recipe in [CNTK-GPU-Python-Distrbuted.ipynb](./CNTK-GPU-Python-Distrbuted.ipynb).
+You can find Jupyter Notebook for this recipe in [CNTK-GPU-Python-Distributed.ipynb](./CNTK-GPU-Python-Distributed.ipynb).
 
 ### Azure CLI 2.0
 

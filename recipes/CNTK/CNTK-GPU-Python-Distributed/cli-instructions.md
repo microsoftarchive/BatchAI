@@ -68,6 +68,8 @@ The job creation parameters are in [job.json](./job.json):
 
 Note, you can delete the docker image information to run the job directly on DSVM.
 
+For documentation on the environment variables, please refer to [using-batchai-environment-variables.md](/documentation/using-batchai-environment-variables.md).
+
 #### Job Creation Command
 
 ```sh
