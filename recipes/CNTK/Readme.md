@@ -1,6 +1,6 @@
 # CNTK
 
-The Microsoft Cognitive Toolkit (https://cntk.ai), is a unified deep-learning toolkit that describes neural networks as a series of computational steps via a directed graph. CNTK can be included as a library in your Python, C#, or C++ programs, or used as a standalone machine learning tool through its own model description language (BrainScript). 
+The Microsoft Cognitive Toolkit (https://cntk.ai), is a unified deep-learning toolkit that describes neural networks as a series of computational steps via a directed graph. CNTK can be included as a library in your Python, C#, or C++ programs, or used as a standalone machine learning tool through its own model description language (BrainScript).
 
 See official CNTK GitHub page (https://github.com/Microsoft/CNTK/).
 
@@ -10,7 +10,7 @@ This CNTK-GPU-Python recipe contains information on how to run Python CNTK learn
 #### [CNTK-GPU-Python-Distributed](./CNTK-GPU-Python-Distributed)
 This CNTK-GPU-Python-Distributed] recipe contains information on how to run Python CNTK learning job on GPU VMs, including execution across multiple compute nodes and multiple GPUs.
 
-#### [CNTK-GPU-Python-Distrbuted-Infiniband](./CNTK-GPU-Python-Distrbuted-Infiniband)
+#### [CNTK-GPU-Python-Distributed-Infiniband](./CNTK-GPU-Python-Distributed-Infiniband)
 This CNTK-GPU-Python-Distributed] recipe contains information on how to run Python CNTK learning job on GPU VMs, including execution across multiple compute nodes and multiple GPUs connected by Infiniband networks.
 
 #### [CNTK-GPU-BrainScript](./CNTK-GPU-BrainScript)
