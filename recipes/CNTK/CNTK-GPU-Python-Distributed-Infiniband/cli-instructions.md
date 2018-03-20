@@ -28,14 +28,14 @@ Upload the job preparation script, that does the following tasks:
 - Install IntelMPI binary
 
 ```sh
-az storage file upload --share-name batchaisample --source jobprep_cntk_distributed_ib.sh --path horovod_samples
+az storage file upload --share-name batchaisample --source jobprep_cntk_distributed_ib.sh --path cntk_samples
 ```
 
 
 ### Cluster
 
 By default, for this recipe we will use a GPU cluster with two nodes (`min node = max node = 2`) of `Standard_NC24r` size (four GPU with infiniband)
-with latest Ubuntu 16.04-LTS image. 
+with latest Ubuntu 16.04-LTS image.
 
 Azure File share `batchaisample` mounted at `$AZ_BATCHAI_MOUNT_ROOT/external`.
 
@@ -58,9 +58,9 @@ az batchai cluster create -n nc24r -s Standard_NC24r --min 2 --max 2 --afs-name 
 The job creation parameters are in [job.json](./job.json):
 
 - The job will use `batchaitraining/cntk:2.3-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi` container that is built based on [dockerfile](./dockerfile)
-- Will use job preparation task to execute job prreparation script (jobprep_cntk_distributed_ib.sh). The CIFA-10 dataset will be downloaded and processed on compute nodes locally (under ```$AZ_BATCHAI_JOB_TEMP``` directory);
+- Will use job preparation task to execute job preparation script (jobprep_cntk_distributed_ib.sh). The CIFA-10 dataset will be downloaded and processed on compute nodes locally (under ```$AZ_BATCHAI_JOB_TEMP``` directory);
 - Will use configured previously input and output directories;
-- Will run TrainResNet_CIFAR10_Distributed.py providing CIFAR-10 Dataset path as the first parameter and desired mode output as the second one. 
+- Will run TrainResNet_CIFAR10_Distributed.py providing CIFAR-10 Dataset path as the first parameter and desired mode output as the second one.
 - Will set ```processCount``` to 8, so that all 8 GPUs from 2 NC24r nodes will be used;
 - An input directory with IDs `SCRIPT` to allow the job to find the sample scripts via environment variable `$AZ_BATCHAI_INPUT_SCRIPT`;
 - stdOutErrPathPrefix specifies that the job should use file share for standard output and input;
