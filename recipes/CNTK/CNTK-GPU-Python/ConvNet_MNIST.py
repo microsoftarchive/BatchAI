@@ -55,8 +55,8 @@ def convnet_mnist(debug_output=False):
 
     reader_train = create_reader(os.path.join(data_path, 'Train-28x28_cntk_text.txt'), True, input_dim, num_output_classes)
 
-    # training config
-    epoch_size = 60000                    # for now we manually specify epoch size
+    # Training config
+    epoch_size = 60000                    # For now we manually specify epoch size
     minibatch_size = 64
     max_epochs = 40
 
@@ -72,7 +72,7 @@ def convnet_mnist(debug_output=False):
                                                     num_epochs=max_epochs)
     trainer = cntk.Trainer(z, (ce, pe), learner, progress_printer)
 
-    # define mapping from reader streams to network inputs
+    # Define mapping from reader streams to network inputs
     input_map = {
         input_var : reader_train.streams.features,
         label_var : reader_train.streams.labels
@@ -103,7 +103,7 @@ def convnet_mnist(debug_output=False):
     epoch_size = 10000
     minibatch_size = 1024
 
-    # process minibatches and evaluate the model
+    # Process minibatches and evaluate the model
     metric_numer    = 0
     metric_denom    = 0
     sample_count    = 0
@@ -115,7 +115,7 @@ def convnet_mnist(debug_output=False):
         # Fetch next test min batch.
         data = reader_test.next_minibatch(current_minibatch, input_map=input_map)
 
-        # minibatch data to be trained with
+        # Minibatch data to be trained with
         metric_numer += trainer.test_minibatch(data) * current_minibatch
         metric_denom += current_minibatch
 

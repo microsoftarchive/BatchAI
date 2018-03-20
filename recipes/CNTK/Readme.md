@@ -17,7 +17,7 @@ This CNTK-GPU-Python-Distributed] recipe contains information on how to run Pyth
 This CNTK-GPU-BrainScript recipe contains information on how to run CNTK learning job on a GPU VM with BrainScript configuration file.
 
 #### [CNTK-GPU-BrainScript-Distributed](./CNTK-GPU-BrainScript-Distributed)
-This CNTK-GPU-BrainScript-Distributedrecipe contains information on how to run Python CNTK learning job on GPU VMs with BrainScript configuration file, including execution across multiple compute nodes and multiple GPUs.
+This CNTK-GPU-BrainScript-Distributed recipe contains information on how to run Python CNTK learning job on GPU VMs with BrainScript configuration file, including execution across multiple compute nodes and multiple GPUs.
 
 ## Help or Feedback
 --------------------

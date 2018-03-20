@@ -9,8 +9,8 @@ This example uses the CIFAR-10 dataset to demonstrate how to train a Residual ne
 - The job will be run on a prebuild CNTK container ```batchaitraining/cntk:2.3-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi``` based on [dockerfile](./dockerfile). Intel MPI package will be installed in the container using job preparation command line.
 - For demonstration purposes, CIFAR-10 data preparation script and CNTK job scripts will be deployed at Azure File Share.
 - Standard output of the job and the model will be stored on Azure File Share.
-- This sample needs to use at lesat two STANDARD_NC24r nodes, please be sure you have enough quota
-- If you like to conduct performance comparasion with TCP network, you can create the cluster with VM size `STANDARD_NC24` that does not support Infiniband.
+- This sample needs to use at least two STANDARD_NC24r nodes, please be sure you have enough quota
+- If you like to conduct performance comparison with TCP network, you can create the cluster with VM size `STANDARD_NC24` that does not support Infiniband.
 
 ## Instructions to Run Recipe
 

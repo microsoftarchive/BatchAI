@@ -65,7 +65,7 @@ The job creation parameters are in [job.json](./job.json):
 - An input directory with IDs `SCRIPT` to allow the job to find the sample scripts via environment variable `$AZ_BATCHAI_INPUT_SCRIPT`;
 - stdOutErrPathPrefix specifies that the job should use file share for standard output and input;
 - An output directory with ID `MODEL` to allow job to find the output directory for the model via `$AZ_BATCHAI_OUTPUT_MODEL` environment variable;
-- For illustration purpose, we will train a ResNet 110 and only run 5 epoches
+- For illustration purpose, we will train a ResNet 110 and only run 5 epochs
 
 
 #### Job Creation Command

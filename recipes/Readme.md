@@ -54,7 +54,7 @@ Use appId value as aad_client_id, password as aad_secret and tenant as aad_tenan
 9.	To generate an authentication key, select you application, go to *Settings* and select *Keys*.
 10.	Provide a description and a duration for the key. When done, select *Save*. After saving the key, the value of the key is displayed. Copy this value because you are not able to retrieve the key later. This is your **AAD Secret**.
 11.	To assign the just created application, select the subscription you are going to use for Azure Batch AI. (You can find it from *More Services* -> *Subscriptions*)
-12.	Select *Acess control (IAM)*
+12.	Select *Access control (IAM)*
 13.	Select *Add*
 14.	Select *Contributor* as the *role*
 15.	Search for your application and select it.
@@ -73,7 +73,7 @@ Note, a provider registration can take up to 15 minutes.
 ### Grant Batch AI Network Contributor Role on Your Subscription
 You can use two different approaches:
 
-#### Uzing Azure CLI 2.0
+#### Using Azure CLI 2.0
 ```sh
 az role assignment create --scope /subscriptions/<your subscription id> --role "Network Contributor" --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea
 ```
@@ -81,7 +81,7 @@ az role assignment create --scope /subscriptions/<your subscription id> --role "
 
 #### Using Portal
 1.	Select the subscription you are going to use for Azure Batch AI. (You can find it from *More Services* -> *Subscriptions*)
-2.	Select *Acess control (IAM)*
+2.	Select *Access control (IAM)*
 3.	Select *Add*
 4.	Select *Network Contributor* as the *role*
 5.	Search for 'Microsoft Azure BatchAI' application and select it.
