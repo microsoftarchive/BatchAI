@@ -18,10 +18,10 @@ from cntk.debugging import *
 from cntk.layers import Convolution2D, MaxPooling, AveragePooling, Dropout, BatchNormalization, Dense, default_options, identity, Sequential, For
 from cntk import cross_entropy_with_softmax, classification_error, relu
 
-# default Paths relative to current python file.
+# Default Paths relative to current python file.
 abs_path   = os.path.dirname(os.path.abspath(__file__))
 
-# model dimensions
+# Model dimensions
 image_height = 32
 image_width  = 32
 num_channels = 3  # RGB
@@ -51,7 +51,7 @@ def create_image_mb_source(map_file, mean_file, train, total_number_of_samples):
         raise RuntimeError("File '%s' or '%s' does not exist. Please run install_cifar10.py from DataSets/CIFAR-10 to fetch them" %
                            (map_file, mean_file))
 
-    # transformation pipeline for the features has jitter/crop only when training
+    # Transformation pipeline for the features has jitter/crop only when training
     transforms = []
     if train:
         transforms += [
@@ -63,7 +63,7 @@ def create_image_mb_source(map_file, mean_file, train, total_number_of_samples):
         xforms.mean(mean_file)
     ]
 
-    # deserializer
+    # Deserializer
     return C.io.MinibatchSource(
         C.io.ImageDeserializer(
             map_file,
@@ -79,12 +79,12 @@ def create_conv_network():
     feature_var = C.input_variable((num_channels, image_height, image_width))
     label_var = C.input_variable((num_classes))
 
-    # apply model to input
+    # Apply model to input
     scaled_input = C.element_times(C.constant(0.00390625), feature_var)
 
     z = create_convnet_cifar10_model(num_classes)(scaled_input)
 
-    # loss and metric
+    # Loss and metric
     ce = C.cross_entropy_with_softmax(z, label_var)
     pe = C.classification_error(z, label_var)
 
@@ -128,7 +128,7 @@ def create_trainer(network, epoch_size, num_quantization_bits, block_size, warm_
 # Train and test
 def train_and_test(network, trainer, train_source, test_source, minibatch_size, epoch_size, restore, profiling=False, model_path="."):
 
-    # define mapping from intput streams to network inputs
+    # Define mapping from input streams to network inputs
     input_map = {
         network['feature']: train_source.streams.features,
         network['label']: train_source.streams.labels

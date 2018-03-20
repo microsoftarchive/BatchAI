@@ -302,7 +302,7 @@ and create the cluster using the following command:
 az batchai cluster create -l eastus -g demoGroup -n demoCluster -s Standard_NC6 --min 0 --max 1 -u demoUser -p demoPassword -c cluster.json
 ```
 
-#### Mounting Multiple Filesystems
+#### Mounting Multiple File Systems
 If you need to use multiple Azure File Shares, Azure Containers or NFS, create a cluster.json file containing
 `nodeSetup.mountVolumes` object like this:
 
@@ -396,7 +396,7 @@ Note, if you are mounting several NFSes into a cluster, all of them must be in t
 Instead of providing storage account key via environment variables or in the config file, you may prefer to share it
 with Batch AI using KeyVault as described in [Using KeyVault for Storing Secrets](#using-keyvault-for-storing-secrets) section.
 
-#### Mounting Unmanaged Filesystems
+#### Mounting Unmanaged File Systems
 BatchAI allows you to mount your own NFS, cifs or GlusterFS clusters using configuration file. It's recommended to create
 GPU and storage clusters in the same vnet subnet and use private IP addresses for mounting storage clusters.
 
@@ -759,10 +759,10 @@ describes all those parameters in details. Here is a job configuration file whic
 }
 ```
 
-### Suport for Autocompletion and Validation of Job Configuration File
-Please add ```"$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",``` into your job configuration file as shown above to enable autocompletion (IntelliSense) and validation in your editor.
+### Support for Auto-completion and Validation of Job Configuration File
+Please add ```"$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",``` into your job configuration file as shown above to enable auto-completion (IntelliSense) and validation in your editor.
 
-Note. Visual Studio Code has a perfect support for json validation and autocompletion enabled by default, other editors may require you to enable this feature or install additional modules.
+Note. Visual Studio Code has a perfect support for json validation and auto-completion enabled by default, other editors may require you to enable this feature or install additional modules.
 
 ### Number of Nodes to Run the Job
 You need to specify number of nodes required to run your job using `nodeCount` attribute. Batch AI will take care of
