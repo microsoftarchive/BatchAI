@@ -712,7 +712,7 @@ providing `--no-wait` argument (can be useful if you need to submit multiple job
 
 ### Job Configuration File
 Job configuration file is a json file containing `JobCreateParameters` object as defined by swagger spec available at
-[Azure/azure-rest-api-specs github](https://github.com/Azure/azure-rest-api-specs/blob/current/specification/batchai/resource-manager/Microsoft.BatchAI/2017-09-01-preview/BatchAI.json#L1847).
+[Azure/azure-rest-api-specs GitHub](https://github.com/Azure/azure-rest-api-specs/blob/master/specification/batchai/resource-manager/Microsoft.BatchAI/stable/2018-03-01/BatchAI.json#L2034).
 
 Job configuration file defines framework specific parameters, number of nodes required for job execution, description of
 input and output directories, docker container to run the job and job preparation steps. The following sections
