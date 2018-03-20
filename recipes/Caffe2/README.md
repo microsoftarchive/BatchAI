@@ -5,7 +5,7 @@ Caffe2 is a python-based lightweight, modular, and scalable deep learning framew
 See official Caffe2 GitHub page (https://github.com/caffe2/caffe2).
 
 #### [Caffe2-GPU-Distributed](./Caffe2-GPU-Distributed)
-This Caffe2-GPU-Distributed recipe contains information on how to run distributed Caffe2 training job across multiple GPU nodes with BatchAI, by setting up a single-node NFS file server.
+This Caffe2-GPU-Distributed recipe contains information on how to run distributed Caffe2 training job across multiple GPU nodes.
 
 ## Help or Feedback
 --------------------
