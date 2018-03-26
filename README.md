@@ -38,6 +38,8 @@ We have created [recipes](/recipes/) for popular AI frameworks to help you get s
 
 [Horovod](/recipes/Horovod)
 
+[PyTorch](/recipes/PyTorch)
+
 [Custom Tool Kit -- a Keras example](/recipes/Keras/)
 
 ## Contributing
