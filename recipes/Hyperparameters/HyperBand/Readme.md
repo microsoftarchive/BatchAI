@@ -14,7 +14,7 @@ This example shows how to perform HyperBand parametric sweeping using CNTK with 
 
 ### Jupyter Notebook
 
-You can find Jupyter Notebook for this recipe in [CNTK-GPU-Python.ipynb](./CNTK-GPU-Python.ipynb).
+You can find Jupyter Notebook for this recipe in [HyperBand.ipynb](./HyperBand.ipynb).
 
 ## License Notice
 
