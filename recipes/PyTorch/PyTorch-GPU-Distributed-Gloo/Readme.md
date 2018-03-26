@@ -10,7 +10,12 @@ This example demonstrates how to run distributed GPU training for PyTorch using 
 - Standard output of the job will be stored on Azure File Share.
 - PyTorch training script [mnist_trainer.py](./mnist_trainer.py) is attached, which trains a CNN for MNIST dataset.
 
-Please note that, due to a known bug in PyTorch Gloo backend, the job may fail with the following error as [reported](https://github.com/pytorch/pytorch/issues/2530).
+**Note** Due to a known bug in PyTorch Gloo backend, the job may fail with the following error as [reported](https://github.com/pytorch/pytorch/issues/2530):
+
+```
+terminate called after throwing an instance of 'gloo::EnforceNotMet'
+  what():  [enforce fail at /pytorch/torch/lib/gloo/gloo/cuda.cu:249] error == cudaSuccess. 29 vs 0. Error at: /pytorch/torch/lib/gloo/gloo/cuda.cu:249: driver shutting down
+```
 
 
 ## Instructions to Run Recipe
