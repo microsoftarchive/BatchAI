@@ -13,7 +13,7 @@ This example shows how to perform random search hyperparameter tuning using CNTK
 
 ### Jupyter Notebook
 
-You can find Jupyter Notebook for this recipe in [CNTK-GPU-Python.ipynb](./CNTK-GPU-Python.ipynb).
+You can find Jupyter Notebook for this recipe in [RandomSearch.ipynb](./RandomSearch.ipynb).
 
 ## License Notice
 
