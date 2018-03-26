@@ -1,20 +1,23 @@
-# Caffe2 GPU Distributed
+# PyTorch-GPU-Distributed-Gloo
 
-This example demonstrates how to run standard Caffe2 resnet50_trainer.py example using Batch AI. You can run it on a single or multiple compute nodes.
+This example demonstrates how to run distributed GPU training for PyTorch using Gloo backend in Batch AI
 
 ## Details
 
-- Standard Caffe2 sample script [resnet50_trainer.py](https://github.com/caffe2/caffe2/blob/master/caffe2/python/examples/resnet50_trainer.py) is used;
-- MNIST Dataset has been translated into a lmdb database, and can be obtained at http://download.caffe2.ai/databases/mnist-lmdb.zip;
-- NFS will be used for rendezvous temp files to coordinate between each shard/node 
+- The Gloo backend will be implemented using Batch AI shared job temporary directory which is visible for all GPU nodes in the job
+- Will use Batch AI generated AZ_BATCHAI_PYTORCH_INIT_METHOD for shared file-system initialization.
+- Will use Batch AI generated AZ_BATCHAI_TASK_INDEX as rank of each worker process
 - Standard output of the job will be stored on Azure File Share.
+- PyTorch training script [mnist_trainer.py](./mnist_trainer.py) is attached, which trains a CNN for MNIST dataset.
+
+Please note that, due to a known bug in PyTorch Gloo backend, the job may fail with the following error as [reported](https://github.com/pytorch/pytorch/issues/2530).
 
 
 ## Instructions to Run Recipe
 
 ### Python Jupyter Notebook
 
-You can find Jupyter Notebook for this sample in [Caffe2-GPU-Distributed.ipynb](./Caffe2-GPU-Distributed.ipynb).
+You can find Jupyter Notebook for this sample in [PyTorch-GPU-Distributed-Gloo.ipynb](./PyTorch-GPU-Distributed-Gloo.ipynb).
 
 ### Azure CLI 2.0
 
