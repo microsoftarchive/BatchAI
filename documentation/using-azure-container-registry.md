@@ -1,11 +1,11 @@
-* Introduction
+# Introduction
 
 This document describes how to publish your image into Azure Container Registry and configure training jobs to use it.
 
-* Create Azure Container Registry (ARC) and publish your image
+# Create Azure Container Registry (ARC) and publish your image
 Please follow the instructions to [publish docker image using Azure CLI](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-azure-cli) or [publish docker image using Portal](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal).
 
-* Configure the job to use published container
+# Configure the job to use published image
 
 To use published docker image you need to provide container settings in the job's create parameters like this:
 
