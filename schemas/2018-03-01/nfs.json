@@ -1,0 +1,27 @@
+{
+    "title": "File Server schema validation.",
+    "properties": {
+        "properties": {
+            "description": "Defines file server creation parameters.",
+            "type": "object",
+            "properties": {
+                "vmSize": {
+                    "type": "string",
+                    "description": "For information about available VM sizes for fileservers from the Virtual Machines Marketplace, see Sizes for Virtual Machines (Linux)."
+                },
+                "sshConfiguration": {
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/SshConfiguration"
+                },
+                "dataDisks": {
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/DataDisks"
+                },
+                "subnet": {
+                    "description": "An existing virtual network subnet to put the cluster in. If omitted, new virtual network and subnet will be created.",
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/ResourceId"
+                }
+            }
+        },
+        "required": []
+    },
+    "definitions": {}
+}

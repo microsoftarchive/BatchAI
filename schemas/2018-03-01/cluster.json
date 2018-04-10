@@ -33,13 +33,12 @@
                     "$ref": "#/definitions/NodeSetup"
                 },
                 "userAccountSettings": {
-                    "optional": true,
-                    
+                    "optional": true,             
                     "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/UserAccountSettings"
                 },
                 "subnet": {
                     "optional": true,
-                    "description": "Existing virtual network subnet to put the cluster in.",
+                    "description": "An existing virtual network subnet to put the cluster in.",
                     "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/ResourceId"
                 }
             },
