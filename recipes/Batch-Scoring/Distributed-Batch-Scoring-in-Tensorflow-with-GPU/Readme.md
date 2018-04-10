@@ -10,6 +10,20 @@ This example demonstrate how to run distributed batch scoring job in TensorFlow 
 - Standard output of the job will be stored on Azure File Share;
 - Azure Blob Container and Azure File Share will be mounted on Batch AI GPU clusters 
 - The recipe uses [batch_image_label.py](./batch_image_label.py) script to perform Distributed Batch Scoring with the given model and image datasets. The input images for evaluation will be partitioned by the MPI rank, so that each MPI worker will evaluate part of the whole image set independently. 
+- The expected scoring output should be text files with the following content:
+```sh
+ILSVRC2012_val_00000102.JPEG: Rhodesian ridgeback
+ILSVRC2012_val_00000103.JPEG: tripod
+ILSVRC2012_val_00000104.JPEG: typewriter keyboard
+ILSVRC2012_val_00000105.JPEG: silky terrier
+ILSVRC2012_val_00000106.JPEG: Windsor tie
+ILSVRC2012_val_00000107.JPEG: harvestman
+ILSVRC2012_val_00000108.JPEG: violin
+ILSVRC2012_val_00000109.JPEG: loudspeaker
+ILSVRC2012_val_00000110.JPEG: apron
+ILSVRC2012_val_00000111.JPEG: American lobster
+...
+```
 
 ## Instructions to Run Recipe
 
