@@ -1,0 +1,165 @@
+{
+    "title": "Cluster's schema validation.",
+    "properties": {
+        "properties": {
+            "description": "Defines cluster creation parameters.",
+            "type": "object",
+            "properties": {
+                "vmSize": {
+                    "optional": true,
+                    "type": "string",
+                    "description": "VM size for cluster nodes (e.g. Standard_NC6). Batch AI service supports all Azure VM sizes except STANDARD_A0 and those with premium storage (STANDARD_GS, STANDARD_DS, and STANDARD_DSV2 series)."
+                },
+                "vmPriority": {
+                    "type": "string",
+                    "enum": [
+                        "dedicated",
+                        "lowpriority"
+                    ],
+                    "optional": true,
+                    "description": "Priority of VMs in the cluster."
+                },
+                "scaleSettings": {
+                    "optional": true,
+                    "description": "Specifies manual or aut0 scale settings for the cluster.",
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/ScaleSettings"
+                },
+                "virtualMachineConfiguration": {
+                    "optional": true,
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/VirtualMachineConfiguration"
+                },
+                "nodeSetup": {
+                    "optional": true,
+                    "$ref": "#/definitions/NodeSetup"
+                },
+                "userAccountSettings": {
+                    "optional": true,
+                    
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/UserAccountSettings"
+                },
+                "subnet": {
+                    "optional": true,
+                    "description": "Existing virtual network subnet to put the cluster in.",
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/ResourceId"
+                }
+            },
+            "required": []
+        }
+    },
+    "definitions": {
+        "NodeSetup": {
+            "type": "object",
+            "properties": {
+                "setupTask": {
+                   "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/SetupTask",
+                   "description": "Given task will be run on each node after its allocation or reboot."
+                },
+                "mountVolumes": {
+                    "$ref": "#/definitions/MountVolumes",
+                    "description": "Specified mount volumes will be available to all jobs executing on the cluster. The volumes will be mounted at location specified by $AZ_BATCHAI_MOUNT_ROOT environment variable."
+                },
+                "performanceCountersSettings": {
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/PerformanceCountersSettings"
+                }
+            },
+            "description": "Describes node setup - setup task, mount volumes and performance counters."
+        },
+        "MountVolumes": {
+            "type": "object",
+            "properties": {
+                "azureFileShares": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AzureFileShareReference"
+                    },
+                    "description": "Azure File Shares that are to be mounted to the cluster nodes."
+                },
+                "azureBlobFileSystems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AzureBlobFileSystemReference"
+                    }
+                },
+                "description": "Azure Blob Containers that are to be mounted to the cluster nodes."
+            },
+            "fileServers": {
+                "type": "array",
+                "items": {
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/FileServerReference"
+                },
+                "description": "File Servers that are to be mounted to the cluster nodes. Note, all file servers must be in the same subnet with the cluster."
+            },
+            "unmanagedFileSystems": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/UnmanagedFileSystemReference"
+                },
+                "description": "Unmanaged file systems (specified by mount command) that are to be mounted to the cluster nodes."
+            },
+            "description": "Volumes to be mounted on each cluster node."
+        },
+        "AzureBlobFileSystemReference": {
+            "type": "object",
+            "properties": {
+                "accountName": {
+                    "type": "string"
+                },
+                "containerName": {
+                    "type": "string"
+                },
+                "credentials": {
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/AzureStorageCredentialsInfo",
+                    "description": "If omitted, Azure CLI will try to get credentials using current subscription."
+                },
+                "relativeMountPath": {
+                    "type": "string",
+                    "description": "The container will be mounted under $AZ_BATCHAI_MOUNT_ROOT/<relative mount path>."
+                },
+                "mountOptions": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "accountName",
+                "containerName",
+                "relativeMountPath"
+            ],
+            "description": "Provides required information, for the service to be able to mount Azure Blob Storage container on the cluster nodes."
+        },
+        "AzureFileShareReference": {
+            "type": "object",
+            "properties": {
+                "accountName": {
+                    "type": "string",
+                    "description": "Optional. Azure CLI will populate it using information from azureFileUrl."
+                },
+                "azureFileUrl": {
+                    "type": "string"
+                },
+                "credentials": {
+                    "$ref": "https://raw.githubusercontent.com/Azure/azure-resource-manager-schemas/master/schemas/2018-03-01/Microsoft.BatchAI.json#/definitions/AzureStorageCredentialsInfo",
+                    "description": "If omitted, Azure CLI will try to get credentials using current subscription."
+                },
+                "relativeMountPath": {
+                    "type": "string",
+                    "description": "The share will be mounted under $AZ_BATCHAI_MOUNT_ROOT/<relative mount path>."
+                },
+                "fileMode": {
+                    "type": "string",
+                    "default": "0777",
+                    "description": "File mode for files. (Default: 0777)"
+                },
+                "directoryMode": {
+                    "type": "string",
+                    "default": "0777",
+                    "description": "File mode for directories. (Default: 0777)"
+                }
+            },
+            "required": [
+                "azureFileUrl",
+                "relativeMountPath"
+            ],
+            "description": "Details of the Azure File Share to mount on the cluster."
+        }
+    }
+}
