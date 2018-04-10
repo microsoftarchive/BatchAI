@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This example demonstrate how to run standard TensorFlow sample (https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dist_test/python/mnist_replica.py) on Azure Batch AI cluster of 2 nodes.
+This example demonstrate how to run distributed batch scoring job in TensorFlow on Azure Batch AI cluster of 2 nodes. [Inception-V3](https://arxiv.org/abs/1512.00567) model and unlabeled images from [ImageNet](http://image-net.org/) dataset will be used.
 
 ## Details
 
