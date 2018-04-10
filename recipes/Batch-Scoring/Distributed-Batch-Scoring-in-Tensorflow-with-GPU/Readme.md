@@ -31,6 +31,10 @@ ILSVRC2012_val_00000111.JPEG: American lobster
 
 You can find Jupyter Notebook for this recipe in [TensorFlow-GPU-Distributed-Inference.ipynb](./TensorFlow-GPU-Distributed-Inference.ipynb).
 
+### Azure CLI 2.0
+
+You can find Azure CLI 2.0 instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
+
 ## License Notice
 
 Under construction...

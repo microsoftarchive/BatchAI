@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",
+  "properties": {
+    "nodeCount": 2,
+    "jobPreparation": {
+      "commandLine": "apt update; apt install mpi-default-dev mpi-default-bin -y"
+    },
+    "customToolkitSettings": {
+      "commandLine": "mpirun -mca btl_tcp_if_exclude docker0,lo --allow-run-as-root --hostfile $AZ_BATCHAI_MPI_HOST_FILE python -u $AZ_BATCHAI_INPUT_SCRIPT/batch_image_label.py --dataset_path $AZ_BATCHAI_INPUT_IMAGES --model_path $AZ_BATCHAI_INPUT_MODEL/inception_v3.ckpt --label_path $AZ_BATCHAI_INPUT_MODEL/imagenet_slim_labels.txt --output_dir $AZ_BATCHAI_OUTPUT_LABEL --batch_size 64"
+    },
+    "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/afs",
+    "outputDirectories": [
+      {
+        "id": "LABEL",
+        "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/afs"
+      }
+    ],
+    "inputDirectories": [
+      {
+        "id": "SCRIPT",
+        "path": "$AZ_BATCHAI_MOUNT_ROOT/afs/classification_samples"
+      },
+      {
+        "id": "IMAGES",
+        "path": "$AZ_BATCHAI_MOUNT_ROOT/bfs/unlabeled_images"
+      },
+      {
+        "id": "MODEL",
+        "path": "$AZ_BATCHAI_MOUNT_ROOT/bfs/pretained_models"
+      }
+
+    ],
+    "containerSettings": {
+      "imageSourceRegistry": {
+        "image": "tensorflow/tensorflow:1.7.0-gpu"
+      }
+    }
+  }
+}
