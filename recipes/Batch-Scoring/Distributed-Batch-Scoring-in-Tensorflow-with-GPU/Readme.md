@@ -15,7 +15,7 @@ This example demonstrate how to run distributed batch scoring job in TensorFlow 
 
 ### Python Jupyter Notebook
 
-You can find Jupyter Notebook for this recipe in [Distributed-Batch-Scoring-Tensorflow.ipynb](./Distributed-Batch-Scoring-Tensorflow.ipynb).
+You can find Jupyter Notebook for this recipe in [TensorFlow-GPU-Distributed-Inference.ipynb](./TensorFlow-GPU-Distributed-Inference.ipynb).
 
 ## License Notice
 
