@@ -242,8 +242,8 @@ is an environment variable set by Batch AI based on output directory configurati
 Batch AI will create an environment variable with name `AZ_BATCHAI_OUTPUT_<id>`, where `<id>` is the directory
 identifier.
 * `mountVolumes` - list of filesystem to be mounted during the job execution. In this case, we are mounting
-two Azure File Shares - 'logs' and 'scripts', and Azure Blob Container 'data'. The filesystems are mounted under
-`AZ_BATCHAI_JOB_MOUNT_ROOT/<relativeMountPath>;
+two Azure File Shares - `logs` and `scripts`, and Azure Blob Container 'data'. The filesystems are mounted under
+`AZ_BATCHAI_JOB_MOUNT_ROOT/<relativeMountPath>`;
 * `<AZURE_BATCHAI_STORAGE_ACCOUNT>` tells that the storage account name will be specified during the job submission
 via --storage-account-name parameter or `AZURE_BATCHAI_STORAGE_ACCOUNT` environment variable on your computer.
 
@@ -445,7 +445,7 @@ from the different jobs, Batch AI creates an unique folder structure for each of
 folder containing the output using `jobOutputDirectoryPathSegment` attribute of the submitted job:
 
 ```azurecli
-az batchai job show -n recipes4 -g batchai.recipes --query jobOutputDirectoryPathSegment
+az batchai job show -n cntk_python_1 -g batchai.recipes --query jobOutputDirectoryPathSegment
 ```
 
 Example output:
