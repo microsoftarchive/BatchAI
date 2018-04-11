@@ -450,9 +450,10 @@ az batchai job show -n cntk_python_1 -g batchai.recipes --query jobOutputDirecto
 
 Example output:
 ```
-"00000000-0000-0000-0000-000000000000/batchai.recipes/jobs/recipes4/0ac6f05f-82ef-4da5-98c8-7487e8c98cf1"
+"00000000-0000-0000-0000-000000000000/batchai.recipes/jobs/cntk_python_1/40b3e701-b07a-4b73-b8ad-43fb2914bff8"
 ```
 
+![Model files in Storage Explorer](./files.png)
 # Cleanup Resources
 
 Delete the resource group and all allocated resources with the following command:
