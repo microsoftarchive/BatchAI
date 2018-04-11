@@ -22,8 +22,7 @@ To train a model, you typically need to perform the following steps:
 * Delete the cluster or resize it to have zero node to not pay for compute resources when you are not using them.
 
 In this recipe, we will:
-* Will create a new storage account with an Azure File Share and Azure Blob Container to store the training script,
-job's logs, generated models and training data;
+* Will create a new storage account, Azure File Share with two folders `logs` and `scripts` to store jobs output and training scripts, and Azure Blob Contaier `data` to store training data;
 * Will deploy the training script and the training data to the storage account before job submission;
 * Create a single node GPU cluster (with `Standard_NC6` VM size) with name `nc6`;
 * During the job submission we will instruct Batch AI to mount the Azure File Share and Azure Blob Container on the
