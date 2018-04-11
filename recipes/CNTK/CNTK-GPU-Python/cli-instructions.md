@@ -27,9 +27,8 @@ job's logs, generated models and training data;
 * Will deploy the training script and the training data to the storage account before job submission;
 * Create a single node GPU cluster (with `Standard_NC6` VM size) with name `nc6`;
 * During the job submission we will instruct Batch AI to mount the Azure File Share and Azure Blob Container on the
-cluster's node and make them available as regular file system at `$AZ_BATCHAI_JOB_MOUNT_ROOT/afs` and
-`$AZ_BATCHAI_JOB_MOUNT_ROOT/bfs`, where `AZ_BATCHAI_JOB_MOUNT_ROOT` is an environment variable set by Batch AI for
-the job.
+cluster's node and make them available as regular file system at `$AZ_BATCHAI_JOB_MOUNT_ROOT/logs`, `$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts` and `$AZ_BATCHAI_JOB_MOUNT_ROOT/data`, where `AZ_BATCHAI_JOB_MOUNT_ROOT` is an environment
+variable set by Batch AI for the job.
 * We will monitor the job execution by streaming its standard output;
 * After the job completion, we will inspect its output and generated models;
 * At the end, we will cleanup all allocated resources.
