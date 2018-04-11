@@ -42,6 +42,12 @@ We have created [recipes](/recipes/) for popular AI frameworks to help you get s
 
 [Custom Tool Kit -- a Keras example](/recipes/Keras/)
 
+We also host recipes for advanced topics including:
+
+[Batch-Scoring](/recipes/Batch-Scoring)
+
+[Hyperparameter Tuning](/recipes/Hyperparameters)
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
