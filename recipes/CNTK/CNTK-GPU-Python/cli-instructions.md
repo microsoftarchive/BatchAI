@@ -22,9 +22,9 @@ To train a model, you typically need to perform the following steps:
 * Delete the cluster or resize it to have zero node to not pay for compute resources when you are not using them.
 
 In this recipe, we will:
-* Will create a new storage account, Azure File Share with two folders `logs` and `scripts` to store jobs output and training scripts, and Azure Blob Contaier `data` to store training data;
-* Will deploy the training script and the training data to the storage account before job submission;
 * Create a single node GPU cluster (with `Standard_NC6` VM size) with name `nc6`;
+* Create a new storage account, Azure File Share with two folders `logs` and `scripts` to store jobs output and training scripts, and Azure Blob Contaier `data` to store training data;
+* Deploy the training script and the training data to the storage account before job submission;
 * During the job submission we will instruct Batch AI to mount the Azure File Share and Azure Blob Container on the
 cluster's node and make them available as regular file system at `$AZ_BATCHAI_JOB_MOUNT_ROOT/logs`, `$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts` and `$AZ_BATCHAI_JOB_MOUNT_ROOT/data`, where `AZ_BATCHAI_JOB_MOUNT_ROOT` is an environment
 variable set by Batch AI for the job.
@@ -54,6 +54,78 @@ create a new resource group ```batchai.recipes``` in East US location:
 
 ```azurecli
 az group create -n batchai.recipes -l eastus
+```
+
+# Create GPU cluster
+
+The following command will create a single node GPU cluster (VM size is Standard_NC6) using Ubuntu DSVM as the operation
+system image.
+
+```azurecli
+az batchai cluster create -n nc6 -g batchai.recipes -s Standard_NC6 -i UbuntuDSVM -t 1 --generate-ssh-keys 
+```
+
+Ubuntu DSVM is a flexible choice because it allows you both to run any training jobs in docker containers and
+to run most popular deeplearing frameworks directly on VM.
+
+`--generate-ssh-keys` option tells Azure CLI to generate private and public ssh keys if you have not them already, so
+you can ssh to cluster nodes using the ssh key and you current user name. Note. You need to backup ~/.ssh folder to
+some permanent storage if you are using Cloud Shell.
+
+Example output:
+```json
+{
+  "allocationState": "steady",
+  "allocationStateTransitionTime": "2018-04-11T21:17:26.345000+00:00",
+  "creationTime": "2018-04-11T20:12:10.758000+00:00",
+  "currentNodeCount": 0,
+  "errors": null,
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batchai.recipes/providers/Microsoft.BatchAI/clusters/nc6",
+  "location": "eastus",
+  "name": "nc6",
+  "nodeSetup": null,
+  "nodeStateCounts": {
+    "additionalProperties": {},
+    "idleNodeCount": 0,
+    "leavingNodeCount": 0,
+    "preparingNodeCount": 0,
+    "runningNodeCount": 0,
+    "unusableNodeCount": 0
+  },
+  "provisioningState": "succeeded",
+  "provisioningStateTransitionTime": "2018-04-11T20:12:11.445000+00:00",
+  "resourceGroup": "batchai.recipes",
+  "scaleSettings": {
+    "additionalProperties": {},
+    "autoScale": null,
+    "manual": {
+      "nodeDeallocationOption": "requeue",
+      "targetNodeCount": 1
+    }
+  },
+  "subnet": null,
+  "tags": null,
+  "type": "Microsoft.BatchAI/Clusters",
+  "userAccountSettings": {
+    "additionalProperties": {},
+    "adminUserName": "alex",
+    "adminUserPassword": null,
+    "adminUserSshPublicKey": "<YOUR SSH PUBLIC KEY HERE>"
+  },
+  "virtualMachineConfiguration": {
+    "additionalProperties": {},
+    "imageReference": {
+      "additionalProperties": {},
+      "offer": "linux-data-science-vm-ubuntu",
+      "publisher": "microsoft-ads",
+      "sku": "linuxdsvmubuntu",
+      "version": "latest",
+      "virtualMachineImageId": null
+    }
+  },
+  "vmPriority": "dedicated",
+  "vmSize": "STANDARD_NC6"
+}
 ```
 
 # Create a Storage Account
@@ -108,84 +180,6 @@ The following commands will create Azure Blob Container and will copy training d
 ```azurecli
 az storage container create -n data --account-name
 az storage blob upload-batch -s . --pattern '*28x28_cntk*' --destination data --destination-path mnist_cntk --account-name <storage account name>
-```
-
-# Create GPU cluster
-
-The following command will create an auto-scale GPU cluster (VM size is Standard_NC6) using Ubuntu DSVM as the operation
-system image.
-
-```azurecli
-az batchai cluster create -n nc6 -g batchai.recipes -s Standard_NC6 -i UbuntuDSVM --min 0 --max 1 --generate-ssh-keys 
-```
-
-Auto-scale clusters change their size depending on number of running and queued training jobs saving money when you are
-not using its compute resources.
-
-Ubuntu DSVM is a flexible choice because it allows you both to run any training jobs in docker containers and
-to run most popular deeplearing frameworks directly on VM.
-
-`--generate-ssh-keys` option tells Azure CLI to generate private and public ssh keys if you have not them already, so
-you can ssh to cluster nodes using the ssh key and you current user name. Note. You need to backup ~/.ssh folder to
-some permanent storage if you are using Cloud Shell.
-
-Example output:
-```json
-{
-  "allocationState": "steady",
-  "allocationStateTransitionTime": "2018-04-11T21:17:26.345000+00:00",
-  "creationTime": "2018-04-11T20:12:10.758000+00:00",
-  "currentNodeCount": 0,
-  "errors": null,
-  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/batchai.recipes/providers/Microsoft.BatchAI/clusters/nc6",
-  "location": "eastus",
-  "name": "nc6",
-  "nodeSetup": null,
-  "nodeStateCounts": {
-    "additionalProperties": {},
-    "idleNodeCount": 0,
-    "leavingNodeCount": 0,
-    "preparingNodeCount": 0,
-    "runningNodeCount": 0,
-    "unusableNodeCount": 0
-  },
-  "provisioningState": "succeeded",
-  "provisioningStateTransitionTime": "2018-04-11T20:12:11.445000+00:00",
-  "resourceGroup": "batchai.recipes",
-  "scaleSettings": {
-    "additionalProperties": {},
-    "autoScale": {
-      "additionalProperties": {},
-      "initialNodeCount": 0,
-      "maximumNodeCount": 1,
-      "minimumNodeCount": 0
-    },
-    "manual": null
-    
-  },
-  "subnet": null,
-  "tags": null,
-  "type": "Microsoft.BatchAI/Clusters",
-  "userAccountSettings": {
-    "additionalProperties": {},
-    "adminUserName": "alex",
-    "adminUserPassword": null,
-    "adminUserSshPublicKey": "<YOUR SSH PUBLIC KEY HERE>"
-  },
-  "virtualMachineConfiguration": {
-    "additionalProperties": {},
-    "imageReference": {
-      "additionalProperties": {},
-      "offer": "linux-data-science-vm-ubuntu",
-      "publisher": "microsoft-ads",
-      "sku": "linuxdsvmubuntu",
-      "version": "latest",
-      "virtualMachineImageId": null
-    }
-  },
-  "vmPriority": "dedicated",
-  "vmSize": "STANDARD_NC6"
-}
 ```
 
 # Submit Training Job
