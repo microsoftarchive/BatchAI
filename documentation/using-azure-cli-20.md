@@ -288,18 +288,9 @@ $ az cluster create -l eastus -g demoGroup -n demoCluster -s Standard_NC6 --min 
 ```
 
 #### Cluster with Low Priority VMs
-To create a cluster with Low Priority VMs, create cluster.json file with the following content:
-
-```json
-{
-  "vmPriority": "lowpriority"
-}
-```
-
-and create the cluster using the following command:
-
+To create a cluster with Low Priority VMs, provide `--vm-priority` argument in cluster create command, for example:
 ```bash
-az batchai cluster create -l eastus -g demoGroup -n demoCluster -s Standard_NC6 --min 0 --max 1 -u demoUser -p demoPassword -c cluster.json
+az batchai cluster create -l eastus -g demoGroup -n demoCluster -s Standard_NC6 --vm-priority lowpriority --min 0 --max 1
 ```
 
 #### Mounting Multiple File Systems
