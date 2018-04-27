@@ -77,7 +77,7 @@ You can use two different approaches:
 ```sh
 az role assignment create --scope /subscriptions/<your subscription id> --role "Network Contributor" --assignee 9fcb3732-5f52-4135-8c08-9d4bbaf203ea
 ```
-, here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is a service principal of Microsoft Azure BatchAI.
+, here `9fcb3732-5f52-4135-8c08-9d4bbaf203ea` is the service principal of Microsoft Azure BatchAI.
 
 #### Using Portal
 1.	Select the subscription you are going to use for Azure Batch AI. (You can find it from *More Services* -> *Subscriptions*)
