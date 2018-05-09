@@ -11,7 +11,7 @@ Currently Batch AI has no native support for Horovod framework, but it's easy to
 - The job will be run on standard tensorflow container ```tensorflow/tensorflow:1.4.0-gpu```;
 - Horovod framework and IntelMPI will be installed in the container using job preparation command line. Note, you can build your own docker image containing tensorflow and horovod instead.
 - Benchmark scripts will be downloaded to GPU nodes using job preparation command line as well, stored in `$AZ_BATCHAI_JOB_TEMP` at each node
-- This sample needs to use at lesat two `STANDARD_NC24r` nodes, please be sure you have enough quota
+- This sample needs to use at least two `STANDARD_NC24r` nodes, please be sure you have enough quota
 - Standard output of the job will be stored on Azure File Share.
 - This recipe ONLY reproduce the training results with synthetic data on NVIDIA K80 GPUs. 
 
