@@ -78,6 +78,12 @@ az batchai job create -l eastus -g batchaitests -n distributed_cntk_python -r nc
 
 Note, the job will start running when the cluster finished allocation and initialization of the nodes.
 
+To visualize the result of the job:
+
+```sh
+az batchai job file stream -n distributed_cntk_python -g batchaitests -f stdout.txt
+```
+
 ### Next Steps
 
 Azure CLI 2.0 Batch AI specific [documentation](/documentation/using-azure-cli-20.md) contains detailed information on
