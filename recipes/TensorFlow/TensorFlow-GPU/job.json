@@ -3,7 +3,7 @@
     "properties": {
         "nodeCount": 1,
         "tensorFlowSettings": {
-            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/convolutional.py",
+            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/convolutional.py"
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
         "inputDirectories": [{
