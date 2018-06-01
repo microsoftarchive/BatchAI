@@ -8,7 +8,7 @@ Currently Batch AI has no native support for Horovod framework, but it's easy to
 ## Details
 
 - Official Horovod Benchmark [scripts](https://github.com/alsrgv/benchmarks/tree/master/scripts/tf_cnn_benchmarks) will be used;
-- The job will be run on standard tensorflow container ```tensorflow/tensorflow:1.4.0-gpu```;
+- The job will be run on standard tensorflow container ```tensorflow/tensorflow:1.8.0-gpu```;
 - Horovod framework and IntelMPI will be installed in the container using job preparation command line. Note, you can build your own docker image containing tensorflow and horovod instead.
 - Benchmark scripts will be downloaded to GPU nodes using job preparation command line as well, stored in `$AZ_BATCHAI_JOB_TEMP` at each node
 - This sample needs to use at least two `STANDARD_NC24r` nodes, please be sure you have enough quota
