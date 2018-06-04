@@ -4,8 +4,8 @@ Keras is a high-level neural networks API, written in Python and capable of runn
 
 See official Keras GitHub page (https://github.com/fchollet/keras).
 
-#### [Keras-DSVM](./Keras-DSVM)
-This Keras-DSVM recipe contains information on how to run Keras training job on a GPU data science node with BatchAI.
+#### [Keras-GPU](./Keras-GPU)
+This Keras-GPU recipe contains information on how to run Keras training job on a GPU node with BatchAI with different backends.
 
 ## Help or Feedback
 --------------------
