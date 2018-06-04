@@ -44,13 +44,13 @@ with Ubuntu DSVM (```UbuntuDSVM```) image and Azure File share `batchaisample` m
 For GNU/Linux users:
 
 ```sh
-az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u $USER -k ~/.ssh/id_rsa.pub
+az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u $USER -k ~/.ssh/id_rsa.pub
 ```
 
 For Windows users:
 
 ```sh
-az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -i UbuntuDSVM -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u <user_name> -p <password>
+az batchai cluster create -l eastus -g batchaitests --storage-account-name <storage account name> -n nc6 -s Standard_NC6 --min 2 --max 2 --afs-name batchaisample --afs-mount-path external -u <user_name> -p <password>
 ```
 
 ### Job

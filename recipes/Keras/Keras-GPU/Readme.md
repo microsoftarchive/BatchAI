@@ -1,10 +1,10 @@
-# Keras DSVM
+# Keras GPU
 
-This recipe shows how to run Keras using Batch AI on DSVM. DSVM supports tensorflow, cntk and theano backends for running Keras. Currently only tensorflow and cntk backends supports running on GPU.
+This recipe shows how to run Keras using Batch AI. Keras supports tensorflow, cntk and theano backends. Currently only tensorflow and cntk backends supports running on GPU. Batch AI will automatic setup backend when toolkit is specified.
 
 ## Details
 
-- DSVM has Keras framework preinstalled;
+- Keras can run with CNTK or Tensorflow backend.
 - Standard keras sample script [mnist_cnn.py](https://raw.githubusercontent.com/fchollet/keras/master/examples/mnist_cnn.py) is used;
 - The script downloads the standard MNIST Database on its own;
 - Standard output of the job will be stored on Azure File Share.
@@ -13,7 +13,7 @@ This recipe shows how to run Keras using Batch AI on DSVM. DSVM supports tensorf
 
 ### Python Jupyter Notebook
 
-You can find Jupyter Notebook for this recipe in [Keras-DSVM.ipynb](./Keras-DSVM.ipynb).
+You can find Jupyter Notebook for this recipe in [Keras-GPU.ipynb](./Keras-GPU.ipynb).
 
 ### Azure CLI 2.0
 
