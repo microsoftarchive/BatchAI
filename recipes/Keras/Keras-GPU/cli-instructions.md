@@ -56,15 +56,21 @@ az batchai cluster create -l eastus -g batchaitests --storage-account-name <stor
 
 ### Job
 
-The job creation parameters are in [job.json](./job.json):
+The job creation parameters are in [job_cntk.json](./job_cntk.json) or [job_tensorflow.json](./job_tensorflow.json):
 
 - An input directory with ID `SCRIPT` to allow the job to find the sample script via environment variable `$AZ_BATCHAI_INPUT_SCRIPT`;
 - stdOutErrPathPrefix specifies that the job should use file share for standard output and error streams;
 - nodeCount defining how many nodes will be used for the job execution;
-- BatchAI has no native support for Keras, but it can run it as a custom_toolkit;
-- Keral in this recipe uses cntk backend; DSVM supports cntk, tensorflow and theano backends for keras, just change KERAS_BACKEND to "tensorflow" or "theano" to use corresponding backend. Note, theano backend will run on CPU.
-- the job will run on DSVM directly, so no docker image is configured for it.
 
+If `'cntk'` backend is used:
+- The job will use `microsoft/2.5.1-gpu-python2.7-cuda9.0-cudnn7.0` container.
+- Keras framework has been preinstalled in the container
+- The job needs to have `cntk_settings` to be configured.
+
+If `'tensorflow'` backend is used:
+- The job will use `tensorflow/tensorflow:1.8.0-gpu` container.
+- Keras framework will be installed by job preparation command line.
+- The job needs to have `tensor_flow_settings` to be configured.
 
 #### Job Creation Command
 
