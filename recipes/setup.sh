@@ -29,7 +29,12 @@ set -e
 
 location=`jq -r '.location' configuration.json`
 read -p "Please provide the Azure resource group name for Batch AI. If the resource not exist, it will be created automatically: " resource_group
-az group create -l $location -n $resource_group -o table
+if az group exists --name $resource_group
+then
+    echo "Resource group already exists so skipping creation."
+else
+    az group create -l $location -n $resource_group -o table
+fi
 
 echo `jq --arg pass $resource_group '.resource_group = $pass' configuration.json` > configuration.json
 
