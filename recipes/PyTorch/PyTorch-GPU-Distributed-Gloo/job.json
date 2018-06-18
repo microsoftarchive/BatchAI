@@ -1,0 +1,29 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2018-05-01/job.json",
+    "properties": {
+        "nodeCount": 2,
+        "pyTorchSettings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/pytorch/mnist_trainer.py",
+            "commandLineArgs": "--epochs 10 --world-size 2 --dist-backend $AZ_BATCHAI_PYTORCH_BACKEND --dist-url $AZ_BATCHAI_PYTORCH_INIT_METHOD --rank $AZ_BATCHAI_TASK_INDEX",
+            "communicationBackend": "gloo" 
+        },
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+        "mountVolumes": {
+            "azureFileShares": [
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/logs",
+                    "relativeMountPath": "logs"
+                },
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/scripts",
+                    "relativeMountPath": "scripts"
+                }
+            ]
+        },
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "pytorch/pytorch:0.4_cuda9_cudnn7"
+            }
+        }
+    }
+}

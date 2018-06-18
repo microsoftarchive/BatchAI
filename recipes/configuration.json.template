@@ -6,6 +6,7 @@
     "location": "eastus",
     "base_url": "",
     "resource_group": "",
+    "workspace": "",
     "storage_account" : {
         "name": "",
         "key": ""

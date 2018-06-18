@@ -1,16 +1,13 @@
 # Horovod
 
-This recipe shows how to run [Horovod](https://github.com/uber/horovod) distributed training framework using Batch AI.
-
-Currently Batch AI has no native support for Horovod framework, but it's easy to run it using Batch AI custom toolkit.
+This recipe shows how to run [Horovod](https://github.com/uber/horovod) distributed training framework for PyTorch using Batch AI.
 
 
 ## Details
 
-- Standard Horovod [tensorflow_mnist.py](https://github.com/uber/horovod/blob/v0.9.10/examples/tensorflow_mnist.py) example will be used;
-- tensorflow_mnist.py downloads training data on its own during execution;
-- The job will be run on standard tensorflow container ```tensorflow/tensorflow:1.1.0-gpu```. You can run the same job directly on GPU nodes by choosing Ubuntu DSVM as an image and removing
-container settings from the job definition.;
+- Standard Horovod [pytorch_mnist.py](https://raw.githubusercontent.com/uber/horovod/master/examples/pytorch_mnist.py) example will be used;
+- pytorch_mnist.py downloads training data on its own during execution;
+- The job will be run on standard tensorflow container batchaitraining/pytorch:0.4.0-cp36-cuda9-cudnn7;
 - Horovod framework will be installed in the container using job preparation command line. Note, you can build your own docker image containing tensorflow and horovod instead.
 - Standard output of the job will be stored on Azure File Share.
 
@@ -18,7 +15,7 @@ container settings from the job definition.;
 
 ### Python Jupyter Notebook
 
-You can find Jupyter Notebook for this recipe in [Horovod.ipynb](./Horovod.ipynb).
+You can find Jupyter Notebook for this recipe in [Horovod-PyTorch.ipynb](./Horovod-PyTorch.ipynb).
 
 ### Azure CLI 2.0
 

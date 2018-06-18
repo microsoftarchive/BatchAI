@@ -5,9 +5,13 @@ fast and easy to use.
 
 See official [Horovod GitHub page](https://github.com/uber/horovod).
 
-#### [Horovod](./Horovod)
+#### [Horovod-Tensorflow](./Horovod-Tensorflow)
 
-This Horovod recipe contains information on how to run Horovod training job on a GPU cluster with Batch AI. 
+This Horovod recipe contains information on how to run Horovod distributed training job for Tensorflow on a GPU cluster with Batch AI. 
+
+#### [Horovod-PyTorch](./Horovod-PyTorch)
+
+This Horovod recipe contains information on how to run Horovod distributed training job for PyTorch on a GPU cluster with Batch AI. 
 
 #### [Horovod-Infiniband-Benchmark](./Horovod-Infiniband-Benchmark)
 

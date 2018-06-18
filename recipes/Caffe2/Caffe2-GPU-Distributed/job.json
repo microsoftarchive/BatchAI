@@ -1,0 +1,35 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2018-05-01/job.json",
+    "properties": {
+        "nodeCount": 2,
+        "caffe2Settings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/caffe2/resnet50_trainer.py",
+            "commandLineArgs": "--num_shards 2 --shard_id $AZ_BATCHAI_TASK_INDEX --run_id 0 --epoch_size 2000 --num_epochs 5 --train_data $AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_data/mnist_train_lmdb --file_store_path $AZ_BATCHAI_SHARED_JOB_TEMP"
+        },
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+        "mountVolumes": {
+            "azureFileShares": [
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/logs",
+                    "relativeMountPath": "logs"
+                },
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/scripts",
+                    "relativeMountPath": "scripts"
+                }
+            ],
+            "azureBlobFileSystems": [
+                {
+                    "accountName": "<AZURE_BATCHAI_STORAGE_ACCOUNT>",
+                    "containerName": "data",
+                    "relativeMountPath": "data"
+                }
+            ]
+        },
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "caffe2ai/caffe2"
+            }
+        }
+    }
+}
