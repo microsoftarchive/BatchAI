@@ -446,7 +446,7 @@ from the different jobs, Batch AI creates an unique folder structure for each of
 folder containing the output using `jobOutputDirectoryPathSegment` attribute of the submitted job:
 
 ```azurecli
-az batchai job show -j cntk_python -g batchai.recipes -w recipe_workspace -e cntk_experiment --query jobOutputDirectoryPathSegment
+az batchai job show -n cntk_python -g batchai.recipes -w recipe_workspace -e cntk_experiment --query jobOutputDirectoryPathSegment
 ```
 
 Example output:

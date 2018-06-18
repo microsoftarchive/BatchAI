@@ -366,7 +366,7 @@ The job stores the generated model files in the output directory with id = `MODE
 get download URLs using the following command:
 
 ```azurecli
-az batchai job file list -n distributed_chainer -g batchai.recipes -w recipe_workspace -e chainer_experiment  -g batchai.recipes -d MODEL
+az batchai job file list -j distributed_chainer -g batchai.recipes -w recipe_workspace -e chainer_experiment  -g batchai.recipes -d MODEL
 ```
 
 Example output:
