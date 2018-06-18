@@ -1,29 +1,36 @@
 {
-    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2018-05-01/job.json",
     "properties": {
         "nodeCount": 2,
         "cntkSettings": {
-            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/ConvNet_CIFAR10_DataAug_Distributed.py",
+            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/cntk/ConvNet_CIFAR10_DataAug_Distributed.py",
             "commandLineArgs": "--datadir $AZ_BATCHAI_JOB_TEMP --outputdir $AZ_BATCHAI_OUTPUT_MODEL -n 5",
             "processCount": 2
         },
-        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
-        "inputDirectories": [{
-            "id": "SCRIPT",
-            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/cntk_samples"
-        }],
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
         "outputDirectories": [{
             "id": "MODEL",
-            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
-            "pathSuffix": "Models"
+            "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs"
         }],
-        "containerSettings": {
-            "imageSourceRegistry": {
-                "image": "microsoft/cntk:2.1-gpu-python3.5-cuda8.0-cudnn6.0"
-            }
+        "mountVolumes": {
+            "azureFileShares": [
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/logs",
+                    "relativeMountPath": "logs"
+                },
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/scripts",
+                    "relativeMountPath": "scripts"
+                }
+            ]
         },
         "jobPreparation": {
-            "commandLine": "bash $AZ_BATCHAI_INPUT_SCRIPT/CIFAR-10_data_prepare.sh"
+            "commandLine": "bash $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/cntk/CIFAR-10_data_prepare.sh"
+        },
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "microsoft/cntk:2.5.1-gpu-python2.7-cuda9.0-cudnn7.0"
+            }
         }
     }
 }

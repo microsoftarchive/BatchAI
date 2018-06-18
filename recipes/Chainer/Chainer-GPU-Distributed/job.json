@@ -1,20 +1,27 @@
 {
-    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2018-05-01/job.json",
     "properties": {
         "nodeCount": 2,
         "chainerSettings": {
-            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/train_mnist.py",
+            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/chainer/train_mnist.py",
             "commandLineArgs": "-g -o $AZ_BATCHAI_OUTPUT_MODEL"
         },
-        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
-        "inputDirectories": [{
-            "id": "SCRIPT",
-            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/chainer_samples"
-        }],
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+        "mountVolumes": {
+            "azureFileShares": [
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/logs",
+                    "relativeMountPath": "logs"
+                },
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/scripts",
+                    "relativeMountPath": "scripts"
+                }
+            ]
+        },
         "outputDirectories": [{
             "id": "MODEL",
-            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
-            "pathSuffix": "Models"
+            "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs"
         }],
         "containerSettings": {
             "imageSourceRegistry": {

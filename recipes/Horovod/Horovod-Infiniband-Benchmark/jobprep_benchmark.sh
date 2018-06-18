@@ -7,6 +7,7 @@ cd $AZ_BATCHAI_JOB_TEMP
 git clone https://github.com/alsrgv/benchmarks
 cd benchmarks
 git checkout horovod_v2
+echo "export PYTHONPATH=$PYTHONPATH:$AZ_BATCHAI_JOB_TEMP/benchmarks/" >> ~/.bashrc
 
 # install intel MPI
 cd /tmp

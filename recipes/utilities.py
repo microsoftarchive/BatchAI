@@ -39,6 +39,7 @@ class Configuration:
             self.location = encode(conf['location'])
             self.url = encode(conf['base_url'])
             self.resource_group = encode(conf['resource_group'])
+            self.workspace = encode(conf['workspace'])
             self.storage_account_name = encode(conf['storage_account']['name'])
             self.storage_account_key = encode(conf['storage_account']['key'])
             self.admin = encode(conf['admin_user']['name'])
@@ -76,10 +77,12 @@ class Configuration:
 class OutputStreamer:
     """Helper class to stream (tail -f) job's output files."""
 
-    def __init__(self, client, resource_group, job_name, output_directory_id,
-                 file_name):
+    def __init__(self, client, resource_group, workspace_name, experiment_name, 
+                 job_name, output_directory_id, file_name):
         self.client = client
         self.resource_group = resource_group
+        self.workspace_name = workspace_name
+        self.experiment_name = experiment_name
         self.job_name = job_name
         self.output_directory_id = output_directory_id
         self.file_name = file_name
@@ -93,7 +96,7 @@ class OutputStreamer:
     def tail(self):
         if not self.url:
             files = self.client.jobs.list_output_files(
-                self.resource_group, self.job_name,
+                self.resource_group, self.workspace_name, self.experiment_name, self.job_name,
                 models.JobsListOutputFilesOptions(outputdirectoryid=self.output_directory_id))
             if not files:
                 return
@@ -157,7 +160,7 @@ def print_job_status(job):
                 for detail in error.details:
                     failure_message += '{0}:{1}\n'.format(detail.name,
                                                           detail.value)
-    print('Job state: {0} ExitCode: {1}'.format(job.execution_state.name,
+    print('Job state: {0} ExitCode: {1}'.format(job.execution_state,
                                                 exit_code))
     if failure_message:
         print('FailureDetails: {0}'.format(failure_message))
@@ -185,17 +188,17 @@ def print_cluster_status(cluster):
                 print('{0}: {1}'.format(detail.name, detail.value))
 
 
-def wait_for_job_completion(client, resource_group, job_name, cluster_name,
-                            output_directory_id=None, file_name=None):
+def wait_for_job_completion(client, resource_group, workspace_name, experiment_name, 
+                            job_name, cluster_name, output_directory_id=None, file_name=None):
     """
     Waits for job completion and tails a file specified by output_directory_id
     and file_name.
     """
     # Wait for job to start running
     while True:
-        cluster = client.clusters.get(resource_group, cluster_name)
+        cluster = client.clusters.get(resource_group, workspace_name, cluster_name)
         print_cluster_status(cluster)
-        job = client.jobs.get(resource_group, job_name)
+        job = client.jobs.get(resource_group, workspace_name, experiment_name, job_name)
         print_job_status(job)
         if job.execution_state != models.ExecutionState.queued:
             break
@@ -204,11 +207,11 @@ def wait_for_job_completion(client, resource_group, job_name, cluster_name,
     print('Waiting for job output to become available...')
 
     # Tail the output file and wait for job to complete
-    streamer = OutputStreamer(client, resource_group, job_name,
-                              output_directory_id, file_name)
+    streamer = OutputStreamer(client, resource_group, workspace_name, experiment_name, 
+                              job_name, output_directory_id, file_name)
     while True:
         streamer.tail()
-        job = client.jobs.get(resource_group, job_name)
+        job = client.jobs.get(resource_group, workspace_name, experiment_name, job_name)
         if job.execution_state in (models.ExecutionState.succeeded, models.ExecutionState.failed):
             break
         time.sleep(1)

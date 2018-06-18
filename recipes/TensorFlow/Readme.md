@@ -10,6 +10,9 @@ This TensorFlow-GPU-Distributed recipe contains information on how to run distri
 #### [TensorFlow-GPU](./TensorFlow-GPU)
 This TensorFlow-GPU recipe contains information on how to run TensorFlow job on a GPU node with BatchAI.
 
+#### [Horovod-Tensorflow](../Horovod/Horovod-Tensorflow)
+
+This Horovod recipe contains information on how to run Horovod distributed training job for Tensorflow on a GPU cluster with Batch AI. 
 
 ## Help or Feedback
 --------------------

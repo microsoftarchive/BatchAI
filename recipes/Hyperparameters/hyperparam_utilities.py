@@ -55,8 +55,8 @@ class MetricExtractor:
         self.regex = regex
         self.metric = metric
 
-    def get_metric(self, job_name, resource_group, client):
-        files = client.jobs.list_output_files(resource_group, job_name,
+    def get_metric(self, job_name, resource_group, workspace_name, experiment_name, client):
+        files = client.jobs.list_output_files(resource_group, workspace_name, experiment_name, job_name,
                                               models.JobsListOutputFilesOptions(outputdirectoryid=self.list_option))
         val = float("inf")
         for file in list(files):
@@ -82,7 +82,8 @@ class MetricExtractor:
 
         return val
 
-def run_then_return_metric(config_index, resource_group, parameter, client, metric_extractor, result, delete_job=True):
+def run_then_return_metric(config_index, resource_group, workspace_name, experiment_name, 
+                            parameter, client, metric_extractor, result, delete_job=True):
     """
     Submit a job with gvien parameter 
 
@@ -94,16 +95,16 @@ def run_then_return_metric(config_index, resource_group, parameter, client, metr
 
     job_name = str(uuid.uuid4())[:8]
     try:
-        _ = client.jobs.create(resource_group, job_name, parameter).result()
-
+        _ = client.jobs.create(resource_group, workspace_name, experiment_name, job_name, parameter).result()
         polling_interval = 5
         while True:
-            job = client.jobs.get(resource_group, job_name)
+            job = client.jobs.get(resource_group, workspace_name, experiment_name, job_name)
             if job.execution_state == models.ExecutionState.succeeded or job.execution_state == models.ExecutionState.failed:
                 break
             time.sleep(polling_interval)
 
-        val = metric_extractor.get_metric(job_name=job_name, resource_group=resource_group, client=client)
+        val = metric_extractor.get_metric(job_name=job_name, resource_group=resource_group, workspace_name=workspace_name, 
+                                          experiment_name=experiment_name, client=client)
         result.put((val, config_index))
         print("Job {0} has completed for config {1}".format(job_name, config_index))
         
@@ -113,4 +114,4 @@ def run_then_return_metric(config_index, resource_group, parameter, client, metr
 
     finally:
         if delete_job:
-            client.jobs.delete(resource_group, job_name).result()
+            client.jobs.delete(resource_group, workspace_name, experiment_name, job_name).result()

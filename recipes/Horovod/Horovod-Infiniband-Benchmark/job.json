@@ -1,23 +1,32 @@
 {
-  "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",
-  "properties": {
-    "nodeCount": 2,
-    "jobPreparation": {
-      "commandLine": "bash $AZ_BATCHAI_INPUT_SCRIPTS/jobprep_benchmark.sh"
-    },
-    "customToolkitSettings": {
-      "commandLine": "source /opt/intel/compilers_and_libraries_2017.4.196/linux/mpi/intel64/bin/mpivars.sh; cd $AZ_BATCHAI_JOB_TEMP/benchmarks/; mpirun -n 8 -ppn 4 -hosts $AZ_BATCH_HOST_LIST -env I_MPI_FABRICS=dapl -env I_MPI_DAPL_PROVIDER=ofa-v2-ib0 -env I_MPI_DYNAMIC_CONNECTION=0 python scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py --model resnet101 --batch_size 64 --variable_update horovod"
-    },
-    "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
-    "inputDirectories": [{
-        "id": "SCRIPTS",
-        "path": "$AZ_BATCHAI_MOUNT_ROOT/external/horovod_samples"
-      }
-    ],
-    "containerSettings": {
-      "imageSourceRegistry": {
-        "image": "tensorflow/tensorflow:1.8.0-gpu"
-      }
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2018-05-01/job.json",
+    "properties": {
+        "nodeCount": 2,
+        "horovodSettings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_TEMP/benchmarks/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py",
+            "commandLineArgs": "--model resnet101 --batch_size 64 --variable_update horovod",
+            "processCount": 8
+        },
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+        "mountVolumes": {
+            "azureFileShares": [
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/logs",
+                    "relativeMountPath": "logs"
+                },
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/scripts",
+                    "relativeMountPath": "scripts"
+                }
+            ]
+        },
+        "jobPreparation": {
+            "commandLine": "bash $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/horovod/jobprep_benchmark.sh"
+        },
+        "containerSettings": {
+            "imageSourceRegistry": {
+                "image": "tensorflow/tensorflow:1.8.0-gpu"
+            }
+        }
     }
-  }
 }

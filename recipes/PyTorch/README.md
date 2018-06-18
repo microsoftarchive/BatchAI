@@ -9,6 +9,10 @@ See official PyTorch GitHub page (https://github.com/pytorch/pytorch).
 #### [PyTorch-GPU-Distributed-Gloo](./PyTorch-GPU-Distributed-Gloo)
 This PyTorch-GPU-Distributed-Gloo recipe contains information on how to run distributed PyTorch training job across multiple GPU nodes with BatchAI using Gloo backend.
 
+#### [Horovod-PyTorch](../Horovod/Horovod-PyTorch)
+
+This Horovod recipe contains information on how to run Horovod distributed training job for PyTorch on a GPU cluster with Batch AI. 
+
 ## Help or Feedback
 --------------------
 If you have any problems or questions, you can reach the Batch AI team at [AzureBatchAITrainingPreview@service.microsoft.com](mailto:AzureBatchAITrainingPreview@service.microsoft.com) or you can create an issue on GitHub.

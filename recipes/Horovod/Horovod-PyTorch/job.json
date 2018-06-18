@@ -1,16 +1,11 @@
 {
     "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2018-05-01/job.json",
     "properties": {
-        "nodeCount": 1,
-        "cntkSettings": {
-            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/cntk/ConvNet_MNIST.py",
-            "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_cntk $AZ_BATCHAI_OUTPUT_MODEL"
+        "nodeCount": 2,
+        "horovodSettings": {
+            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/horovod/pytorch_mnist.py"
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
-        "outputDirectories": [{
-            "id": "MODEL",
-            "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs"
-        }],
         "mountVolumes": {
             "azureFileShares": [
                 {
@@ -21,18 +16,19 @@
                     "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/scripts",
                     "relativeMountPath": "scripts"
                 }
-            ],
-            "azureBlobFileSystems": [
-                {
-                    "accountName": "<AZURE_BATCHAI_STORAGE_ACCOUNT>",
-                    "containerName": "data",
-                    "relativeMountPath": "data"
-                }
             ]
+        },
+        "outputDirectories": [{
+            "id": "MODEL",
+            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+            "pathSuffix": "Models"
+        }],
+        "jobPreparation": {
+          "commandLine": "apt update; apt install mpi-default-dev mpi-default-bin -y; pip install horovod"
         },
         "containerSettings": {
             "imageSourceRegistry": {
-                "image": "microsoft/cntk:2.5.1-gpu-python2.7-cuda9.0-cudnn7.0"
+                "image": "batchaitraining/pytorch:0.4.0-cp36-cuda9-cudnn7"
             }
         }
     }
