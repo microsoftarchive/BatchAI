@@ -1,40 +1,24 @@
 {
-  "title": "Cluster schema validation.",
+  "title": "File Server schema validation.",
   "properties": {
     "properties": {
       "type": "object",
       "properties": {
         "vmSize": {
           "type": "string",
-          "description": "The size of the virtual machines in the cluster. All nodes in a cluster have the same VM size. For information about available VM sizes for clusters using images from the Virtual Machines Marketplace see Sizes for Virtual Machines (Linux). Batch AI service supports all Azure VM sizes except STANDARD_A0 and those with premium storage (STANDARD_GS, STANDARD_DS, and STANDARD_DSV2 series)."
+          "description": "The size of the virtual machine for the File Server. For information about available VM sizes from the Virtual Machines Marketplace, see Sizes for Virtual Machines (Linux)."
         },
-        "vmPriority": {
-          "type": "string",
-          "enum": [
-            "dedicated",
-            "lowpriority"
-          ],
-          "description": "VM priority. Allowed values are: dedicated (default) and lowpriority."
+        "sshConfiguration": {
+          "$ref": "#/definitions/SshConfiguration",
+          "description": "SSH configuration for the File Server node."
         },
-        "scaleSettings": {
-          "$ref": "#/definitions/ScaleSettings",
-          "description": "Scale settings for the cluster. Batch AI service supports manual and auto scale clusters."
-        },
-        "virtualMachineConfiguration": {
-          "$ref": "#/definitions/VirtualMachineConfiguration",
-          "description": "OS image configuration for cluster nodes. All nodes in a cluster have the same OS image."
-        },
-        "nodeSetup": {
-          "$ref": "#/definitions/NodeSetup",
-          "description": "Setup to be performed on each compute node in the cluster."
-        },
-        "userAccountSettings": {
-          "$ref": "#/definitions/UserAccountSettings",
-          "description": "Settings for an administrator user account that will be created on each compute node in the cluster."
+        "dataDisks": {
+          "$ref": "#/definitions/DataDisks",
+          "description": "Settings for the data disks which will be created for the File Server."
         },
         "subnet": {
           "$ref": "#/definitions/ResourceId",
-          "description": "Existing virtual network subnet to put the cluster nodes in. Note, if a File Server mount configured in node setup, the File Server's subnet will be used automatically."
+          "description": "Identifier of an existing virtual network subnet to put the File Server in. If not provided, a new virtual network and subnet will be created."
         }
       }
     },
