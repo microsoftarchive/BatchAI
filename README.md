@@ -40,7 +40,7 @@ We have created [recipes](/recipes/) for popular AI frameworks to help you get s
 
 [PyTorch](/recipes/PyTorch)
 
-[Custom Tool Kit -- a Keras example](/recipes/Keras/)
+[Keras](/recipes/Keras/)
 
 We also host recipes for advanced topics including:
 
