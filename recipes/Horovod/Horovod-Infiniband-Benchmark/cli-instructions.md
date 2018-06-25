@@ -227,7 +227,7 @@ az batchai experiment create -g batchai.recipes -w recipe_workspace -n horovod_e
 Use the following command to submit the job on the cluster:
 
 ```azurecli test
-wget https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed-Infiniband/job.json
+wget -O job.json https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/Horovod/Horovod-Infiniband-Benchmark/job.json
 az batchai job create -c nc24r -n horovod_benchmark -g batchai.recipes -w recipe_workspace -e horovod_experiment -f job.json --storage-account-name <storage account name>
 ```
 

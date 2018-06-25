@@ -1,29 +1,36 @@
 {
-    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2017-09-01-preview/job.json",
+    "$schema": "https://raw.githubusercontent.com/Azure/BatchAI/master/schemas/2018-05-01/job.json",
     "properties": {
         "nodeCount": 2,
         "cntkSettings": {
-            "pythonScriptFilePath": "$AZ_BATCHAI_INPUT_SCRIPT/TrainResNet_CIFAR10_Distributed.py",
+            "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/cntk/TrainResNet_CIFAR10_Distributed.py",
             "commandLineArgs": "--datadir $AZ_BATCHAI_JOB_TEMP -outputdir $AZ_BATCHAI_OUTPUT_MODEL -n resnet110 -e 5",
             "processCount": 8
         },
-        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
-        "inputDirectories": [{
-            "id": "SCRIPT",
-            "path": "$AZ_BATCHAI_MOUNT_ROOT/external/cntk_samples"
-        }],
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
         "outputDirectories": [{
             "id": "MODEL",
-            "pathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
-            "pathSuffix": ""
+            "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs"
         }],
+        "mountVolumes": {
+            "azureFileShares": [
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/logs",
+                    "relativeMountPath": "logs"
+                },
+                {
+                    "azureFileUrl": "https://<AZURE_BATCHAI_STORAGE_ACCOUNT>.file.core.windows.net/scripts",
+                    "relativeMountPath": "scripts"
+                }
+            ]
+        },
+        "jobPreparation": {
+            "commandLine": "bash $AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/cntk/jobprep_cntk_distributed_ib.sh"
+        },
         "containerSettings": {
             "imageSourceRegistry": {
                 "image": "batchaitraining/cntk:2.3-gpu-1bitsgd-py36-cuda8-cudnn6-intelmpi"
             }
-        },
-        "jobPreparation": {
-            "commandLine": "bash $AZ_BATCHAI_INPUT_SCRIPT/jobprep_cntk_distributed_ib.sh"
         }
     }
 }

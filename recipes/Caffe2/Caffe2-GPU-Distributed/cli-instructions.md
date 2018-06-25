@@ -164,7 +164,7 @@ For GNU/Linux or Cloud Shell:
 
 ```azurecli test
 wget "https://batchaisamples.blob.core.windows.net/samples/mnist_dataset_full.zip?st=2018-03-04T00%3A21%3A00Z&se=2099-12-31T23%3A59%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=rrBgTFeIv3bjsyAfh87RoW5i0ay4mMyMEIh2RI45s%2B0%3D" -O mnist_dataset_full.zip
-unzip mnist_dataset_full.zip -d mnist_data
+unzip -o mnist_dataset_full.zip -d mnist_data
 ```
 
 ## Create a Blob Container and Deploy Training Data
@@ -240,7 +240,7 @@ az batchai experiment create -g batchai.recipes -w recipe_workspace -n caffe2_ex
 Use the following command to submit the job in the experiment on the cluster:
 
 ```azurecli test
-wget https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/caffe2/caffe2-GPU-Distributed/job.json
+wget -O job.json https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/Caffe2/Caffe2-GPU-Distributed/job.json
 az batchai job create -n distributed_caffe2 -c nc6 -g batchai.recipes -w recipe_workspace -e caffe2_experiment -f job.json --storage-account-name <storage account name>
 ```
 

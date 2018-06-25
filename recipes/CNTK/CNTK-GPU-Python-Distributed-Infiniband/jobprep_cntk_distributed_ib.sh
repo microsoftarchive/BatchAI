@@ -3,7 +3,7 @@
 # Download the CIFAR-10 dataset from Azure Blob
 if [ ! -z $AZ_BATCHAI_JOB_TEMP ];then
     cd $AZ_BATCHAI_JOB_TEMP
-    wget 'https://batchaisamples.blob.core.windows.net/samples/CIFAR-10_dataset.tar?st=2017-09-29T18%3A29%3A00Z&se=2099-12-31T08%3A00%3A00Z&sp=rl&sv=2016-05-31&sr=b&sig=nFXsAp0Eq%2BoS5%2BKAEPnfyEGlCkBcKIadDvCPA%2BcX6lU%3D' -k -O 'CIFAR-10_dataset.tar'
+    wget 'https://batchaisamples.blob.core.windows.net/samples/CIFAR-10_dataset.tar?st=2017-09-29T18%3A29%3A00Z&se=2099-12-31T08%3A00%3A00Z&sp=rl&sv=2016-05-31&sr=b&sig=nFXsAp0Eq%2BoS5%2BKAEPnfyEGlCkBcKIadDvCPA%2BcX6lU%3D' -q -k -O 'CIFAR-10_dataset.tar'
     echo "untar CIFAR-10 dataset........."
     tar -xf CIFAR-10_dataset.tar
     echo "done"

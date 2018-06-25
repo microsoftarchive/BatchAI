@@ -220,7 +220,7 @@ az batchai experiment create -g batchai.recipes -w recipe_workspace -n pytorch_e
 Use the following command to submit the job on the cluster:
 
 ```azurecli test
-wget https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/PyTorch/PyTorch-GPU-Distributed-Gloo/job.json
+wget -O job.json https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/PyTorch/PyTorch-GPU-Distributed-Gloo/job.json
 az batchai job create -c nc6 -n distributed_pytorch -g batchai.recipes -w recipe_workspace -e pytorch_experiment -f job.json --storage-account-name <storage account name>
 ```
 

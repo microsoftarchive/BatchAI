@@ -230,7 +230,7 @@ az batchai experiment create -g batchai.recipes -w recipe_workspace -n cntk_expe
 Use the following command to submit the job on the cluster:
 
 ```azurecli test
-wget https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/job.json
+wget -O job.json https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/CNTK/CNTK-GPU-Python-Distributed/job.json
 az batchai job create -c nc6 -n distributed_cntk_python -g batchai.recipes -w recipe_workspace -e cntk_experiment -f job.json --storage-account-name <storage account name>
 ```
 

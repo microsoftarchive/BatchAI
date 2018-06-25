@@ -254,8 +254,8 @@ az batchai experiment create -g batchai.recipes -w recipe_workspace -n keras_exp
 
 Use the following command to submit the job on the cluster:
 ```azurecli test
-wget https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/Keras/Keras-GPU/job_tensorflow.json
-az batchai job create -c nc6 -n keras_tensorflow -g batchai.recipes -w recipe_workspace -e keras_experiment -f job_tensorflow.json --storage-account-name <storage account name>
+wget -O job.json https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/Keras/Keras-GPU/job_tensorflow.json
+az batchai job create -c nc6 -n keras_tensorflow -g batchai.recipes -w recipe_workspace -e keras_experiment -f job.json --storage-account-name <storage account name>
 ```
 
 Example output:

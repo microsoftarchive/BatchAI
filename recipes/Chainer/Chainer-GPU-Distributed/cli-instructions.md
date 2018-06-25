@@ -218,7 +218,7 @@ az batchai experiment create -g batchai.recipes -w recipe_workspace -n chainer_e
 Use the following command to submit the job on the cluster:
 
 ```azurecli test
-wget https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/Chainer/Chainer-GPU-Distributed/job.json
+wget -O job.json https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/Chainer/Chainer-GPU-Distributed/job.json
 az batchai job create -n distributed_chainer -c nc6 -g batchai.recipes -w recipe_workspace -e chainer_experiment -f job.json --storage-account-name <storage account name>
 ```
 

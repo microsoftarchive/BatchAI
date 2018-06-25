@@ -166,7 +166,7 @@ For GNU/Linux or Cloud Shell:
 
 ```azurecli test
 wget "https://batchaisamples.blob.core.windows.net/samples/mnist_dataset_full.zip?st=2018-03-04T00%3A21%3A00Z&se=2099-12-31T23%3A59%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=rrBgTFeIv3bjsyAfh87RoW5i0ay4mMyMEIh2RI45s%2B0%3D" -O mnist_dataset_full.zip
-unzip mnist_dataset_full.zip -d mnist_data
+unzip -o mnist_dataset_full.zip -d mnist_data
 ```
 
 ## Create a Blob Container and Deploy Training Data
@@ -244,7 +244,7 @@ az batchai experiment create -g batchai.recipes -w recipe_workspace -n tensorflo
 Use the following command to submit the job on the cluster:
 
 ```azurecli test
-wget https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/TensorFlow/TensorFlow-GPU-Distributed/job.json
+wget -O job.json https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/TensorFlow/TensorFlow-GPU-Distributed/job.json
 az batchai job create -c nc6 -n distributed_tensorflow -g batchai.recipes -w recipe_workspace -e tensorflow_experiment -f job.json --storage-account-name <storage account name>
 ```
 

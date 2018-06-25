@@ -24,7 +24,7 @@ For GNU/Linux users:
 
 ```sh
 wget "https://batchaisamples.blob.core.windows.net/samples/imagenet_samples.zip?st=2017-09-29T18%3A29%3A00Z&se=2099-12-31T08%3A00%3A00Z&sp=rl&sv=2016-05-31&sr=c&sig=PmhL%2BYnYAyNTZr1DM2JySvrI12e%2F4wZNIwCtf7TRI%2BM%3D" -O imagenet_samples.zip
-unzip imagenet_samples.zip
+unzip -o imagenet_samples.zip
 ```
 
 - Download pretrained InceptionV3 model file into the current folder:
@@ -50,7 +50,7 @@ az storage blob upload-batch --destination data/unlabeled_images --source sample
 The following commands will create Azure File Shares `scripts` and `logs` and will copy training script into `chainer`
 folder inside of `scripts` share:
 
-```azurecli test
+```azurecli
 az storage share create -n scripts --account-name <storage account name>
 az storage share create -n logs --account-name <storage account name>
 az storage directory create --share-name scripts --name classification_samples --account-name <storage account name>
@@ -61,7 +61,7 @@ az storage file upload --share-name scripts --source batch_image_label.py --path
 
 The following command will create a new workspace ```recipe_workspace``` in East US location:
 
-```azurecli test
+```azurecli
 az batchai workspace create -g batchai.recipes -n recipe_workspace -l eastus
 ```
 
@@ -69,7 +69,7 @@ az batchai workspace create -g batchai.recipes -n recipe_workspace -l eastus
 
 The following command will create a single node GPU cluster (VM size is Standard_NC6) using Ubuntu as the operation system image.
 
-```azurecli test
+```azurecli
 az batchai cluster create -n nc6 -g batchai.recipes -w recipe_workspace -s Standard_NC6 -t 2 --generate-ssh-keys 
 ```
 
@@ -94,13 +94,13 @@ The job creation parameters are in [job.json](./job.json):
 ## Submit the Job in an Experiment
 
 Use the following command to create a new experiment called ```batch_scoring_experiment``` in the workspace:
-```azurecli test
+```azurecli
 az batchai experiment create -g batchai.recipes -w recipe_workspace -n batch_scoring_experiment
 ```
 
 Use the following command to submit the job on the cluster:
 
-```azurecli test
+```azurecli
 az batchai job create -n batch_scoring -c nc6 -g batchai.recipes -w recipe_workspace -e batch_scoring_experiment -f job.json --storage-account-name <storage account name>
 ```
 Note, the job will start running when the cluster finished allocation and initialization of the node.
