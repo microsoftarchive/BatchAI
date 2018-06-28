@@ -372,5 +372,5 @@ Example output:
 Delete the resource group and all allocated resources with the following command:
 
 ```azurecli
-az batchai group delete -n batchai.recipes -y
+az group delete -n batchai.recipes -y
 ```
