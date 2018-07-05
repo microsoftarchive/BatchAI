@@ -37,9 +37,9 @@ Use the following links for a quick navigation:
 
 ## <a name="jupyternotebook"></a> Run Recipes Using Python Jupyter notebook
 
-### Helper functions in utilities.py
+### Helper functions in utilities
 
-For your convenience, we provide a collection of helper functions in [utilities.py](./utilities.py) used for each recipes:
+For your convenience, we provide a collection of helper functions in [BatchAI/utilities](../utilities) used for each recipes:
 
 - Read parameters from configuration file
 - Create python client object (BatchAIManagementClient) to access Azure Batch AI service
