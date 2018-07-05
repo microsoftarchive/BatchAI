@@ -372,7 +372,7 @@ You can use the Portal or Azure Storage Explorer to inspect the generated files.
 from the different jobs, Batch AI creates an unique folder structure for each of them. You can find the path to the
 folder containing the output using `jobOutputDirectoryPathSegment` attribute of the submitted job:
 
-```azurecli
+```azurecli test
 az batchai job show -n distributed_cntk_python_ib -g batchai.recipes -w recipe_workspace -e cntk_experiment --query jobOutputDirectoryPathSegment
 ```
 

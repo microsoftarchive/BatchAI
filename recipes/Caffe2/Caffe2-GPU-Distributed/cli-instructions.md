@@ -381,7 +381,7 @@ Alternatively, you can use the Portal or Azure Storage Explorer to inspect the g
 from the different jobs, Batch AI creates an unique folder structure for each of them. You can find the path to the
 folder containing the output using `jobOutputDirectoryPathSegment` attribute of the submitted job:
 
-```azurecli
+```azurecli test
 az batchai job show -n distributed_caffe2 -g batchai.recipes -g batchai.recipes -w recipe_workspace -e caffe2_experiment --query jobOutputDirectoryPathSegment
 ```
 
