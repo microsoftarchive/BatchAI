@@ -171,7 +171,7 @@ Create a training job configuration file `job.json` with the following content:
         "nodeCount": 2,
         "pyTorchSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/pytorch/mnist_trainer.py",
-            "commandLineArgs": "--epochs 10 --world-size 2 --dist-backend $AZ_BATCHAI_PYTORCH_BACKEND --dist-url $AZ_BATCHAI_PYTORCH_INIT_METHOD --rank $AZ_BATCHAI_TASK_INDEX",
+            "commandLineArgs": "--epochs 10 --world-size 2 --dist-backend gloo --dist-url $AZ_BATCHAI_PYTORCH_INIT_METHOD --rank $AZ_BATCHAI_TASK_INDEX",
             "communicationBackend": "gloo" 
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",

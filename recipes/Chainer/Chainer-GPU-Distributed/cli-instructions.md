@@ -394,7 +394,7 @@ from the different jobs, Batch AI creates an unique folder structure for each of
 folder containing the output using `jobOutputDirectoryPathSegment` attribute of the submitted job:
 
 ```azurecli test
-az batchai job show -n distributed_chainer -j distributed_chainer -g batchai.recipes -w recipe_workspace -e chainer_experiment --query jobOutputDirectoryPathSegment
+az batchai job show -n distributed_chainer -g batchai.recipes -w recipe_workspace -e chainer_experiment --query jobOutputDirectoryPathSegment
 ```
 
 Example output:
