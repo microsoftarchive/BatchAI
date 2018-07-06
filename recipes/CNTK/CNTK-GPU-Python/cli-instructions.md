@@ -193,7 +193,7 @@ Create a training job configuration file `job.json` with the following content:
         "nodeCount": 1,
         "cntkSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/cntk/ConvNet_MNIST.py",
-            "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_cntk $AZ_BATCHAI_OUTPUT_MODEL"
+            "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_data $AZ_BATCHAI_OUTPUT_MODEL"
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
         "outputDirectories": [{
@@ -269,7 +269,7 @@ Example output:
     "resourceGroup": "batchai.recipes"
   },
   "cntkSettings": {
-    "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_cntk $AZ_BATCHAI_OUTPUT_MODEL",
+    "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_data $AZ_BATCHAI_OUTPUT_MODEL",
     "configFilePath": null,
     "languageType": "Python",
     "processCount": 1,
