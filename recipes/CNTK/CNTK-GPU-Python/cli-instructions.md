@@ -130,7 +130,7 @@ Example output:
 Create a new storage account with an unique name in the same region where you are going to create Batch AI cluster and run
 the job. Node, each storage account must have an unique name.
 
-```azurecli
+```azurecli test
 az storage account create -n <storage account name> --sku Standard_LRS -g batchai.recipes
 ```
 
