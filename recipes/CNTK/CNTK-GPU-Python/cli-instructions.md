@@ -130,7 +130,7 @@ Example output:
 Create a new storage account with an unique name in the same region where you are going to create Batch AI cluster and run
 the job. Node, each storage account must have an unique name.
 
-```azurecli
+```azurecli test
 az storage account create -n <storage account name> --sku Standard_LRS -g batchai.recipes
 ```
 
@@ -193,7 +193,7 @@ Create a training job configuration file `job.json` with the following content:
         "nodeCount": 1,
         "cntkSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/cntk/ConvNet_MNIST.py",
-            "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_cntk $AZ_BATCHAI_OUTPUT_MODEL"
+            "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_data $AZ_BATCHAI_OUTPUT_MODEL"
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
         "outputDirectories": [{
@@ -269,7 +269,7 @@ Example output:
     "resourceGroup": "batchai.recipes"
   },
   "cntkSettings": {
-    "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_cntk $AZ_BATCHAI_OUTPUT_MODEL",
+    "commandLineArgs": "$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_data $AZ_BATCHAI_OUTPUT_MODEL",
     "configFilePath": null,
     "languageType": "Python",
     "processCount": 1,
@@ -445,7 +445,7 @@ Alternatively, you can use the Portal or Azure Storage Explorer to inspect the g
 from the different jobs, Batch AI creates an unique folder structure for each of them. You can find the path to the
 folder containing the output using `jobOutputDirectoryPathSegment` attribute of the submitted job:
 
-```azurecli
+```azurecli test
 az batchai job show -n cntk_python -g batchai.recipes -w recipe_workspace -e cntk_experiment --query jobOutputDirectoryPathSegment
 ```
 

@@ -124,7 +124,7 @@ Example output:
 Create a new storage account with an unique name in the same region where you are going to create Batch AI cluster and run
 the job. Node, each storage account must have an unique name.
 
-```azurecli
+```azurecli test
 az storage account create -n <storage account name> --sku Standard_LRS -g batchai.recipes
 ```
 
@@ -363,7 +363,7 @@ Alternatively, you can use the Portal or Azure Storage Explorer to inspect the g
 from the different jobs, Batch AI creates an unique folder structure for each of them. You can find the path to the
 folder containing the output using `jobOutputDirectoryPathSegment` attribute of the submitted job:
 
-```azurecli
+```azurecli test
 az batchai job show -n horovod_pytorch -g batchai.recipes -w recipe_workspace -e horovod_experiment --query jobOutputDirectoryPathSegment
 ```
 

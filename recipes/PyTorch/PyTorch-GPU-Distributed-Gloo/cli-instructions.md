@@ -128,7 +128,7 @@ Example output:
 Create a new storage account with an unique name in the same region where you are going to create Batch AI cluster and run
 the job. Node, each storage account must have an unique name.
 
-```azurecli
+```azurecli test
 az storage account create -n <storage account name> --sku Standard_LRS -g batchai.recipes
 ```
 
@@ -171,7 +171,7 @@ Create a training job configuration file `job.json` with the following content:
         "nodeCount": 2,
         "pyTorchSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/pytorch/mnist_trainer.py",
-            "commandLineArgs": "--epochs 10 --world-size 2 --dist-backend $AZ_BATCHAI_PYTORCH_BACKEND --dist-url $AZ_BATCHAI_PYTORCH_INIT_METHOD --rank $AZ_BATCHAI_TASK_INDEX",
+            "commandLineArgs": "--epochs 10 --world-size 2 --dist-backend gloo --dist-url $AZ_BATCHAI_PYTORCH_INIT_METHOD --rank $AZ_BATCHAI_TASK_INDEX",
             "communicationBackend": "gloo" 
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
@@ -357,7 +357,7 @@ You can also use the Portal or Azure Storage Explorer to inspect the generated f
 from the different jobs, Batch AI creates an unique folder structure for each of them. You can find the path to the
 folder containing the output using `jobOutputDirectoryPathSegment` attribute of the submitted job:
 
-```azurecli
+```azurecli test
 az batchai job show -n distributed_pytorch -g batchai.recipes -w recipe_workspace -e pytorch_experiment --query jobOutputDirectoryPathSegment
 ```
 

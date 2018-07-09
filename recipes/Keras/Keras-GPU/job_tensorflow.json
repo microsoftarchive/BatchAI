@@ -5,7 +5,7 @@
         "tensorFlowSettings": {
             "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/keras/mnist_cnn.py"
         },
-        "stdOutErrPathPrefix": "$AZ_BATCHAI_MOUNT_ROOT/external",
+        "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
         "mountVolumes": {
             "azureFileShares": [
                 {
@@ -19,7 +19,7 @@
             ]
         },
         "jobPreparation": {
-            "commandLine": "pip install keras"
+          "commandLine": "pip install keras"
         },
         "containerSettings": {
             "imageSourceRegistry": {
