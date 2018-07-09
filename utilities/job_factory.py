@@ -5,7 +5,7 @@ import itertools
 import json
 import posixpath
 import re
-from functools import reduce
+from builtins import *
 
 import azure.mgmt.batchai.models as models
 import azure.storage.file.models
@@ -13,11 +13,7 @@ import numpy as np
 import six
 from azure.storage.blob import BlockBlobService
 from azure.storage.file import FileService
-from builtins import *
 from jsonschema import validate
-
-ENDPOINT_OFFSET = 0.001
-
 
 class ParamSpec(object):
     def __init__(self, parameter_name):
@@ -28,8 +24,13 @@ class ParamSpec(object):
         self.parameter_name = parameter_name
         self.values = []
 
+    def get_random(self):
+        return self.values[np.random.randint(0, len(self.values))]
+
 
 class NumParamSpec(ParamSpec):
+    ENDPOINT_OFFSET = 0.001
+
     def __init__(self, parameter_name, data_type, start, end, scale,
                  num_values=None, step=None):
         """Create a specification for a number parameter.
@@ -40,37 +41,57 @@ class NumParamSpec(ParamSpec):
         values will be retained.
         :param number start: the lowest value of this parameter (inclusive)
         :param number end: the highest value of this parameter (inclusive)
-        :param str scale: "LINEAR" or "LOG" or "RANDOM_UNIFORM"; how values
-        should be distributed in the range [start, end]
+        :param str scale: "LINEAR" or "LOG"; how values should be distributed in
+        the range [start, end]
         :param int num_values: the number of values to generate in the range.
-        Required if scale is "LOG" or "RANDOM_UNIFORM".
+        Required if scale is "LOG".
         :param int step: the interval size between each parameter. Required if
         scale is "LINEAR".
         """
         super().__init__(parameter_name)
         if start >= end:
-            raise ValueError(
-                "Number param's min value must be less than max value!")
-        if scale == 'LINEAR' and step:
-            self.values = list(np.arange(start, end + ENDPOINT_OFFSET, step))
-        elif scale == 'LINEAR' and num_values:
-            self.values = list(np.linspace(start, end, num_values))
-        elif scale == 'LOG' and num_values:
-            self.values = list(np.geomspace(start, end, num_values))
-        elif scale == 'RANDOM_UNIFORM' and num_values:
-            self.values = [
-                np.random.uniform(start, end) for i in range(num_values)
-            ]
+            raise ValueError("End value must be greater than start value")
+        if scale not in ["LINEAR", "LOG"]:
+            raise ValueError("Invalid scale")
+        if data_type not in ["INTEGER", "REAL"]:
+            raise ValueError("Invalid data type")
+        self.data_type = data_type
+        self.start = start
+        self.end = end
+        self.scale = scale
+        self.num_values = num_values
+        self.step = step
+        if self.num_values or self.step:
+            self.values = self._generate_values()
+
+    def _generate_values(self):
+        if self.scale == 'LINEAR' and self.step:
+            values = list(np.arange(self.start, self.end +
+                                    self.ENDPOINT_OFFSET, self.step))
+        elif self.scale == 'LINEAR' and self.num_values:
+            values = list(np.linspace(self.start, self.end,
+                                      self.num_values))
+        elif self.scale == 'LOG' and self.num_values:
+            values = list(np.geomspace(self.start, self.end,
+                                       self.num_values))
         else:
             raise ValueError("Invalid configuration of NumParamSpec")
-        if data_type == 'REAL':
+        if self.data_type == 'REAL':
             pass
-        elif data_type == 'INTEGER':
-            self.values = [int(round(val)) for val in self.values]
+        elif self.data_type == 'INTEGER':
+            values = [int(round(val)) for val in values]
         else:
             raise ValueError("Invalid data type {} in NumParamSpec".format(
-                data_type
+                self.data_type
             ))
+        return values
+
+    def get_random(self):
+        if self.scale == 'LINEAR':
+            return np.random.uniform(self.start, self.end)
+        elif self.scale == 'LOG':
+            return np.exp(np.random.uniform(np.log(self.start),
+                                            np.log(self.end)))
 
 
 class DiscreteParamSpec(ParamSpec):
@@ -301,12 +322,18 @@ class ParameterSweep(object):
         return getattr(self, key)
 
     def generate_jobs(self, job_create_parameters):
+        return self._generate_jobs(job_create_parameters)
+
+    def generate_jobs_random_search(self, job_create_parameters, num_jobs):
+        return self._generate_jobs(job_create_parameters, num_jobs=num_jobs)
+
+    def _generate_jobs(self, job_create_parameters, num_jobs=None):
         """Creates copies of job_create_parameters with the template strings
         and Substitution objects substituted with combinations of parameters
         specified in param_specs.
         """
         jcps = []
-        for param_dict in self._generate_param_dicts():
+        for param_dict in self._generate_param_dicts(num_jobs):
             jcp_substituted = self._substitute_params(
                 job_create_parameters, param_dict)
             environment_variables = [models.EnvironmentVariable(
@@ -317,14 +344,7 @@ class ParameterSweep(object):
             jcps.append(jcp_substituted)
         return jcps
 
-    def num_parameter_combinations(self):
-        """Calculate the total number of combinations in the Cartesian product
-        of parameters in param_specs.
-        """
-        param_spec_lengths = [len(ps.values) for ps in self.param_specs]
-        return reduce(lambda x, y: x * y, param_spec_lengths)
-
-    def _generate_param_dicts(self):
+    def _generate_param_dicts(self, num):
         """Generates a dict with parameter combinations from the Cartesian
         product of possible parameter values specified by param_specs.
         List<ParamSpec> -> Dict
@@ -332,11 +352,16 @@ class ParameterSweep(object):
         num_params = len(self.param_specs)
         param_names = [ps.parameter_name for ps in self.param_specs]
         param_values = [ps.values for ps in self.param_specs]
-        for paramCombination in itertools.product(*param_values):
+        if num:
+            param_combinations = [[p.get_random() for p in self.param_specs]
+                                  for _ in range(num)]
+        else:
+            param_combinations = itertools.product(*param_values)
+        for param_combination in param_combinations:
             param_dict = {}
             for i in range(num_params):
                 # Handling DictParamSpec
-                param = paramCombination[i]
+                param = param_combination[i]
                 param_name = param_names[i]
                 if isinstance(param, dict):
                     for key, value in param.items():

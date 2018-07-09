@@ -1,0 +1,25 @@
+{
+    "subscription_id": "",
+    "aad_client_id": "",
+    "aad_secret": "",
+    "aad_tenant": "",
+    "location": "eastus",
+    "base_url": "",
+    "resource_group": "",
+    "workspace": "",
+    "storage_account" : {
+        "name": "",
+        "key": ""
+    },
+    "admin_user" : {
+        "name": "",
+        "password": "",
+        "ssh_public_key": ""
+    },
+    "keyvault_id": "",
+    "container_registry" : {
+        "user": "",
+        "password": "",
+        "secret_url": ""
+    }
+}

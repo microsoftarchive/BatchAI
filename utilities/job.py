@@ -5,6 +5,9 @@ import time
 
 import azure.mgmt.batchai.models as models
 import requests
+from azure.mgmt.storage import StorageManagementClient
+from msrestazure.tools import parse_resource_id
+
 from utilities.cluster import print_cluster_status
 
 POLLING_INTERVAL_SEC = 5
@@ -99,25 +102,61 @@ def print_job_status(job):
         print('FailureDetails: {0}'.format(failure_message))
 
 
+def convert_job_to_jcp(job, client):
+    jcp_kwargs = models.JobCreateParameters._attribute_map.keys()
+    jcp_dict = {
+        kwarg: getattr(job, kwarg)
+        for kwarg in jcp_kwargs if hasattr(job, kwarg)
+    }
+    new_jcp = models.JobCreateParameters(**jcp_dict)
+    for bfs in new_jcp.mount_volumes.azure_blob_file_systems:
+        bfs.credentials.account_key = get_storage_account_key(
+            bfs.account_name, client)
+    for afs in new_jcp.mount_volumes.azure_file_shares:
+        afs.credentials.account_key = get_storage_account_key(
+            afs.account_name, client)
+    return new_jcp
+
+
+def get_storage_account_key(account_name, client):
+    storage_client = StorageManagementClient(
+        credentials=client.config.credentials,
+        subscription_id=client.config.subscription_id,
+        base_url=client.config.base_url)
+    accounts = [a.id for a in list(storage_client.storage_accounts.list())
+                if a.name == account_name]
+    if not accounts:
+        raise ValueError(
+            'Cannot find "{0}" storage account.'.format(account_name))
+    resource_group = parse_resource_id(accounts[0])['resource_group']
+    keys_list_result = storage_client.storage_accounts.list_keys(
+        resource_group, account_name)
+    if not keys_list_result or not keys_list_result.keys:
+        raise ValueError(
+            'Cannot find a key for "{0}" storage account.'.format(
+                account_name))
+    return keys_list_result.keys[0].value
+
+
 class MetricExtractor:
     """
     Helper class to extract desired metric from job's output files.
     
-    list_option:  job list-file option used to obtain learning log file download URL
+    output_dir:  job list-file option used to obtain learning log file download URL
     logfile: the name of learning log file
     regex: the regular expression to extract the desired metric from log text
     metric: option to aggregate the desired metric, default is the last occurrence 
     
     """
-    def __init__(self, list_option, logfile, regex, metric = "last"):
-        self.list_option = list_option
+    def __init__(self, output_dir_id, logfile, regex, calculate_method="last"):
+        self.output_dir_id = output_dir_id
         self.logfile = logfile
         self.regex = regex
-        self.metric = metric
+        self.calculate_method = calculate_method
 
     def get_metric(self, job_name, resource_group, workspace_name, experiment_name, client):
         files = client.jobs.list_output_files(resource_group, workspace_name, experiment_name, job_name,
-                                              models.JobsListOutputFilesOptions(outputdirectoryid=self.list_option))
+                                              models.JobsListOutputFilesOptions(outputdirectoryid=self.output_dir_id))
         val = float("inf")
         for file in list(files):
             if file.name == self.logfile:
@@ -130,13 +169,13 @@ class MetricExtractor:
                 except Exception as e:
                     print(e)
                 vals = re.findall(self.regex, text, re.DOTALL)
-                if self.metric is "last":
+                if self.calculate_method is "last":
                     val = float(vals[len(vals) - 1])
-                elif self.metric is "mean":
+                elif self.calculate_method is "mean":
                     val = sum([float(m) for m in vals])/len(vals)
-                elif self.metric is "min":
+                elif self.calculate_method is "min":
                     val = min([float(m) for m in vals])
-                elif self.metric is "max":
+                elif self.calculate_method is "max":
                     val = max([float(m) for m in vals])
                 break
 

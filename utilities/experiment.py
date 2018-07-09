@@ -1,28 +1,27 @@
 from __future__ import print_function
 
 import collections
+import concurrent.futures
 import hashlib
 import json
 import logging
 import re
-import time
 import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
 
 import azure.mgmt.batchai.models as models
-import concurrent.futures
-import requests
-from azure.mgmt.storage import StorageManagementClient
-from concurrent.futures import ThreadPoolExecutor
 from msrestazure.azure_exceptions import CloudError
 from msrestazure.polling.arm_polling import ARMPolling
-from msrestazure.tools import parse_resource_id
+
+from utilities.job import convert_job_to_jcp
 
 NUM_THREADS = 30
 RETRY_WAIT_SECS = 5
 JOB_NAME_HASH_LENGTH = 16
 NUM_RETRIES = 5
 
-Job = collections.namedtuple('Job', [
+JobToSubmit = collections.namedtuple('JobToSubmit', [
     'name',
     'parameters'
 ])
@@ -30,7 +29,7 @@ Job = collections.namedtuple('Job', [
 
 class ExperimentUtils(object):
     def __init__(self, client, resource_group_name, workspace_name,
-                 experiment_name):
+                 experiment_name, log_to_stdout=True):
         """Create a JobSubmitter object to manage job requests to the
         specified experiment.
 
@@ -45,6 +44,8 @@ class ExperimentUtils(object):
         self.experiment_name = experiment_name
         self.client.experiments.get(  # Ensure experiment exists
             resource_group_name, workspace_name, experiment_name)
+        if log_to_stdout:
+            self.log_to_stdout()
         self.logger = logging.getLogger('ExperimentUtils')
         self.logger.info(
             "Initialized JobSubmitter in resource group: {0} | "
@@ -67,7 +68,7 @@ class ExperimentUtils(object):
         list of azure.mgmt.batchai.models.Job with a blocking call
         :rtype: concurrent.futures.Future
         """
-        jobs = [Job(
+        jobs = [JobToSubmit(
             name=job_name_prefix + '_' + self._hash_jcp(jcp),
             parameters=jcp) for jcp in jcp_list
         ]
@@ -219,7 +220,8 @@ class ExperimentUtils(object):
         :param job_names: [type], optional
         :param max_retries: [description], defaults to NUM_RETRIES
         :param max_retries: [type], optional
-        :param bool confirm: whether confirmation dialogs will be presented
+        :param bool sAzs a a confirm: whether confirmation dialogs will be
+        presented
         :return: list of resubmitted jobs
         :rtype: List<azure.mgmt.batchai.models.Job>
         """
@@ -228,8 +230,7 @@ class ExperimentUtils(object):
             self.resource_group_name, self.workspace_name,
             self.experiment_name))
         if job_names:
-            all_jobs = [
-                j for j in all_jobs if j.name in job_names]
+            all_jobs = [j for j in all_jobs if j.name in job_names]
         failed_jobs = [j for j in all_jobs
                        if j.execution_state == models.ExecutionState.failed]
         failed_jobs_names = [j.name for j in failed_jobs]
@@ -241,115 +242,35 @@ class ExperimentUtils(object):
         print("Deleting the failed jobs...")
         self.delete_jobs_in_experiment(job_names=failed_jobs_names)
         jobs_to_submit = [
-            Job(name=job.name, parameters=self._create_jcp_from_job(job))
+            JobToSubmit(
+                name=job.name, parameters=convert_job_to_jcp(job, self.client))
             for job in failed_jobs
         ]
         resubmitted_jobs = self._submit_jobs_threadpool(
             jobs_to_submit, max_retries, num_threads)
         return resubmitted_jobs
 
-    def _get_storage_account_key(self, account_name):
-        storage_client = StorageManagementClient(
-            credentials=self.client.config.credentials,
-            subscription_id=self.client.config.subscription_id,
-            base_url=self.client.config.base_url)
-        accounts = [a.id for a in list(storage_client.storage_accounts.list())
-                    if a.name == account_name]
-        if not accounts:
-            raise ValueError(
-                'Cannot find "{0}" storage account.'.format(account_name))
-        resource_group = parse_resource_id(accounts[0])['resource_group']
-        keys_list_result = storage_client.storage_accounts.list_keys(
-            resource_group, account_name)
-        if not keys_list_result or not keys_list_result.keys:
-            raise ValueError(
-                'Cannot find a key for "{0}" storage account.'.format(
-                    account_name))
-        return keys_list_result.keys[0].value
-
-    def _create_jcp_from_job(self, job):
-        jcp_kwargs = models.JobCreateParameters._attribute_map.keys()
-        jcp_dict = {
-            kwarg: getattr(job, kwarg)
-            for kwarg in jcp_kwargs if hasattr(job, kwarg)
-        }
-        new_jcp = models.JobCreateParameters(**jcp_dict)
-        for bfs in new_jcp.mount_volumes.azure_blob_file_systems:
-            bfs.credentials.account_key = self._get_storage_account_key(
-                bfs.account_name)
-        for afs in new_jcp.mount_volumes.azure_file_shares:
-            afs.credentials.account_key = self._get_storage_account_key(
-                afs.account_name
-            )
-        return new_jcp
-
-    def extract_metric(self, job_name, output_dir_id, logfile_name, regex,
-                       calculate="last"):
-        """Get the value of a metric from a job's logfile.
-
-        :param str job_name: name of the job
-        :param str output_dir_id: models.OutputDirectory.id of the directory
-        where the logfile is stored. Use "stdouterr" if logging to stdout (i.e.
-        print)
-        :param str logfile_name: name of the logfile (with extension) in the
-        output directory
-        :param str regex: regex used with re.findall for matching numbers
-        corresponding to the metric value
-        :param str calculate: how to calculate the metric from the matches found
-        by regex. Options: last, mean, min, max
-        :return: metric value
-        :rtype: float
-        """
-        files = self.client.jobs.list_output_files(
-            self.resource_group_name, self.workspace_name,
-            self.experiment_name, job_name,
-            models.JobsListOutputFilesOptions(outputdirectoryid=output_dir_id))
-        val = None
-        for f in files:
-            if f.name == logfile_name:
-                text = ""
-                try:
-                    r = requests.get(f.download_url, stream=True)
-                    for chunk in r.iter_content(chunk_size=512 * 1024):
-                        if chunk:  # filter out keep-alive new chunks
-                            text += chunk.decode(encoding='UTF-8')
-                except Exception as e:
-                    print(e)
-                vals = re.findall(regex, text, re.DOTALL)
-                if not vals:
-                    raise ValueError("No matching metric values in log file.")
-                if calculate is "last":
-                    val = float(vals[len(vals) - 1])
-                elif calculate is "mean":
-                    val = sum([float(m) for m in vals]) / len(vals)
-                elif calculate is "min":
-                    val = min([float(m) for m in vals])
-                elif calculate is "max":
-                    val = max([float(m) for m in vals])
-                break
-        return val
-
-    def submit_jobs_and_return_metric(self, jcps, output_dir, logfile_name,
-                                      regex, metric='last', on_progress=None,
+    def get_metrics_for_jobs(self, jobs, metric_extractor,
+                                      on_progress=None,
                                       max_retries=NUM_RETRIES,
                                       num_threads=NUM_THREADS):
         """Submits jobs and returns the jobs and their metric value after
         running.
         """
-        jobs = [Job(name=self._hash_jcp(jcp), parameters=jcp) for jcp in jcps]
-        jobs = self._submit_jobs_threadpool(jobs, max_retries, num_threads)
         self.wait_all_jobs(
             job_names=[j.name for j in jobs], on_progress=on_progress)
         job_results = []
         for idx, job in enumerate(jobs):
-            metric = self.extract_metric(
-                job.name, output_dir, logfile_name, regex, metric=metric)
+            metric = metric_extractor.get_metric(job.name,
+                                                 self.resource_group_name,
+                                                 self.workspace_name,
+                                                 self.experiment_name,
+                                                 self.client)
             job_results.append({
                 "name": job.name,
-                "metric": metric,
+                "metric_value": metric,
                 "index": idx
             })
-        job_results.sort(key=lambda j: j['metric'])
         return job_results
 
     def delete_jobs_in_experiment(self, execution_state=None, job_names=None,
@@ -398,6 +319,11 @@ class ExperimentUtils(object):
             self.experiment_name, job_name,
             polling=polling).result()
         print("Deleted Job: {}".format(job_name))
+
+    def log_to_stdout(self):
+        logger = logging.getLogger('ExperimentUtils')
+        logger.setLevel(logging.INFO)
+        logger.handlers = [logging.StreamHandler()]
 
 
 class CustomPolling(ARMPolling):
