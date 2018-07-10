@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import collections
 import concurrent.futures
+import copy
 import hashlib
 import json
 import logging
@@ -267,7 +268,8 @@ class ExperimentUtils(object):
                                                  self.experiment_name,
                                                  self.client)
             job_results.append({
-                "name": job.name,
+                "job_name": job.name,
+                "job": job,
                 "metric_value": metric,
                 "index": idx
             })

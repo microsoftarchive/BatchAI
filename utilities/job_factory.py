@@ -15,6 +15,7 @@ from azure.storage.blob import BlockBlobService
 from azure.storage.file import FileService
 from jsonschema import validate
 
+
 class ParamSpec(object):
     def __init__(self, parameter_name):
         if not re.match("^[A-Z_][A-Z0-9_]*$", parameter_name):
@@ -407,7 +408,7 @@ class ParameterSweep(object):
 
 
 class Substitution(object):
-    ENV_VAR_PREFIX = "$PARAM_"
+    ENV_VAR_PREFIX = "PARAM_"
 
     def __init__(self, parameter_name):
         self.parameter_name = parameter_name

@@ -109,16 +109,17 @@ def convert_job_to_jcp(job, client):
         for kwarg in jcp_kwargs if hasattr(job, kwarg)
     }
     new_jcp = models.JobCreateParameters(**jcp_dict)
+    new_jcp.constraints = None
     for bfs in new_jcp.mount_volumes.azure_blob_file_systems:
-        bfs.credentials.account_key = get_storage_account_key(
+        bfs.credentials.account_key = _get_storage_account_key(
             bfs.account_name, client)
     for afs in new_jcp.mount_volumes.azure_file_shares:
-        afs.credentials.account_key = get_storage_account_key(
+        afs.credentials.account_key = _get_storage_account_key(
             afs.account_name, client)
     return new_jcp
 
 
-def get_storage_account_key(account_name, client):
+def _get_storage_account_key(account_name, client):
     storage_client = StorageManagementClient(
         credentials=client.config.credentials,
         subscription_id=client.config.subscription_id,
