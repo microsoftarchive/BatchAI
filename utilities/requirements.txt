@@ -1,0 +1,7 @@
+azure-mgmt-batchai==2.0.0
+azure==3.0.0
+requests==2.18.4
+six==1.11.0
+jsonschema==2.6.0
+numpy==1.14.3
+futures==3.2.0

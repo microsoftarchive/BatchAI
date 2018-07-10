@@ -67,6 +67,7 @@ class Configuration:
                 'Please provide a value for "{0}" configuration key'.format(
                     err.args[0]))
 
+
 def create_batchai_client(configuration):
     client = training.BatchAIManagementClient(
         credentials=ServicePrincipalCredentials(client_id=configuration.aad_client_id,
@@ -75,6 +76,7 @@ def create_batchai_client(configuration):
         subscription_id=configuration.subscription_id,
         base_url=configuration.url)
     return client
+
 
 def create_resource_group(configuration):
     client = ResourceManagementClient(

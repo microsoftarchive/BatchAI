@@ -34,20 +34,21 @@ class NumParamSpec(ParamSpec):
 
     def __init__(self, parameter_name, data_type, start, end, scale,
                  num_values=None, step=None):
-        """Create a specification for a number parameter.
+        """
+        Create a specification for a number parameter. If using generating
+        jobs with random search, num_values/step is not required.
 
-        :param str parameter_name: the name of the parameter
-        :param str data_type: "INTEGER" or "REAL". If "INTEGER", all generated
+        :param parameter_name: the name of the parameter
+        :param data_type: "INTEGER" or "REAL". If "INTEGER", all generated
         values will be rounded to the nearest integer. For "REAL", decimal
-        values will be retained.
-        :param number start: the lowest value of this parameter (inclusive)
-        :param number end: the highest value of this parameter (inclusive)
-        :param str scale: "LINEAR" or "LOG"; how values should be distributed in
+        :param start: the lowest value of this parameter (inclusive)
+        :param end: the highest value of this parameter (inclusive)
+        :param scale: "LINEAR" or "LOG"; how values should be distributed in
         the range [start, end]
-        :param int num_values: the number of values to generate in the range.
-        Required if scale is "LOG".
-        :param int step: the interval size between each parameter. Required if
-        scale is "LINEAR".
+        :param num_values: the number of values to generate in the range.
+        Required if performing grid search sweep and scale is "LOG".
+        :param step: the interval size between each parameter. Required if
+        performing grid search sweep and scale is "LINEAR".
         """
         super().__init__(parameter_name)
         if start >= end:
@@ -97,10 +98,11 @@ class NumParamSpec(ParamSpec):
 
 class DiscreteParamSpec(ParamSpec):
     def __init__(self, parameter_name, values):
-        """Create a specification for a discrete parameter
-        
-        :param str parameter_name: the name of the parameter
-        :param List<str,int,float> values: a list of values for the parameter
+        """
+        Create a specification for a discrete parameter.
+
+        :param parameter_name: the name of the parameter
+        :param values: a list of values for the parameter
         """
         super().__init__(parameter_name)
         self.validate(values)
@@ -116,12 +118,13 @@ class DiscreteParamSpec(ParamSpec):
 
 class DictParamSpec(ParamSpec):
     def __init__(self, parameter_name, values):
-        """For specifying a custom list of parameters, which each parameter is a
+        """
+        For specifying a custom list of parameters, which each parameter is a
         dictionary of parameters. This method allows pairs of parameters to be
         grouped together during combination generation.
-        
-        :param str parameter_name: the name of the parameter
-        :param List<dict> values: a list of dictionary objects
+
+        :param parameter_name: the name of the parameter
+        :param values: a list of dictionary objects
         """
         super().__init__(parameter_name)
         self.validate(values)
@@ -148,32 +151,33 @@ class FileParamSpec(ParamSpec):
                  storage_account_key, storage_type, mount_path, mount_method,
                  container=None, fileshare=None, directory=None,
                  filter_str=None):
-        """For generating a list of files stored in an Azure File/Blob storage.
+        """
+        For generating a list of files stored in an Azure File/Blob storage.
         The File share or Blob container must be mounted to the job (or the
         cluster the job is running on) for file parameter sweeping to work.
         
-        :param str parameter_name: the name of the parameter
-        :param str storage_account_name: the name of the Azure storage account to
+        :param parameter_name: the name of the parameter
+        :param storage_account_name: the name of the Azure storage account to
         use
-        :param str storage_account_key: the key of the Azure storage account to
+        :param storage_account_key: the key of the Azure storage account to
         use
-        :param str storage_type: "BLOB" or "FILE". Whether accessing files in
+        :param storage_type: "BLOB" or "FILE". Whether accessing files in
         Azure Blob container or an Azure File share.
-        :param str mount_method: "JOB" or "CLUSTER". Whether the Azure storage
+        :param mount_method: "JOB" or "CLUSTER". Whether the Azure storage
         volume was mounted through the JobCreateParameters or
         ClusterCreateParameters
-        :param str mount_path: the
+        :param mount_path: the
         models.AzureBlobFileSystemReference.relative_mount_path or
         models.AzureFileShareReference.relative_mount_path
         specified when mounting the Blob container or File share.
-        :param str container: the name of the Blob container. Required if
+        :param container: the name of the Blob container. Required if
         storage_type is "BLOB".
-        :param str fileshare: the name of the File share. Required if
+        :param fileshare: the name of the File share. Required if
         storage_type is "FILE".
-        :param str directory: the directory that contains the files to be
+        :param directory: the directory that contains the files to be
         listed. If unspecified, all files in the File share will be listed (this
         may take a long time).
-        :param str filter_str: a regex, used with re.match, which must match the
+        :param filter_str: a regex, used with re.match, which must match the
         full path of the file for the file to be returned. If unspecified, all
         files will be returned.
         """
@@ -217,12 +221,13 @@ class FileParamSpec(ParamSpec):
             raise ValueError('Invalid options for file parameter sweep')
 
     def _list_files_in_fileshare(self, service, fileshare, root_dir):
-        """List the paths of all files in share
-        :param azure.storage.file.FileService client: file client
-        :param str fileshare: file share name
-        :param str root_dir: root directory. If None, all files in fileshare
+        """
+        List the paths of all files in share.
+
+        :param client: instance of azure.storage.file.FileService
+        :param fileshare: file share name
+        :param root_dir: root directory. If None, all files in fileshare
         are listed
-        :rtype: List<str>
         :return: list of paths of files in the file share
         """
         files = []
@@ -248,9 +253,12 @@ class FileParamSpec(ParamSpec):
 class ParameterSweep(object):
 
     def __init__(self, param_specs):
-        """Creates a ParameterSweep object which can used as a placeholder for
+        """
+        Creates a ParameterSweep object which can used as a placeholder for
         parameter substitution. Sets Substitution objects as instance variables
         of this object, corresponding to the parameters in param_specs.
+
+        :param param_specs: a list of ParamSpec objects
         """
         if not param_specs:
             raise ValueError("No params in ParameterSweep init")
@@ -270,9 +278,13 @@ class ParameterSweep(object):
 
     @classmethod
     def from_json(cls, param_specs_json):
-        """Converts a JSON file containing a parameter sweep configuration into
+        """
+        Converts a JSON file containing a parameter sweep configuration into
         a list of ParamSpec objects. The configuration file must match the
         schema specified in param_sweep_spec_schema.json.
+
+        :param param_specs_json: a file containing a parameter sweep
+        specification
         """
         with open('param_sweep_spec_schema.json', 'r') as f:
             schema = json.load(f)
@@ -292,12 +304,12 @@ class ParameterSweep(object):
                 )
             elif p['paramType'] == 'DiscreteParam':
                 param_spec = DiscreteParamSpec(
-                    parameter_name=p['parameter_name'],
+                    parameter_name=p['parameterName'],
                     values=p['values']
                 )
             elif p['paramType'] == 'DictParam':
                 param_spec = DictParamSpec(
-                    parameter_name=p['parameter_name'],
+                    parameter_name=p['parameterName'],
                     values=p['values']
                 )
             elif p['paramType'] == 'FileParam':
@@ -310,7 +322,7 @@ class ParameterSweep(object):
                     mount_path=p['mountPath'],
                     container=(p['container'] if 'container' in p else None),
                     fileshare=(p['fileshare'] if 'fileshare' in p else None),
-                    filter_str=(p['filter'] if 'filter' in p else None)
+                    filter_str=(p['filterStr'] if 'filterStr' in p else None)
                 )
             if not param_spec:
                 raise ValueError("Invalid param spec type")
@@ -318,20 +330,44 @@ class ParameterSweep(object):
         return cls(param_specs)
 
     def __getitem__(self, key):
-        """Allows this object's variables to be accessed through bracket syntax.
+        """
+        Allows this object's variables to be accessed through bracket syntax.
         """
         return getattr(self, key)
 
     def generate_jobs(self, job_create_parameters):
+        """
+        Generate jobs with grid search.
+
+        :param job_create_parameters: an instance of JobCreateParameters
+        :return: a list of JobCreateParameters with parameters substituted
+        through grid search
+        """
         return self._generate_jobs(job_create_parameters)
 
     def generate_jobs_random_search(self, job_create_parameters, num_jobs):
+        """
+        Generate jobs with random search. Jobs will be generated with each
+        parameter value being randomly generated.
+
+        :param job_create_parameters: an instance of JobCreateParameters
+        :param num_jobs: the number of jobs to generate.
+        :return: a list of JobCreateParameters with parameters substituted
+        through random search
+        """
+        if num_jobs <= 0:
+            raise ValueError("Num jobs must be greater than 0")
         return self._generate_jobs(job_create_parameters, num_jobs=num_jobs)
 
     def _generate_jobs(self, job_create_parameters, num_jobs=None):
-        """Creates copies of job_create_parameters with the template strings
+        """
+        Creates copies of job_create_parameters with the template strings
         and Substitution objects substituted with combinations of parameters
         specified in param_specs.
+
+        :param job_create_parameters: an instance of JobCreateParameters
+        :param num_jobs: the number of jobs to generate with random search. If
+        None, grid search will be performed.
         """
         jcps = []
         for param_dict in self._generate_param_dicts(num_jobs):
@@ -345,10 +381,13 @@ class ParameterSweep(object):
             jcps.append(jcp_substituted)
         return jcps
 
-    def _generate_param_dicts(self, num):
-        """Generates a dict with parameter combinations from the Cartesian
+    def _generate_param_dicts(self, num=None):
+        """
+        Generates a dict with parameter combinations from the Cartesian
         product of possible parameter values specified by param_specs.
-        List<ParamSpec> -> Dict
+
+        :param num: the number of jobs to generate with random search. If None,
+        grid search will be performed.
         """
         num_params = len(self.param_specs)
         param_names = [ps.parameter_name for ps in self.param_specs]
@@ -361,10 +400,9 @@ class ParameterSweep(object):
         for param_combination in param_combinations:
             param_dict = {}
             for i in range(num_params):
-                # Handling DictParamSpec
                 param = param_combination[i]
                 param_name = param_names[i]
-                if isinstance(param, dict):
+                if isinstance(param, dict):  # Handling DictParamSpec
                     for key, value in param.items():
                         dict_param_name = param_name + '__' + key
                         param_dict[Substitution.convert_name(
@@ -374,7 +412,8 @@ class ParameterSweep(object):
             yield param_dict
 
     def _substitute_params(self, job_create_parameters, param_dict):
-        """Creates a copy of job_create_parameters and substitutes properties in
+        """
+        Creates a copy of job_create_parameters and substitutes properties in
         it with the parameter combination in param_dict.
         """
         jcp_copy = copy.deepcopy(job_create_parameters)
@@ -382,7 +421,8 @@ class ParameterSweep(object):
         return jcp_copy
 
     def _replace_properties_with_params(self, obj, param_dict):
-        """Do a recursive search through the object's properties, substituting
+        """
+        Do a recursive search through the object's properties, substituting
         Substitution objects and strings which are parameter templates
         with a parameter combination specified by param_dict.
         """
@@ -399,7 +439,8 @@ class ParameterSweep(object):
             pass  # Item is not an object
 
     def _replace_str_with_params(self, string, param_dict):
-        """Find any parameter template strings in string and replace them with
+        """
+        Find any parameter template strings in string and replace them with
         them with the corresponding parameter values from param_dict.
         """
         for parameter_name, value in param_dict.items():

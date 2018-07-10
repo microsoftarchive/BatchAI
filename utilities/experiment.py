@@ -2,11 +2,9 @@ from __future__ import print_function
 
 import collections
 import concurrent.futures
-import copy
 import hashlib
 import json
 import logging
-import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -31,13 +29,14 @@ JobToSubmit = collections.namedtuple('JobToSubmit', [
 class ExperimentUtils(object):
     def __init__(self, client, resource_group_name, workspace_name,
                  experiment_name, log_to_stdout=True):
-        """Create a JobSubmitter object to manage job requests to the
+        """
+        Create a JobSubmitter object to manage job requests to the
         specified experiment.
 
-        :param BatchAIManagementClient client
-        :param str resource_group_name: Name of resource group of experiment
-        :param str workspace_name: Name of workspace of experiment
-        :param str experiment_name: Name of the experiment
+        :param client: instance of BatchAIManagementClient
+        :param resource_group_name: name of resource group of experiment
+        :param workspace_name: name of workspace of experiment
+        :param experiment_name: name of the experiment
         """
         self.client = client
         self.resource_group_name = resource_group_name
@@ -57,17 +56,17 @@ class ExperimentUtils(object):
 
     def submit_jobs(self, jcp_list, job_name_prefix, max_retries=NUM_RETRIES,
                     num_threads=NUM_THREADS):
-        """Submit jobs with the JobCreateParameters in jcp_list. Jobs have name
+        """
+        Submit jobs with the JobCreateParameters in jcp_list. Jobs have name
         job_name_prefix with a hash of the JobCreateParameters object appended.
 
-        :param List<azure.mgmt.batchai.models.JobCreateParameters> jcp_list:
-        a list of JobCreateParameters objects to submit
-        :param str job_name_prefix: prefix for job names
-        :param int max_retries: Number of retries if server returns 5xx for
-        submission.
-        :return: A Future object. Call .result() on the object to get the
-        list of azure.mgmt.batchai.models.Job with a blocking call
-        :rtype: concurrent.futures.Future
+        :param jcp_list: a list of JobCreateParameters objects to submit
+        :param job_name_prefix: prefix for job names
+        :param max_retries: number of retries if server returns 5xx for
+        submission
+        :param num_threads: number of threads to use for submission
+        :return: a concurrent.futures.Future object. Call .result() on the
+        return object to get the list of azure.mgmt.batchai.models.Job submitted
         """
         jobs = [JobToSubmit(
             name=job_name_prefix + '_' + self._hash_jcp(jcp),
@@ -81,7 +80,8 @@ class ExperimentUtils(object):
         return future
 
     def _submit_jobs_threadpool(self, jobs, max_retries, num_threads):
-        """Submits jobs using a threadpool. Returns list of
+        """
+        Submits jobs using a thread pool. Returns list of
         azure.mgmt.batchai.models.Job objects representing submitted jobs.
         """
         if len(jobs) == 0:
@@ -120,7 +120,8 @@ class ExperimentUtils(object):
         return job_results
 
     def _submit_job(self, job_name, jcp):
-        """Submit a job. Returns azure.mgmt.batchai.models.Job object
+        """
+        Submit a job. Returns azure.mgmt.batchai.models.Job object
         representing the submitted job.
         """
         polling = CustomPolling()  # Poll for results once per second
@@ -135,7 +136,8 @@ class ExperimentUtils(object):
         return job
 
     def _hash_jcp(self, jcp, length=JOB_NAME_HASH_LENGTH):
-        """Generate a hash for the JobCreateParameters object.
+        """
+        Generate a hash for the JobCreateParameters object.
         """
         jcp_json_str = json.dumps(
             jcp, default=lambda o: o.__dict__, sort_keys=True)
@@ -144,15 +146,16 @@ class ExperimentUtils(object):
         return hash_str_substr
 
     def wait_all_jobs(self, job_names=None, on_progress=None):
-        """Block until all jobs in the experiment are completed (succeeded
+        """
+        Block until all jobs in the experiment are completed (succeeded
         or failed).
 
-        :param List<str> job_names: names of jobs to wait for. If None, wait
-        until all jobs in experiment are completed.
-        :param func on_progress: a function called every 10 secs with list of
-        azure.mgmt.batchai.models.Job representing current state of jobs
-        :return: list of completed jobs
-        :rtype: List<azure.mgmt.batchai.models.Job>
+        :param job_names: names of jobs to wait for. If None, wait until all
+        jobs in experiment are completed.
+        :param on_progress: a function that wait_all_jobs will call every 10
+        secs with list of azure.mgmt.batchai.models.Job, representing current
+        state of jobs
+        :return: list of completed Jobs
         """
 
         jobs = list(self.client.jobs.list_by_experiment(
@@ -190,43 +193,18 @@ class ExperimentUtils(object):
     def _num_jobs_in_state(self, jobs, state):
         return len([j for j in jobs if j.execution_state == state])
 
-    def list_stdouterr_files(self, job_name):
-        """List the files of stdout and stderr for a job.
-        """
-        files = self.client.jobs.list_output_files(
-            self.resource_group_name, self.workspace_name,
-            self.experiment_name, job_name,
-            models.JobsListOutputFilesOptions(outputdirectoryid='stdouterr'))
-        for idx, f in enumerate(files):
-            print("File {0}: {1} | Download: {2}".format(
-                idx + 1, f.name, f.download_url))
-
-    def get_parameters_of_job(self, job_name):
-        """Get the parameter sweep variables (through environment variables) of
-        a job.
-        """
-        job = self.client.jobs.get(
-            self.resource_group_name, self.workspace_name,
-            self.experiment_name, job_name)
-        env_vars = job.environment_variables
-        parameters = {ev.name: ev.value for ev in env_vars}
-        return parameters
-
     def resubmit_failed_jobs(self, job_names=None, max_retries=NUM_RETRIES,
                              num_threads=NUM_THREADS):
-        """Resubmit failed jobs.
-
-        :param List<str> job_names: List of names of jobs to resubmit. If none,
-        all failed jobs in the experiment are resubmitted.
-        :param job_names: [type], optional
-        :param max_retries: [description], defaults to NUM_RETRIES
-        :param max_retries: [type], optional
-        :param bool sAzs a a confirm: whether confirmation dialogs will be
-        presented
-        :return: list of resubmitted jobs
-        :rtype: List<azure.mgmt.batchai.models.Job>
         """
+        Resubmit the failed jobs in an experiment.
 
+        :param job_names: names of jobs to resubmit. If None, all jobs will
+        be resubmitted.
+        :param max_retries: number of retries if server returns 5xx for
+        submission
+        :param num_threads: number of threads to use for submission
+        :return: list of Jobs that were resubmitted
+        """
         all_jobs = list(self.client.jobs.list_by_experiment(
             self.resource_group_name, self.workspace_name,
             self.experiment_name))
@@ -251,15 +229,17 @@ class ExperimentUtils(object):
             jobs_to_submit, max_retries, num_threads)
         return resubmitted_jobs
 
-    def get_metrics_for_jobs(self, jobs, metric_extractor,
-                                      on_progress=None,
-                                      max_retries=NUM_RETRIES,
-                                      num_threads=NUM_THREADS):
-        """Submits jobs and returns the jobs and their metric value after
-        running.
+    def get_metrics_for_jobs(self, jobs, metric_extractor):
         """
-        self.wait_all_jobs(
-            job_names=[j.name for j in jobs], on_progress=on_progress)
+        Gets the metrics for a collection of jobs in the experiment.
+
+        :param jobs: a collection of azure.mgmt.batchai.models.Job objects
+        :param metric_extractor: an instance of utilities.job.MetricExtractor
+        :return: a list of dictionaries with keys "job_name" (the name of the
+        job), "job" (the Job object), "metric_value" (the extracted value of
+        the metric).
+        """
+        self.wait_all_jobs(job_names=[j.name for j in jobs])
         job_results = []
         for idx, job in enumerate(jobs):
             metric = metric_extractor.get_metric(job.name,
@@ -270,32 +250,30 @@ class ExperimentUtils(object):
             job_results.append({
                 "job_name": job.name,
                 "job": job,
-                "metric_value": metric,
-                "index": idx
+                "metric_value": metric
             })
         return job_results
 
     def delete_jobs_in_experiment(self, execution_state=None, job_names=None,
-                                  job_name_regex=None, num_threads=NUM_THREADS):
-        """Delete the jobs in the experiment.
-
-        :param one of azure.mgmt.batchai.models.ExecutionState execution_state:
-        delete only jobs with this exeuction state. If None, delete jobs
-        regardless of execution state.
-        :param List<str> job_names: List of names of jobs to resubmit. If none,
-        all failed jobs in the experiment are resubmitted.
-        :param str job_name_regex: regex used with re.match to match names of
-        jobs to delete
-        :param job_name_regex: [type], optional
+                                  num_threads=NUM_THREADS):
         """
+        Delete the jobs in the experiment.
 
+        :param execution_state: one of
+        azure.mgmt.batchai.models.ExecutionState. Delete only jobs with this
+        execution state. If None, delete jobs regardless of execution state.
+        :param job_names: List of names of jobs to resubmit. If none, all
+        failed jobs in the experiment are resubmitted.
+        :param job_name_regex: regex used with re.match to match names of jobs
+        to delete
+        :param num_threads: number of threads to use for deletion.
+        :return: None
+        """
         jobs = list(self.client.jobs.list_by_experiment(
             self.resource_group_name, self.workspace_name,
             self.experiment_name))
         if execution_state:
             jobs = [j for j in jobs if j.execution_state == execution_state]
-        if job_name_regex:
-            jobs = [j for j in jobs if re.match(job_name_regex, j.name)]
         if job_names:
             jobs = [j for j in jobs if j.name in job_names]
         if len(jobs) == 0:
@@ -309,20 +287,29 @@ class ExperimentUtils(object):
                 futures.append(future)
             for future in concurrent.futures.as_completed(futures):
                 future.result()
-        print(str(len(jobs)) + " jobs in experiment {0} were deleted.".format(
-            self.experiment_name))
+        self.logger.info(str(len(jobs)) + " jobs in experiment {0} were "
+                         "deleted.".format(self.experiment_name))
 
     def _delete_job(self, job_name):
-        """Delete a job.
+        """
+        Delete a job.
+
+        :param job_name: name of job to delete
+        :return: None
         """
         polling = CustomPolling()  # Poll once per second for results
         self.client.jobs.delete(
             self.resource_group_name, self.workspace_name,
             self.experiment_name, job_name,
             polling=polling).result()
-        print("Deleted Job: {}".format(job_name))
+        self.logger.info("Deleted Job: {}".format(job_name))
 
     def log_to_stdout(self):
+        """
+        Make ExperimentUtils instance log to stdout.
+
+        :return: None
+        """
         logger = logging.getLogger('ExperimentUtils')
         logger.setLevel(logging.INFO)
         logger.handlers = [logging.StreamHandler()]
