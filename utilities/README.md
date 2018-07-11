@@ -107,9 +107,8 @@ jobs_to_submit = parameters.generate_jobs_random_search(jcp, num_jobs)
 
 To submit the jobs from the `parameters` and `jcp` objects:
 ```
-experiment_utils = ExperimentUtils(client, resource_group_name, workspace_name, 
-experiment_name)
-submission = experiment_utils.submit_jobs(jcp, parameters, "job_name_prefix")
+experiment_utils = ExperimentUtils(client, resource_group_name, workspace_name, experiment_name)
+jobs = experiment_utils.submit_jobs(jcp, parameters, "job_name_prefix").result()
 ```
 
 ### Parameter Specifications
@@ -266,14 +265,12 @@ To use ExperimentUtils, create an object using a `BatchAIManagementClient`
 instance, and the name of the experiment you wish to use.
 ```
 from utilities.experiment import ExperimentUtils
-experiment_utils = ExperimentUtils(client, resource_group_name, 
-workspace_name, experiment_name)
+experiment_utils = ExperimentUtils(client, resource_group_name, workspace_name, experiment_name)
 ``` 
 
 #### Bulk Job Submission
 ```
-submit_jobs(jcp_list, job_name_prefix, max_retries=NUM_RETRIES,
-            num_threads=NUM_THREADS)
+submit_jobs(jcp_list, job_name_prefix, max_retries=NUM_RETRIES, num_threads=NUM_THREADS)
 ```
 Submit jobs with the JobCreateParameters in jcp_list. Jobs have name 
 job_name_prefix with a hash of the JobCreateParameters object appended.
@@ -303,8 +300,7 @@ state of jobs
 
 #### Resubmit Failed Jobs
 ```
-resubmit_failed_jobs(job_names=None, max_retries=NUM_RETRIES,
-                     num_threads=NUM_THREADS)
+resubmit_failed_jobs(job_names=None, max_retries=NUM_RETRIES, num_threads=NUM_THREADS)
 ```
 Resubmit the failed jobs in an experiment.
 
@@ -331,8 +327,7 @@ the metric).
 
 #### Delete Jobs in Experiment
 ```
-delete_jobs_in_experiment(execution_state=None, job_names=None,
-                          num_threads=NUM_THREADS)
+delete_jobs_in_experiment(execution_state=None, job_names=None, num_threads=NUM_THREADS)
 ```
 Delete the jobs in the experiment.
 
