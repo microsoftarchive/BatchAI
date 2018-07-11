@@ -48,19 +48,19 @@ For your convenience, we provide a collection of helper functions in [BatchAI/ut
 - Print Job/Cluster status
 - File Streaming 
 
-### Install Azure Batch AI Management Client
-
-Install Batch AI management client using the following command:
- 
- ```sh
- pip install azure-mgmt-batchai
- ```
-
 ### Install Azure Python SDK
 
 Since all recipes utlize APIs from other Azure products (e.g, Azure storage, credentials), it is also required to install the full package of Azure Python SDK:
  ```sh
  pip install azure
+ ```
+
+### Install Azure Batch AI Management Client
+
+Install Batch AI management client using the following command:
+ 
+ ```sh
+ pip install azure-mgmt-batchai --upgrade
  ```
 
 ### Install Jupyter Notebook
