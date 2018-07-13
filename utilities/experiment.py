@@ -49,7 +49,7 @@ class ExperimentUtils(object):
         self.logger = logging.getLogger('ExperimentUtils')
         self.logger.info(
             "Initialized JobSubmitter in resource group: {0} | "
-            "workspace: {1} | experiment {2}".format(
+            "workspace: {1} | experiment: {2}".format(
                 self.resource_group_name, self.workspace_name,
                 self.experiment_name
             ))
@@ -145,7 +145,7 @@ class ExperimentUtils(object):
         hash_str_substr = hash_str[0:length]
         return hash_str_substr
 
-    def wait_all_jobs(self, job_names=None, on_progress=None):
+    def wait_all_jobs(self, job_names=None, on_progress=None, timeout=None):
         """
         Block until all jobs in the experiment are completed (succeeded
         or failed).
@@ -155,6 +155,7 @@ class ExperimentUtils(object):
         :param on_progress: a function that wait_all_jobs will call every 10
         secs with list of azure.mgmt.batchai.models.Job, representing current
         state of jobs
+        :param timeout: number of seconds to wait before unblocking
         :return: list of completed Jobs
         """
 
@@ -163,6 +164,7 @@ class ExperimentUtils(object):
             self.experiment_name))
         if job_names:
             jobs = [j for j in jobs if j.name in job_names]
+        start = time.time()
         while self._num_jobs_completed(jobs) != len(jobs):
             print("{0}/{1} jobs completed ({2} succeeded, {3} failed)".format(
                 self._num_jobs_completed(jobs), len(jobs),
@@ -170,10 +172,12 @@ class ExperimentUtils(object):
                 self._num_jobs_in_state(jobs, models.ExecutionState.failed)),
                 end='')
             sys.stdout.flush()
-            for _ in range(10):
+            for _ in range(15):
                 print('.', end='')
                 sys.stdout.flush()
-                time.sleep(5)
+                time.sleep(3)
+                if timeout and time.time() - start > timeout:
+                    return jobs
             print()
             jobs = list(self.client.jobs.list_by_experiment(
                 self.resource_group_name, self.workspace_name,
@@ -312,7 +316,7 @@ class ExperimentUtils(object):
         """
         logger = logging.getLogger('ExperimentUtils')
         logger.setLevel(logging.INFO)
-        logger.handlers = [logging.StreamHandler()]
+        logger.handlers = [logging.StreamHandler(sys.stdout)]
 
 
 class CustomPolling(ARMPolling):

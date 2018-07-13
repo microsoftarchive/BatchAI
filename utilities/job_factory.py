@@ -370,6 +370,7 @@ class ParameterSweep(object):
         None, grid search will be performed.
         """
         jcps = []
+        param_dicts = []
         for param_dict in self._generate_param_dicts(num_jobs):
             jcp_substituted = self._substitute_params(
                 job_create_parameters, param_dict)
@@ -379,7 +380,8 @@ class ParameterSweep(object):
             ) for parameter_name, value in param_dict.items()]
             jcp_substituted.environment_variables = environment_variables
             jcps.append(jcp_substituted)
-        return jcps
+            param_dicts.append(param_dict)
+        return jcps, param_dicts
 
     def _generate_param_dicts(self, num=None):
         """

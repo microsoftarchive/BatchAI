@@ -296,6 +296,7 @@ jobs in experiment are completed.
 - on_progress: a function that wait_all_jobs will call every 10
 secs with list of azure.mgmt.batchai.models.Job, representing current
 state of jobs
+- timeout: number of seconds to wait before unblocking
 - return: list of completed Jobs
 
 #### Resubmit Failed Jobs
