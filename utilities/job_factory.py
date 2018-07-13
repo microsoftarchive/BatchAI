@@ -16,7 +16,7 @@ from azure.storage.file import FileService
 from jsonschema import validate
 
 
-class ParamSpec(object):
+class Parameter(object):
     def __init__(self, parameter_name):
         if not re.match("^[A-Z_][A-Z0-9_]*$", parameter_name):
             raise ValueError(
@@ -29,7 +29,7 @@ class ParamSpec(object):
         return self.values[np.random.randint(0, len(self.values))]
 
 
-class NumParamSpec(ParamSpec):
+class NumericParameter(Parameter):
     ENDPOINT_OFFSET = 0.001
 
     def __init__(self, parameter_name, data_type, start, end, scale,
@@ -77,13 +77,13 @@ class NumParamSpec(ParamSpec):
             values = list(np.geomspace(self.start, self.end,
                                        self.num_values))
         else:
-            raise ValueError("Invalid configuration of NumParamSpec")
+            raise ValueError("Invalid configuration of NumericParameter")
         if self.data_type == 'REAL':
             pass
         elif self.data_type == 'INTEGER':
             values = [int(round(val)) for val in values]
         else:
-            raise ValueError("Invalid data type {} in NumParamSpec".format(
+            raise ValueError("Invalid data type {} in NumericParameter".format(
                 self.data_type
             ))
         return values
@@ -96,7 +96,7 @@ class NumParamSpec(ParamSpec):
                                             np.log(self.end)))
 
 
-class DiscreteParamSpec(ParamSpec):
+class DiscreteParameter(Parameter):
     def __init__(self, parameter_name, values):
         """
         Create a specification for a discrete parameter.
@@ -116,7 +116,7 @@ class DiscreteParamSpec(ParamSpec):
                 raise ValueError("Values must be string, int, or float.")
 
 
-class DictParamSpec(ParamSpec):
+class DictParameter(Parameter):
     def __init__(self, parameter_name, values):
         """
         For specifying a custom list of parameters, which each parameter is a
@@ -145,7 +145,7 @@ class DictParamSpec(ParamSpec):
                     raise ValueError("Values must be string, int, or float.")
 
 
-class FileParamSpec(ParamSpec):
+class FileParameter(Parameter):
 
     def __init__(self, parameter_name, storage_account_name,
                  storage_account_key, storage_type, mount_path, mount_method,
@@ -258,13 +258,13 @@ class ParameterSweep(object):
         parameter substitution. Sets Substitution objects as instance variables
         of this object, corresponding to the parameters in param_specs.
 
-        :param param_specs: a list of ParamSpec objects
+        :param param_specs: a list of Parameter objects
         """
         if not param_specs:
             raise ValueError("No params in ParameterSweep init")
         self.param_specs = param_specs
         for param_spec in param_specs:
-            if isinstance(param_spec, DictParamSpec):
+            if isinstance(param_spec, DictParameter):
                 sub = Substitution(param_spec.parameter_name)
                 setattr(self, param_spec.parameter_name, sub)
                 for key in param_spec.dict_keys:
@@ -280,7 +280,7 @@ class ParameterSweep(object):
     def from_json(cls, param_specs_json):
         """
         Converts a JSON file containing a parameter sweep configuration into
-        a list of ParamSpec objects. The configuration file must match the
+        a list of Parameter objects. The configuration file must match the
         schema specified in param_sweep_spec_schema.json.
 
         :param param_specs_json: a file containing a parameter sweep
@@ -293,7 +293,7 @@ class ParameterSweep(object):
         for p in param_specs_json['params']:
             param_spec = None
             if p['paramType'] == 'NumParam':
-                param_spec = NumParamSpec(
+                param_spec = NumericParameter(
                     parameter_name=p['parameterName'],
                     data_type=p['dataType'],
                     start=p['start'],
@@ -303,17 +303,17 @@ class ParameterSweep(object):
                     num_values=(p['numValues'] if 'numValues' in p else None)
                 )
             elif p['paramType'] == 'DiscreteParam':
-                param_spec = DiscreteParamSpec(
+                param_spec = DiscreteParameter(
                     parameter_name=p['parameterName'],
                     values=p['values']
                 )
             elif p['paramType'] == 'DictParam':
-                param_spec = DictParamSpec(
+                param_spec = DictParameter(
                     parameter_name=p['parameterName'],
                     values=p['values']
                 )
             elif p['paramType'] == 'FileParam':
-                param_spec = FileParamSpec(
+                param_spec = FileParameter(
                     parameter_name=p['parameterName'],
                     storage_account_name=p['storageAccountName'],
                     storage_account_key=p['storageAccountKey'],
@@ -402,7 +402,7 @@ class ParameterSweep(object):
             for i in range(num_params):
                 param = param_combination[i]
                 param_name = param_names[i]
-                if isinstance(param, dict):  # Handling DictParamSpec
+                if isinstance(param, dict):  # Handling DictParameter
                     for key, value in param.items():
                         dict_param_name = param_name + '__' + key
                         param_dict[Substitution.convert_name(

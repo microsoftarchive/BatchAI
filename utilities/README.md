@@ -40,11 +40,11 @@ implemented via a command line argument to the input script.
 
 Create a list of parameter specifications:
 ```
-from utilities.job_factory import NumParamSpec, ParameterSweep
+from utilities.job_factory import NumericParameter, ParameterSweep
 from utilities.experiment import ExperimentUtils
 
 param_spec_list = [
-    NumParamSpec(
+    NumericParameter(
         parameterName='LEARNING_RATE',
         start=1e-4,
         end=1e-1,
@@ -131,7 +131,7 @@ Arguments:
 Examples:
 
 ```
-NumParamSpec(
+NumericParameter(
     parameterName="BATCH_SIZE",
     start=10,
     end=50,
@@ -143,7 +143,7 @@ NumParamSpec(
 ```
 
 ```
-NumParamSpec(
+NumericParameter(
     parameterName="LEARNING_RATE",
     start=1e-4,
     end=1e-1,
@@ -165,7 +165,7 @@ Arguments:
 Examples:
 
 ```
-DiscreteParamSpec(
+DiscreteParameter(
     parameterName="DEVICE_ID",
     values=["Device_1", "Device_2", "Device_3"]
 )
@@ -183,7 +183,7 @@ Arguments:
 Examples:
 
 ```
-DictParamSpec(
+DictParameter(
     parameterName="HYPERPARAMS",
     values=[{
         "LEARNING_RATE": 1e-4,
@@ -220,7 +220,7 @@ Arguments:
 Examples:
 
 ```
-FileParamSpec(
+FileParameter(
     parameterName="DATA_INPUT",
     storageAccountName="example_name",
     storageAccountKey="example_key",
@@ -238,7 +238,7 @@ FileParamSpec(
 ```
 
 ```
-FileParamSpec(
+FileParameter(
     parameterName="DATA_INPUT",
     storageAccountName="example_name",
     storageAccountKey="example_key",
