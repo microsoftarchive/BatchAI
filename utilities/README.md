@@ -4,7 +4,7 @@ A collection of tools for creating and monitoring jobs using the Azure Batch
 AI Python SDK.
 
 ## Features
-- support for configuration file (for Azure Active Directory and Azure 
+- support for configuration files (for Azure Active Directory and Azure 
 Storage credentials)
 - show status of clusters and jobs
 - list and download output files from jobs
@@ -16,6 +16,8 @@ Storage credentials)
 ## User Guides
 * [Job Factory](#job-factory)
 * [Experiment Utilities](#experiment-utilities)
+
+For more usage examples, see the `recipes/` folder in the Batch AI repository.
 
 ## Job Factory
 
@@ -43,13 +45,13 @@ Create a list of parameter specifications:
 from utilities.job_factory import NumericParameter, ParameterSweep
 from utilities.experiment import ExperimentUtils
 
-param_spec_list = [
+param_list = [
     NumericParameter(
-        parameterName='LEARNING_RATE',
+        parameter_name='LEARNING_RATE',
         start=1e-4,
         end=1e-1,
-        dataType='REAL',
-        numValues=4,
+        data_type='REAL',
+        num_values=4,
         scale="LOG"
     ) # will generate [1e-4, 1e-3, 1e-2, 1e-1]
 ]
@@ -61,7 +63,7 @@ For more details on the types of parameters allowed, see [below](#parameter-spec
 
 Create a ParameterSweep object as a template for parameters:
 ```
-parameters = ParameterSweep(param_spec_list)
+parameters = ParameterSweep(param_list)
 ```
 
 Use this object to specify where you want parameters substituted:
@@ -86,7 +88,7 @@ equal `--learning-rate=1e-4`, `--learning-rate=1e-3`, `--learning-rate=1e-2`,
 and `--learning-rate=1e-1`. Furthermore, an environment variable 
 `$PARAM_LEARNING_RATE` will be set in the job container.
 
-The `parameters[<parameterName>]` variable can be used with string substitution (like above) or directly to substitute a variable (e.g. `node_count=parameters['NODE_COUNT']` and `master_command_line_args=parameters['CMD_LINE_ARGS']'`).
+The `parameters[<parameter_name>]` variable can be used with string substitution (like above) or directly to substitute a variable (e.g. `node_count=parameters['NODE_COUNT']` and `master_command_line_args=parameters['CMD_LINE_ARGS']'`).
 
 #### 3. Generate Jobs
 
@@ -94,7 +96,7 @@ To generate the jobs with a grid search, use the following code. The number
 of jobs generated will be the product of the number of possible values for 
 each parameter. Every possible combination of parameters will be enumerated.
 ```
-jobs_to_submit = parameters.generate_jobs(jcp)
+jobs_to_submit, param_combinations = parameters.generate_jobs(jcp)
 ```
 
 To generate the jobs with a random search, use the following code. You must 
@@ -102,13 +104,16 @@ specify the number of jobs to generate. Each job will contain a randomly
 generated value of each parameter.
 ```
 num_jobs = 16
-jobs_to_submit = parameters.generate_jobs_random_search(jcp, num_jobs)
+jobs_to_submit, param_combinations = parameters.generate_jobs_random_search(jcp, num_jobs)
 ```
 
-To submit the jobs from the `parameters` and `jcp` objects:
+The variable `jobs_to_submit` is a list of JobCreateParameters objects. The variable `param_combinations` 
+is a list of dictionaries which contain the parameter names and values for each job in `jobs_to_submit`.
+
+To submit the jobs:
 ```
 experiment_utils = ExperimentUtils(client, resource_group_name, workspace_name, experiment_name)
-jobs = experiment_utils.submit_jobs(jcp, parameters, "job_name_prefix").result()
+jobs = experiment_utils.submit_jobs(jobs_to_submit, parameters, "job_name_prefix").result()
 ```
 
 ### Parameter Specifications
@@ -118,12 +123,12 @@ This library supports four types of parameters:
 __Numerical Parameters__
 
 Arguments:
-* parameterName: the name of the parameter. Only capital letters and underscores are allowed. Required.
-* dataType: "INTEGER" or "REAL". If "INTEGER", all generated values will be rounded to the nearest integer. For "REAL", decimal values will be retained. Required.
+* parameter_name: the name of the parameter. Only capital letters and underscores are allowed. Required.
+* data_type: "INTEGER" or "REAL". If "INTEGER", all generated values will be rounded to the nearest integer. For "REAL", decimal values will be retained. Required.
 * start: the lowest value of this parameter (inclusive). Required.
 * end: the highest value of this parameter (inclusive). Required.
 * scale: "LINEAR" or "LOG" or "RANDOM_UNIFORM"; how values should be distributed in the range [start, end]. Required.
-* numValues: num_values: the number of values to generate in the range.
+* num_values: num_values: the number of values to generate in the range.
         Required if performing grid search sweep and scale is "LOG".
 * step: step: the interval size between each parameter. Required if
         performing grid search sweep and scale is "LINEAR".
@@ -132,11 +137,11 @@ Examples:
 
 ```
 NumericParameter(
-    parameterName="BATCH_SIZE",
+    parameter_name="BATCH_SIZE",
     start=10,
     end=50,
     step=10,
-    dataType='INTEGER',
+    data_type='INTEGER',
     scale="LINEAR"
 )
 # will generate [10, 20, 30, 40, 50]
@@ -144,11 +149,11 @@ NumericParameter(
 
 ```
 NumericParameter(
-    parameterName="LEARNING_RATE",
+    parameter_name="LEARNING_RATE",
     start=1e-4,
     end=1e-1,
-    dataType='REAL',
-    numValues=4,
+    data_type='REAL',
+    num_values=4,
     scale="LOG"
 )
 # will generate [1e-4, 1e-3, 1e-2, 1e-1]
@@ -159,14 +164,14 @@ __Discrete Parameters__
 For specifying a custom list of parameters.
 
 Arguments:
-* parameterName: the name of the parameter. Only capital letters and underscores are allowed. Required.
+* parameter_name: the name of the parameter. Only capital letters and underscores are allowed. Required.
 * values: a list of values for the parameter. The values supplied must be a string, integer, or float. Required.
 
 Examples:
 
 ```
 DiscreteParameter(
-    parameterName="DEVICE_ID",
+    parameter_name="DEVICE_ID",
     values=["Device_1", "Device_2", "Device_3"]
 )
 # will generate ["Device_1", "Device_2", "Device_3"]
@@ -177,14 +182,14 @@ __Dictionary Parameters__
 For specifying a custom list of parameters, which each parameter is a dictionary of parameters. This method allows pairs of parameters to be grouped together during combination generation.
 
 Arguments:
-* parameterName: the name of the parameter. Only capital letters and underscores are allowed. Required.
+* parameter_name: the name of the parameter. Only capital letters and underscores are allowed. Required.
 * values: a list of values for the parameter, where each value is a dictionary.
 
 Examples:
 
 ```
 DictParameter(
-    parameterName="HYPERPARAMS",
+    parameter_name="HYPERPARAMS",
     values=[{
         "LEARNING_RATE": 1e-4,
         "HIDDEN_LAYER_SIZE": 100
@@ -206,44 +211,45 @@ __File Parameters__
 For generating a list of files stored in an Azure File/Blob storage. The File share or Blob container must be mounted to the job (or the cluster the job is running on) for file parameter sweeping to work.
 
 Arguments:
-* parameterName: the name of the parameter. Only capital letters and underscores are allowed. Required.
-* storageAccountName: the name of the Azure storage account to use. Required.
-* storageAccountKey: the key of the Azure storage account to use. Required.
-* storageType: "BLOB" or "FILE". Whether accessing files in Azure Blob container or an Azure File share. Required.
-* mountMethod: "JOB" or "CLUSTER". Whether the Azure storage volume was mounted through the JobCreateParameters or ClusterCreateParameters. Required.
-* mountPath: the `models.AzureBlobFileSystemReference.relative_mount_path` or `models.AzureFileShareReference.relative_mount_path` specified when mounting the Blob container or File share. Required.
-* container: the name of the Blob container. Required if storageType is "BLOB".
-* fileshare: the name of the File share. Required if storageType is "FILE".
+* parameter_name: the name of the parameter. Only capital letters and underscores are allowed. Required.
+* storage_account_name: the name of the Azure storage account to use. Required.
+* storage_account_key: the key of the Azure storage account to use. Required.
+* storage_type: "BLOB" or "FILE". Whether accessing files in Azure Blob container or an Azure File share. Required.
+* mount_method: "JOB" or "CLUSTER". Whether the Azure storage volume was mounted through the JobCreateParameters or ClusterCreateParameters. Required.
+* mount_path: the `models.AzureBlobFileSystemReference.relative_mount_path` or `models.AzureFileShareReference.relative_mount_path` specified when mounting the Blob container or File share. Required.
+* container: the name of the Blob container. Required if storage_type is "BLOB".
+* fileshare: the name of the File share. Required if storage_type is "FILE".
 * directory: the directory that contains the files to be listed. If unspecified, all files in the File share will be listed (this may take a long time).
-* filterStr: a regex, used with re.match, which must match the full path of the file for the file to be returned. If unspecified, all files will be returned.
+* filter_str: a regex, used with re.match, which must match the full path of the file for the file to be returned. If unspecified, all files will be returned.
 
 Examples:
 
 ```
 FileParameter(
-    parameterName="DATA_INPUT",
-    storageAccountName="example_name",
-    storageAccountKey="example_key",
-    storageType="BLOB",
-    mountPath="bfs",
+    parameter_name="DATA_INPUT",
+    storage_account_name="example_name",
+    storage_account_key="example_key",
+    storage_type="BLOB",
+    mount_method="JOB",
+    mount_path="bfs",
     container="example_container",
-    filterStr="/data/.+"
+    filter_str="/data/.+"
 )
 # if example_container contains the blobs
 # - /other/a.txt
 # - /b.txt
 # - /data/c.txt
 # - /data/d.txt
-# then this spec will generate ['$AZ_BATCHAI_MOUNT_ROOT/bfs/data/c.txt', '$AZ_BATCHAI_MOUNT_ROOT/bfs/data/d.txt']
+# then this parameter will generate ['$AZ_BATCHAI_MOUNT_ROOT/bfs/data/c.txt', '$AZ_BATCHAI_MOUNT_ROOT/bfs/data/d.txt']
 ```
 
 ```
 FileParameter(
-    parameterName="DATA_INPUT",
-    storageAccountName="example_name",
-    storageAccountKey="example_key",
-    storageType="FILE",
-    mountPath="afs",
+    parameter_name="DATA_INPUT",
+    storage_account_name="example_name",
+    storage_account_key="example_key",
+    storage_type="FILE",
+    mount_path="afs",
     fileshare="example_share",
     directory="data"
 )
@@ -252,7 +258,7 @@ FileParameter(
 # - /b.txt
 # - /data/c.txt
 # - /data/d.txt
-# then this spec will generate ['$AZ_BATCHAI_MOUNT_ROOT/afs/data/c.txt', '$AZ_BATCHAI_MOUNT_ROOT/afs/data/d.txt']
+# then this parameter will generate ['$AZ_BATCHAI_MOUNT_ROOT/afs/data/c.txt', '$AZ_BATCHAI_MOUNT_ROOT/afs/data/d.txt']
 ```
 
 ## Experiment Utilities
@@ -272,7 +278,7 @@ experiment_utils = ExperimentUtils(client, resource_group_name, workspace_name, 
 ```
 submit_jobs(jcp_list, job_name_prefix, max_retries=NUM_RETRIES, num_threads=NUM_THREADS)
 ```
-Submit jobs with the JobCreateParameters in jcp_list. Jobs have name 
+Submit jobs with the list of JobCreateParameters in jcp_list. Jobs have name 
 job_name_prefix with a hash of the JobCreateParameters object appended.
 
 Arguments
