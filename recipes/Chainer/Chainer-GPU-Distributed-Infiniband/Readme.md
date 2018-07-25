@@ -1,6 +1,6 @@
 # Chainer GPU Distributed Infiniband
 
-This example demonstrates how to run standard ChainerMN [train_mnist.py](https://github.com/chainer/chainermn/blob/master/examples/mnist/train_mnist.py) distributed training job using Batch AI with Infiniband enabled.
+This example demonstrates how to run standard ChainerMN [train_mnist.py](https://raw.githubusercontent.com/chainer/chainermn/v1.3.0/examples/mnist/train_mnist.py) distributed training job using Batch AI with Infiniband enabled.
 
 ## Details
 
