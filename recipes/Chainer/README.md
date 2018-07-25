@@ -9,6 +9,9 @@ See official GitHub pages for Chainer (https://github.com/chainer/chainer) and C
 #### [Chainer-GPU-Distributed](./Chainer-GPU-Distributed)
 This Chainer-GPU-Distributed recipe contains information on how to run distributed Chainer training job across multiple GPU nodes with BatchAI.
 
+#### [Chainer-GPU-Distributed-Infiniband](./Chainer-GPU-Distributed-Infiniband)
+This Chainer-GPU-Distributed-Infiniband recipe contains information on how to run distributed Chainer training job across multiple GPU nodes with Infiniband enabled.
+
 ## Help or Feedback
 --------------------
 If you have any problems or questions, you can reach the Batch AI team at [AzureBatchAITrainingPreview@service.microsoft.com](mailto:AzureBatchAITrainingPreview@service.microsoft.com) or you can create an issue on GitHub.
