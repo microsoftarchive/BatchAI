@@ -54,7 +54,7 @@ def download_and_upload_mnist_dataset_to_blob(blob_service, azure_blob_container
 def download_and_upload_rnn_dataset_to_blob(blob_service,
                                             azure_blob_container_name,
                                             rnn_dataset_directory):
-    rnn_dataset_url = 'https://teststoragewewa.blob.core.windows.net/batchaisample/rnn_dataset.zip?sp=r&st=2018-07-03T22:28:27Z&se=2030-07-04T06:28:27Z&spr=https&sv=2017-11-09&sig=laKwEnBycdm87ssmbr3HKnLJNEQVGoR3NONRMehZ8sk%3D&sr=b'
+    rnn_dataset_url = 'https://batchaisamples.blob.core.windows.net/samples/rnn_dataset.zip?st=2018-07-27T07%3A00%3A00Z&se=2100-01-01T07%3A59%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=46aIfggtstPhSfm%2B754hG%2F0kVT9jhINwKtjPkDfESv4%3D'
     local_dir = 'rnn_dataset'
     rnn_files = ['linux_input.txt',
                  'shakespeare_input.txt',
