@@ -466,7 +466,7 @@ $ az group create -l eastus -n demoGroup
 $ az storage account create -l eastus -g demoGroup -n demobatchaicli
 $ az storage share create -n demoafs --account-name demobatchaicli
 $ az storage container create -n democontainer --account-name batchaiclidemo
-$ az batchai cluster create -l eastus -g demoGroup -w demoWorkspace -n demoCluster --storage-account-name demobatchaicli --afs-name demoafs --afs-mount-path azurefileshare --bfs-name democontainer --bfs-mount-path azurecontainer -s Standard_NC6 -i UbuntuLTS -t 1 --generate-ssh-keys
+$ az batchai cluster create -g demoGroup -w demoWorkspace -n demoCluster --storage-account-name demobatchaicli --afs-name demoafs --afs-mount-path azurefileshare --bfs-name democontainer --bfs-mount-path azurecontainer -s Standard_NC6 -i UbuntuLTS -t 1 --generate-ssh-keys
 ```
 
 Note, storage account name must have an unique value, otherwise storage account creation command will fail with 
@@ -514,8 +514,8 @@ For example, the following code will create a single node NFS `demoNFS` with 2 d
 cluster `demoCluster` with NFS mounted at `$AZ_BATCHAI_MOUNT_ROOT/nfs`:
 
 ```bash
-$ az batchai file-server create -l eastus -g demoGroup -w demoWorkspace -n demoNFS --disk-count 4 --disk-size 1024 -s Standard_DS14 --generate-ssh-keys
-$ az batchai cluster create -l eastus -g demoGroup -w demoWorkspace -n demoCluster --nfs demoNFS --nfs-mount-path nfs -s Standard_NC6 -i UbuntuLTS -t 1
+$ az batchai file-server create -g demoGroup -w demoWorkspace -n demoNFS --disk-count 4 --disk-size 1024 -s Standard_DS14 --generate-ssh-keys
+$ az batchai cluster create -g demoGroup -w demoWorkspace -n demoCluster --nfs demoNFS --nfs-mount-path nfs -s Standard_NC6 -i UbuntuLTS -t 1
 ```
 
 *Important*. Each Batch AI File Server resides within a Azure virtual network. If `--nfs` option is provided, the cluster
