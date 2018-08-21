@@ -29,7 +29,7 @@ class Configuration:
             self.subscription_id = encode(conf['subscription_id'])
             self.aad_client_id = encode(conf['aad_client_id'])
             self.aad_secret_key = encode(conf['aad_secret'])
-            self.aad_token_uri = 'https://login.microsoftonline.com/{0}/oauth2/token'.format(encode(conf['aad_tenant']))
+            self.aad_tenant = encode(conf['aad_tenant'])
             self.location = encode(conf['location'])
             self.url = encode(conf['base_url'])
             self.resource_group = encode(conf['resource_group'])
@@ -72,7 +72,7 @@ def create_batchai_client(configuration):
     client = training.BatchAIManagementClient(
         credentials=ServicePrincipalCredentials(client_id=configuration.aad_client_id,
                                                 secret=configuration.aad_secret_key,
-                                                token_uri=configuration.aad_token_uri),
+                                                tenant=configuration.aad_tenant),
         subscription_id=configuration.subscription_id,
         base_url=configuration.url)
     return client
@@ -82,7 +82,7 @@ def create_resource_group(configuration):
     client = ResourceManagementClient(
         credentials=ServicePrincipalCredentials(client_id=configuration.aad_client_id,
                                                 secret=configuration.aad_secret_key,
-                                                token_uri=configuration.aad_token_uri),
+                                                tenant=configuration.aad_tenant),
         subscription_id=configuration.subscription_id, base_url=configuration.url)
     client.resource_groups.create_or_update(configuration.resource_group,
                                             {'location': configuration.location})
