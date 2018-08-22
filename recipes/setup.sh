@@ -9,7 +9,7 @@ if ! type "jq" > /dev/null; then
 fi
 
 list=`az account list -o table`
-if [ "$list" == '[]' ]; then 
+if [ "$list" == '[]' ] || [ "$list" == '' ]; then 
   az login -o table
 else
   az account list -o table 
@@ -25,16 +25,18 @@ while true; do
         break
     fi
 done
-set -e
 
 location=`jq -r '.location' configuration.json`
-read -p "Please provide the Azure resource group name for Batch AI. If the resource not exist, it will be created automatically: " resource_group
-if az group exists --name $resource_group
-then
-    echo "Resource group already exists so skipping creation."
-else
+
+while true; do
+    read -p "Please provide the Azure resource group name for Batch AI. If the resource not exist, it will be created automatically: " resource_group
     az group create -l $location -n $resource_group -o table
-fi
+    if [ $? == 0 ];then
+        break
+    fi
+done
+set -e
+
 
 echo `jq --arg pass $resource_group '.resource_group = $pass' configuration.json` > configuration.json
 
