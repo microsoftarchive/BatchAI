@@ -17,9 +17,14 @@ while (1) {
     }
 }
 
-$resource_group = Read-Host -Prompt 'Please provide the Azure resource group name for Batch AI. If the resource not exist, it will be created automatically'
-az group create -l $config.location -n $resource_group -o table
-$config.resource_group = $resource_group
+while (1) {
+    $resource_group = Read-Host -Prompt 'Please provide the Azure resource group name for Batch AI. If the resource not exist, it will be created automatically'
+    az group create -l $config.location -n $resource_group -o table
+    if ($?) {
+        $config.resource_group = $resource_group
+        break
+    }
+}
 
 $addinfojson = & az ad sp create-for-rbac
 $aadinfo = ConvertFrom-JSON "$addinfojson"
