@@ -425,13 +425,13 @@ Inspect Generated Model Files
 The job stores the generated model files in the output directory with id = `MODEL`, you can list this files and get download URLs using the following command:
 
 ```azurecli
-az batchai job file list -j distributed_tensorflow -g batchai.recipes -w recipe_workspace -e cntk_experiment -d MODEL
+az batchai job file list -j distributed_tensorflow -g batchai.recipes -w recipe_workspace -e tensorflow_experiment -d MODEL
 ```
 
 You can view the output tensorboard log file via the same way but with output directory id = `TENSORBOARD`
 
 ```azurecli
-az batchai job file list -j distributed_tensorflow -g batchai.recipes -w recipe_workspace -e cntk_experiment -d TENSORBOARD
+az batchai job file list -j distributed_tensorflow -g batchai.recipes -w recipe_workspace -e tensorflow_experiment -d TENSORBOARD
 ```
 
 Alternatively, you can use the Portal or Azure Storage Explorer to inspect the generated files. To distinguish output
