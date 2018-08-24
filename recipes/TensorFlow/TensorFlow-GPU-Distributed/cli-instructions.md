@@ -5,8 +5,8 @@ submit and monitor training jobs.
 
 This recipe shows how to create a GPU cluster, run and monitor training job using Microsoft Cognitive Toolkit.
 
-The training script [mnist_replica.py](https://raw.githubusercontent.com/tensorflow/tensorflow/v1.8.0/tensorflow/tools/dist_test/python/mnist_replica.py)
-is available at Official Tensorflow GitHub page. This script trains convolutional neural network on MNIST database of handwritten digits.
+This script trains convolutional neural network on MNIST database of handwritten digits.The training script [mnist_replica.py](https://raw.githubusercontent.com/tensorflow/tensorflow/v1.8.0/tensorflow/tools/dist_test/python/mnist_replica.py)
+is modified to generate model checkpoints and tensorboard event output files. 
 
 ## The Workflow
 
@@ -137,12 +137,12 @@ other name and retry.
 
 ## Download the Training Script
 
-* Download [mnist_replica.py](https://raw.githubusercontent.com/tensorflow/tensorflow/v1.8.0/tensorflow/tools/dist_test/python/mnist_replica.py) example script into the current folder:
+* Download [mnist_replica.py](https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/TensorFlow/TensorFlow-GPU-Distributed/mnist_replica.py) example script into the current folder:
 
 For GNU/Linux or Cloud Shell:
 
 ```azurecli test
-wget https://raw.githubusercontent.com/tensorflow/tensorflow/v1.8.0/tensorflow/tools/dist_test/python/mnist_replica.py
+wget https://raw.githubusercontent.com/Azure/BatchAI/master/recipes/TensorFlow/TensorFlow-GPU-Distributed/mnist_replica.py
 ```
 
 ## Create Azure File Share and Deploy the Training Script
@@ -191,11 +191,23 @@ Create a training job configuration file `job.json` with the following content:
             "parameterServerCount": 1,
             "workerCount": 2,
             "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/tensorflow/mnist_replica.py",
-            "masterCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET",
-            "workerCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET",
+            "masterCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --train_steps 10000 --checkpoint_dir=$AZ_BATCHAI_OUTPUT_MODEL --log_dir=$AZ_BATCHAI_OUTPUT_TENSORBOARD --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET",
+            "workerCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --train_steps 10000 --checkpoint_dir=$AZ_BATCHAI_OUTPUT_MODEL --log_dir=$AZ_BATCHAI_OUTPUT_TENSORBOARD --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET",
             "parameterServerCommandLineArgs": "--job_name=ps --num_gpus=0 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_data"
         },
         "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+        "outputDirectories": [
+            {
+                "id": "MODEL",
+                "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+                "pathSuffix": "Models"
+            },
+            {
+                "id": "TENSORBOARD",
+                "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+                "pathSuffix": "Logs"
+            },
+        ],
         "mountVolumes": {
             "azureFileShares": [
                 {
@@ -228,6 +240,8 @@ This configuration file specifies:
 * `nodeCount` - number of nodes required by the job;
 * `tensorFlowSettings` - tells that the current job needs Tensoeflow and specifies path the training script and command line arguments.
 * `stdOutErrPathPrefix` - path where Batch AI will create directories containing job's logs;
+* `outputDirectories` - collection of output directories which will be created by Batch AI. For each directory,
+Batch AI will create an environment variable with name `AZ_BATCHAI_OUTPUT_<id>`, where `<id>` is the directory
 * `mountVolumes` - list of filesystem to be mounted during the job execution. In this case, we are mounting
 two Azure File Shares `logs` and `scripts`, and Azure Blob Container `data`. The filesystems are mounted under `AZ_BATCHAI_JOB_MOUNT_ROOT/<relativeMountPath>`;
 * `<AZURE_BATCHAI_STORAGE_ACCOUNT>` tells that the storage account name will be specified during the job submission
@@ -329,7 +343,18 @@ Example output:
   },
   "name": "distributed_tensorflow",
   "nodeCount": 2,
-  "outputDirectories": null,
+  "outputDirectories": [
+      {
+          "id": "MODEL",
+          "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+          "pathSuffix": "Models"
+      },
+      {
+          "id": "TENSORBOARD",
+          "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
+          "pathSuffix": "Logs"
+      },
+  ],
   "provisioningState": "succeeded",
   "provisioningStateTransitionTime": "2018-06-15T06:27:50.661000+00:00",
   "pyTorchSettings": null,
@@ -338,12 +363,12 @@ Example output:
   "secrets": null,
   "stdOutErrPathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
   "tensorFlowSettings": {
-    "masterCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET",
-    "parameterServerCommandLineArgs": "--job_name=ps --num_gpus=0 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_data",
+    "masterCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --train_steps 10000 --checkpoint_dir=$AZ_BATCHAI_OUTPUT_MODEL --log_dir=$AZ_BATCHAI_OUTPUT_TENSORBOARD --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET",
+    "workerCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --train_steps 10000 --checkpoint_dir=$AZ_BATCHAI_OUTPUT_MODEL --log_dir=$AZ_BATCHAI_OUTPUT_TENSORBOARD --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET",
+    "parameterServerCommandLineArgs": "--job_name=ps --num_gpus=0 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_JOB_MOUNT_ROOT/data/mnist_data"
     "parameterServerCount": 1,
     "pythonInterpreterPath": null,
     "pythonScriptFilePath": "$AZ_BATCHAI_JOB_MOUNT_ROOT/scripts/tensorflow/mnist_replica.py",
-    "workerCommandLineArgs": "--job_name=worker --num_gpus=1 --ps_hosts=$AZ_BATCHAI_PS_HOSTS --worker_hosts=$AZ_BATCHAI_WORKER_HOSTS --task_index=$AZ_BATCHAI_TASK_INDEX --data_dir=$AZ_BATCHAI_INPUT_DATASET",
     "workerCount": 2
   },
   "toolType": "tensorflow",
@@ -394,6 +419,20 @@ After 200 training step(s), validation cross entropy = 1367.12
 ```
 
 The streaming is stopped when the job is completed.
+
+Inspect Generated Model Files
+
+The job stores the generated model files in the output directory with id = `MODEL`, you can list this files and get download URLs using the following command:
+
+```azurecli
+az batchai job file list -j distributed_tensorflow -g batchai.recipes -w recipe_workspace -e cntk_experiment -d MODEL
+```
+
+You can view the output tensorboard log file via the same way but with output directory id = `TENSORBOARD`
+
+```azurecli
+az batchai job file list -j distributed_tensorflow -g batchai.recipes -w recipe_workspace -e cntk_experiment -d TENSORBOARD
+```
 
 Alternatively, you can use the Portal or Azure Storage Explorer to inspect the generated files. To distinguish output
 from the different jobs, Batch AI creates an unique folder structure for each of them. You can find the path to the

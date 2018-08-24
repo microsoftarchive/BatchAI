@@ -9,7 +9,7 @@ This example demonstrate how to run standard TensorFlow sample (https://github.c
 - For demonstration purposes, MNIST dataset and `mnist_replica.py` will be deployed at Azure File Share;
 - Standard output of the job will be stored on Azure File Share;
 - MNIST dataset (http://yann.lecun.com/exdb/mnist/) is archived and uploaded into the [blob](https://batchaisamples.blob.core.windows.net/samples/mnist_dataset_original.zip?st=2017-09-29T18%3A29%3A00Z&se=2099-12-31T08%3A00%3A00Z&sp=rl&sv=2016-05-31&sr=b&sig=Qc1RA3zsXIP4oeioXutkL1PXIrHJO0pHJlppS2rID3I%3D).
-- The recipe uses official `mnist_replica.py` (https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dist_test/python/mnist_replica.py).
+- The recipe modifies official `mnist_replica.py` (https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dist_test/python/mnist_replica.py) to generate model checkpoints and tensorboard event output files.
 - Please refer to the [official tutorial](https://www.tensorflow.org/deploy/distributed) on distributed tensorflow training
 
 ## Instructions to Run Recipe
