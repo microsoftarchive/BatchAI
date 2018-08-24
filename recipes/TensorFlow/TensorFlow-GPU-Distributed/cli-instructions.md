@@ -206,7 +206,7 @@ Create a training job configuration file `job.json` with the following content:
                 "id": "TENSORBOARD",
                 "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
                 "pathSuffix": "Logs"
-            },
+            }
         ],
         "mountVolumes": {
             "azureFileShares": [

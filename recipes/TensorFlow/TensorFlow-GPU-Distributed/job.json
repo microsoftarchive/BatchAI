@@ -21,7 +21,7 @@
                 "id": "TENSORBOARD",
                 "pathPrefix": "$AZ_BATCHAI_JOB_MOUNT_ROOT/logs",
                 "pathSuffix": "Logs"
-            },
+            }
         ],
         "mountVolumes": {
             "azureFileShares": [
