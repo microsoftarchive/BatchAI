@@ -36,9 +36,10 @@ while true; do
     fi
 done
 set -e
-
-
 echo `jq --arg pass $resource_group '.resource_group = $pass' configuration.json` > configuration.json
+
+read -p "Please specify the default Azure Batch AI workspace name, which will be created: " workspace_name
+echo `jq --arg pass $workspace_name '.workspace = $pass' configuration.json` > configuration.json
 
 aad_info=`az ad sp create-for-rbac`
 aad_id=`echo $aad_info | jq -r '.appId'`
