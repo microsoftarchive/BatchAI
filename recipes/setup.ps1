@@ -33,6 +33,7 @@ $config.aad_client_id = $aadinfo.appId
 $config.aad_secret = $aadinfo.password
 $config.aad_tenant = $aadinfo.tenant
 
+$config.workspace = Read-Host -Prompt 'Please specify the default Azure Batch AI workspace name, which will be created'
 Write-Host 'Batch AI creates administrator user account on every compute node and enables ssh. You need to specify user name and at least a password or ssh public key for this account.'
 $config.admin_user.name = Read-Host -Prompt 'user name'
 $config.admin_user.password = Read-Host -Prompt 'password'
