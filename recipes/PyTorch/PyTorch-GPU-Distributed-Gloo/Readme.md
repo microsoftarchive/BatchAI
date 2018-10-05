@@ -26,7 +26,7 @@ You can find Jupyter Notebook for this sample in [PyTorch-GPU-Distributed-Gloo.i
 
 ### Azure CLI 2.0
 
-Under Construction...
+You can find Azure CLI 2.0 instructions for this recipe in [cli-instructions.md](./cli-instructions.md).
 
 ## License Notice
 
