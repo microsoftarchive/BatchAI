@@ -1,5 +1,7 @@
 # Azure Batch AI
 
+> Note: **Azure Batch AI is being retired.** Support for this service will be retired incrementally. The capabilities of Azure Batch AI are now available as a managed compute target in Azure Machine Learning service. For more information, see [What's happening to Batch AI?](https://docs.microsoft.com/azure/batch-ai/overview-what-happened-to-batch-ai)
+
 Welcome to our documenting page at https://docs.microsoft.com/azure/batch-ai
 
 ## Updates
