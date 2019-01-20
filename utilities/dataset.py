@@ -25,7 +25,7 @@ def download_and_upload_mnist_dataset_to_blob(blob_service, azure_blob_container
     """
     Download and Extract MNIST Dataset, then upload to given Azure Blob Container
     """
-    mnist_dataset_url = 'https://batchaisamples.blob.core.windows.net/samples/mnist_dataset_full.zip?st=2018-03-04T00%3A21%3A00Z&se=2099-12-31T23%3A59%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=rrBgTFeIv3bjsyAfh87RoW5i0ay4mMyMEIh2RI45s%2B0%3D'
+    mnist_dataset_url = 'https://batchaisamples.blob.core.windows.net/samples/mnist_dataset_full.zip?st=2019-01-03T22%3A05%3A00Z&se=2099-12-31T20%3A00%3A00Z&sp=rl&sv=2017-04-17&sr=c&sig=5UxAYC%2BrBAHdYmDLvHACYl3ZDPmmO51QhNHBlVuO9vg%3D'
 
     mnist_files = ['t10k-images-idx3-ubyte.gz', 't10k-labels-idx1-ubyte.gz',
                    'train-images-idx3-ubyte.gz', 'train-labels-idx1-ubyte.gz',
