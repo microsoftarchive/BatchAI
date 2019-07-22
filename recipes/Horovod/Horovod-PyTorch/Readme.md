@@ -7,8 +7,8 @@ This recipe shows how to run [Horovod](https://github.com/uber/horovod) distribu
 
 - Standard Horovod [pytorch_mnist.py](https://raw.githubusercontent.com/uber/horovod/master/examples/pytorch_mnist.py) example will be used;
 - pytorch_mnist.py downloads training data on its own during execution;
-- The job will be run on standard tensorflow container batchaitraining/pytorch:0.4.0-cp36-cuda9-cudnn7;
-- Horovod framework will be installed in the container using job preparation command line. Note, you can build your own docker image containing tensorflow and horovod instead.
+- The job will be run on standard PyTorch container batchaitraining/pytorch:0.4.0-cp36-cuda9-cudnn7;
+- Horovod framework will be installed in the container using job preparation command line. Note, you can build your own docker image containing PyTorch and horovod instead.
 - Standard output of the job will be stored on Azure File Share.
 
 ## Instructions to Run Recipe
