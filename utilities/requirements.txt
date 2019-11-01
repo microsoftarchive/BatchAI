@@ -1,6 +1,6 @@
 azure-mgmt-batchai==2.0.0
 azure==3.0.0
-requests==2.18.4
+requests==2.20.0
 six==1.11.0
 jsonschema==2.6.0
 numpy==1.14.3
